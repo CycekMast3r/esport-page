@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 import Home from "./pages/Home";
 import Registration from "./pages/Registration";
@@ -8,25 +8,40 @@ import Bracket from "./pages/Bracket";
 import Stream from "./pages/Stream";
 import Sponsors from "./pages/Sponsors";
 import Footer from "./pages/Footer";
+import { useEffect } from "react";
+
+function AppWrapper() {
+    const location = useLocation();
+    const isHome = location.pathname === "/";
+
+    // Opcjonalnie: usuwanie paddingu tylko na stronie głównej
+    useEffect(() => {
+        document.body.style.margin = "0";
+    }, []);
+
+    return (
+        <div className={isHome ? "layout home-background" : "layout default-background"}>
+            <Header isHome={isHome} />
+            <main className={isHome ? "home-main" : "default-main"}>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/rejestracja" element={<Registration />} />
+                    <Route path="/harmonogram" element={<Schedule />} />
+                    <Route path="/druzyny" element={<Teams />} />
+                    <Route path="/drabinka" element={<Bracket />} />
+                    <Route path="/stream" element={<Stream />} />
+                    <Route path="/sponsorzy" element={<Sponsors />} />
+                </Routes>
+            </main>
+            <Footer isHome={isHome} />
+        </div>
+    );
+}
 
 function App() {
     return (
         <BrowserRouter>
-            <div>
-                <Header />
-                <main style={{ padding: "2rem" }}>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/rejestracja" element={<Registration />} />
-                        <Route path="/harmonogram" element={<Schedule />} />
-                        <Route path="/druzyny" element={<Teams />} />
-                        <Route path="/drabinka" element={<Bracket />} />
-                        <Route path="/stream" element={<Stream />} />
-                        <Route path="/sponsorzy" element={<Sponsors />} />
-                    </Routes>
-                </main>
-                <Footer />
-            </div>
+            <AppWrapper />
         </BrowserRouter>
     );
 }

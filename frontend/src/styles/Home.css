@@ -1,0 +1,322 @@
+/* === HERO Sekcja === */
+.home-hero {
+    position: relative;
+    height: 100vh;
+    background: url("/images/background.png") no-repeat center center / cover;
+    z-index: 1;
+}
+
+.home-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-hero-content {
+    text-align: center;
+    color: white;
+    padding: 2rem;
+    max-width: 800px;
+    z-index: 1;
+}
+
+.home-hero-content h1 {
+    font-size: 3.2rem;
+    margin-bottom: 0.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 12px #00ffff80;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    color: #eee;
+}
+
+.hero-info {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.hero-info p {
+    margin: 0.2rem 0;
+}
+
+.tournament-overview-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1000px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+    border: 2px solid #00ffffaa;
+    border-radius: 20px;
+    box-shadow: 0 0 25px #00ffff44, 0 0 50px #00ffff22;
+    backdrop-filter: blur(4px);
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.tournament-overview-vertical::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, #00ffff33, transparent 70%);
+    z-index: -1;
+}
+
+.overview-image img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    border: 1px solid #00ffff55;
+}
+
+.overview-description {
+    text-align: center;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+
+.overview-description h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffffaa;
+}
+
+.overview-description p {
+    font-size: 1.1rem;
+    color: #ddd;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tournament-overview-vertical {
+    position: relative;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #0b0f1a;
+    border: 2px solid #00ffff;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 3rem auto;
+    max-width: 1000px;
+    z-index: 1;
+}
+
+.particles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.overview-image {
+    z-index: 1;
+}
+
+.overview-description {
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin-top: 2rem;
+    color: #ffffff;
+}
+
+.teams-teaser {
+    background: #111;
+    padding: 4rem 2rem;
+    color: white;
+    text-align: center;
+}
+
+.teams-title {
+    font-size: 2.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff80;
+    margin-bottom: 2rem;
+}
+
+.teams-slider {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+}
+
+.team-logo-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #222;
+    transition: transform 0.3s;
+}
+
+.team-logo-card:hover {
+    transform: scale(1.05);
+}
+
+.team-logo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.team-overlay {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    text-align: center;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+}
+
+
+
+/* === Sekcja: Harmonogram === */
+.schedule-section {
+    padding: 5rem 2rem;
+    background-color: #0d0d0d;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff88;
+}
+
+.match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.match-card {
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 1px solid #00ffff33;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 16px #00000088;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.match-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px #00ffff88;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0.5rem 0;
+}
+
+.team img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid #00ffff88;
+    box-shadow: 0 0 8px #00ffff44;
+}
+
+.team span {
+    color: white;
+    font-weight: 500;
+}
+
+.match-info {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.match-date {
+    display: block;
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 0.3rem;
+}
+
+.match-score {
+    font-size: 1.5rem;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.see-more-container {
+    margin-top: 2rem;
+}
+
+.match-round {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #00ffff;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #0a0a0a;
+    border: 1px solid #00ffff44;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    box-shadow: 0 0 6px #00ffff33;
+}
+
+
+
+
+.teams-parallax-wrapper {
+    position: relative;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.teams-parallax-overlay {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    /* lekka przyciemniona warstwa */
+    z-index: 1;
+}
+
+.teams-parallax-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    color: #00ffff;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-shadow: 0 0 8px #00ffff88;
+}

@@ -1,0 +1,110 @@
+.team-slider-section {
+    background: rgba(0, 0, 0, 0.4);
+    /* półprzezroczyste ciemne tło */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 5rem 2rem;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.team-slider-title {
+    font-size: 2.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 12px #00ffffaa;
+    margin-bottom: 2rem;
+}
+
+.team-slide {
+    padding: 1rem;
+}
+
+.team-card-glow {
+    background: #111;
+    opacity: 1;
+    border: 1px solid #222;
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #fff;
+    min-height: 180px;
+}
+
+.team-card-glow:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px #00ffff66;
+    border-color: #00ffff;
+}
+
+.team-card-glow img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin: 0.5rem 0;
+}
+
+.team-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #00ffff;
+    margin-bottom: 0.3rem;
+    text-shadow: 0 0 6px #00ffff88;
+}
+
+.player-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: #ccc;
+}
+
+.player-list li {
+    margin: 0.15rem 0;
+}
+
+.team-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.team-logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #fff;
+    padding: 6px;
+}
+
+.player-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #ccc;
+    text-align: left;
+}
+
+
+.teams-slider-button {
+    margin-top: 2rem;
+    display: inline-block;
+    background: #00ffff;
+    color: #000;
+    padding: 0.75rem 2rem;
+    font-weight: bold;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.teams-slider-button:hover {
+    background: #00bbbb;
+}
