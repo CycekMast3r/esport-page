@@ -2,11 +2,10 @@ import { Link } from "react-router-dom";
 import "../styles/Header.css";
 import Button from "./Button";
 
-
-
-function Header() {
+function Header({ isHome }) {
     return (
-        <header className="header">
+        <header className={`header ${isHome ? "transparent-header" : ""}`}>
+            {isHome && <div className="header-overlay" />}
             <nav className="nav-bar">
                 <div className="nav-section left">
                     <Link to="/" className="logo">
