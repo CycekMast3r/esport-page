@@ -28,13 +28,15 @@
     padding: 1.5rem 1rem;
     border-radius: 16px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: perspective(800px);
+    transition: transform 0.3s ease;
     color: #fff;
     min-height: 180px;
+
 }
 
 .team-card-glow:hover {
-    transform: scale(1.05);
+    transform: perspective(800px) rotateY(12deg);
     box-shadow: 0 0 16px #00ffff66;
     border-color: #00ffff;
 }
@@ -45,6 +47,9 @@
     object-fit: contain;
     margin: 0.5rem 0;
 }
+
+
+
 
 .team-name {
     font-size: 1.1rem;
