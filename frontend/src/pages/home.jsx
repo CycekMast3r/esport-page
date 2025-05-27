@@ -6,6 +6,9 @@ import { useCallback } from "react";
 import Particles from "react-tsparticles";
 import TeamsTeaser from "./TeamTeaser";
 import BracketTeaser from "./BracketTeaser";
+import StreamTeaser from "./StreamTeaser";
+import ContactTeaser from "./ContactTeaser";
+import SponsorsTeaser from "./SponsorsTeaser";
 import { Parallax } from 'react-parallax';
 import bgImage from '/images/parallax.jpg';
 
@@ -163,8 +166,9 @@ function Home() {
                     </Link>
                 </div>
             </section>
-
-
+            <StreamTeaser />
+            <SponsorsTeaser />
+            <ContactTeaser />
         </main>
     );
 }

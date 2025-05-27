@@ -1,0 +1,158 @@
+/* 🔹 Sekcja główna sponsorów */
+.sponsors-section {
+    background: linear-gradient(135deg, #0d0d0d, #111);
+    padding: 5rem 2rem;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 🔹 Nagłówek sekcji */
+.sponsors-header {
+    margin-bottom: 3rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
+/* 🔹 Główny sponsor */
+.main-sponsor {
+    margin: 2rem auto;
+    max-width: 950px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: #111;
+    position: relative;
+    z-index: 1;
+}
+
+.glowing-border {
+    border: 1px solid #00ffff44;
+    box-shadow: 0 0 12px #00ffff55;
+}
+
+/* 🧱 Układ logo + produkt */
+.main-sponsor-visuals {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.main-sponsor-logo {
+    min-width: 220px;
+    filter: drop-shadow(0 0 10px #00ffff88);
+    transition: transform 0.3s;
+}
+
+.main-sponsor-logo:hover {
+    /* transform: scale(1.05); */
+    filter: drop-shadow(0 0 12px #00ffff);
+}
+
+.main-sponsor-product {
+    max-width: 300px;
+    border-radius: 12px;
+    transition: transform 0.3s, filter 0.3s;
+}
+
+.main-sponsor-product:hover {
+    filter: brightness(1.2);
+}
+
+/* 🧾 Opis sponsora */
+.main-sponsor-description {
+    font-size: 1.1rem;
+    color: #ccc;
+    line-height: 1.6;
+    margin-top: 1rem;
+    border-top: 1px solid #00ffff44;
+    padding-top: 1.5rem;
+}
+
+/* 🔁 Karuzela sponsorów (react-slick) */
+.partners-carousel {
+    margin: 4rem auto 2rem;
+    max-width: 1100px;
+    padding: 0 1rem;
+}
+
+.carousel-logo {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.carousel-logo img {
+    height: 60px;
+    filter: grayscale(100%) brightness(1.4);
+    transition: filter 0.3s, transform 0.3s;
+}
+
+.carousel-logo img:hover {
+    filter: drop-shadow(0 0 8px #00ffff) brightness(1.1);
+    transform: scale(1.1);
+}
+
+/* CTA na dole sekcji */
+.sponsor-cta {
+    margin-top: 3rem;
+}
+
+/* 🔄 Keyframes (zachowane jeśli będą używane gdzieś indziej) */
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* 📱 Responsywność – poziome logo/produkt + linia pionowa */
+@media (min-width: 768px) {
+    .main-sponsor-visuals {
+        display: grid;
+        grid-template-columns: 1fr 1px 1fr;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        position: relative;
+    }
+
+    .main-sponsor-visuals::before {
+        content: "";
+        background-color: #00ffff66;
+        width: 1px;
+        height: 100%;
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .main-sponsor-logo {
+        grid-column: 1;
+        max-width: 260px;
+        justify-self: center;
+    }
+
+    .main-sponsor-product {
+        grid-column: 3;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 0 12px #00ffff55;
+        justify-self: center;
+    }
+
+    .main-sponsor-visuals>*:not(:nth-child(2)) {
+        z-index: 1;
+    }
+}
