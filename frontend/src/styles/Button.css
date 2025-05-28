@@ -12,12 +12,12 @@
 
 /* 🟢 PRIMARY */
 .btn.primary {
-    background-color: #00ffcc;
+    background-color: #00ffff66;
     color: black;
 }
 
 .btn.primary:hover {
-    background-color: #00ffaa;
+    background-color: #00ffff;
 }
 
 /* ⚫ OUTLINE (przezroczyste z obramowaniem) */

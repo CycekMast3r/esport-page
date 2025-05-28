@@ -12,6 +12,7 @@ function SponsorsTeaser() {
         "/sponsors/sponsor4.png",
         "/sponsors/sponsor5.png",
         "/sponsors/sponsor6.png",
+        "/sponsors/sponsor7.png",
     ];
 
     const settings = {
@@ -39,7 +40,7 @@ function SponsorsTeaser() {
         <section className="sponsors-section">
             <div className="sponsors-header">
                 <h2 className="section-title">Główny Sponsor</h2>
-                <p className="section-subtitle">To dzięki ni Rocket Masters 2025 może rozwinąć skrzydła!</p>
+                <p className="section-subtitle">To dzięki nim Łódź Rocket Masters 2025 może rozwinąć skrzydła!</p>
             </div>
 
             {/* Główny sponsor */}
@@ -51,7 +52,7 @@ function SponsorsTeaser() {
                         className="main-sponsor-logo"
                     />
                     <img
-                        src="/sponsors/product.png"
+                        src="/sponsors/product4.png"
                         alt="Produkt sponsora"
                         className="main-sponsor-product"
                     />

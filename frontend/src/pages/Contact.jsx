@@ -1,4 +1,8 @@
+import ContactTeaser from "./ContactTeaser";
+
 function Contact() {
-    return <h1>Kontakt</h1>;
+    return (
+        <ContactTeaser />
+    );
 }
 export default Contact;
