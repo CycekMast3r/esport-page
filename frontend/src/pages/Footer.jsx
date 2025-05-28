@@ -8,7 +8,7 @@ function Footer() {
                 <div className="footer-section left">
                     <img src="/images/logo.png" alt="Logo" className="footer-logo" />
                     <p>
-                        Turniej e-sportowy CS:GO online z pulą nagród 5 000 zł. Dołącz i pokaż, co potrafisz!
+                        Turniej e-sportowy Rocket League  z pulą nagród 20 000 zł. Dołącz i pokaż, co potrafisz!
                     </p>
                 </div>
 

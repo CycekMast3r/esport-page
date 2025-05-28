@@ -7,6 +7,7 @@ import Teams from "./pages/Teams";
 import Bracket from "./pages/Bracket";
 import Stream from "./pages/Stream";
 import Sponsors from "./pages/Sponsors";
+import Contact from "./pages/Contact";
 import Footer from "./pages/Footer";
 import { useEffect } from "react";
 
@@ -31,6 +32,7 @@ function AppWrapper() {
                     <Route path="/drabinka" element={<Bracket />} />
                     <Route path="/stream" element={<Stream />} />
                     <Route path="/sponsorzy" element={<Sponsors />} />
+                    <Route path="/kontakt" element={<Contact />} />
                 </Routes>
             </main>
             <Footer isHome={isHome} />
