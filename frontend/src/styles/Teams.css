@@ -1,0 +1,167 @@
+.teams-page {
+    background: url("/images/parallax.jpg") no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 5rem 2rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    /* ← KLUCZOWE */
+    width: 100%;
+}
+
+
+/* Fallback gradient overlay for readability */
+.teams-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+    z-index: -1;
+}
+
+.teams-title {
+    font-size: 2.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff88;
+    margin-bottom: 1rem;
+}
+
+.teams-subtitle {
+    color: #aaa;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 6rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    perspective: 1000px;
+}
+
+.flip-card {
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    height: 320px;
+    position: relative;
+}
+
+.flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s ease;
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+}
+
+/* FRONT */
+.flip-front,
+.flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 0 12px #00000055;
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.flip-front:hover {
+    box-shadow: 0 0 16px #00ffff88;
+}
+
+.flip-front img.team-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    border: 1px solid #00ffff55;
+    box-shadow: 0 0 8px #00ffff44;
+}
+
+.flip-front h3 {
+    color: #00ffff;
+    font-size: 1.3rem;
+}
+
+/* BACK */
+.flip-back {
+    transform: rotateY(180deg);
+    font-size: 0.95rem;
+    color: #ccc;
+    text-align: left;
+    padding: 1.5rem;
+}
+
+.team-captain {
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: #00ffff;
+}
+
+.player-stats {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.player-stats th,
+.player-stats td {
+    padding: 0.4rem;
+    border-bottom: 1px solid #333;
+    text-align: center;
+}
+
+.player-stats th {
+    color: #00ffff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.empty-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 1px dashed #444;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.empty-text {
+    padding: 1rem;
+    color: #999;
+}
+
+.flip-card.has-team {
+    box-shadow: 0 0 12px #00ffff55;
+    border: 1px solid #00ffff33;
+    border-radius: 12px;
+}
+
+.flip-card.has-team:hover {
+    box-shadow: 0 0 20px #00ffff88;
+    border-color: #00ffff;
+}
