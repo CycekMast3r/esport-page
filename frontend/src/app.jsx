@@ -10,6 +10,7 @@ import Sponsors from "./pages/Sponsors";
 import Contact from "./pages/Contact";
 import Footer from "./pages/Footer";
 import { useEffect } from "react";
+import Results from "./pages/Results";
 
 function AppWrapper() {
     const location = useLocation();
@@ -27,9 +28,9 @@ function AppWrapper() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/rejestracja" element={<Registration />} />
-                    <Route path="/harmonogram" element={<Schedule />} />
+                    <Route path="/harmonogram" element={<Results />} />
                     <Route path="/druzyny" element={<Teams />} />
-                    <Route path="/drabinka" element={<Bracket />} />
+                    <Route path="/wyniki" element={<Results />} />
                     <Route path="/stream" element={<Stream />} />
                     <Route path="/sponsorzy" element={<Sponsors />} />
                     <Route path="/kontakt" element={<Contact />} />

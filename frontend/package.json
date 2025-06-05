@@ -16,6 +16,7 @@
     "react-parallax": "^3.5.2",
     "react-parallax-tilt": "^1.7.296",
     "react-router-dom": "^7.6.1",
+    "react-router-hash-link": "^2.4.3",
     "react-slick": "^0.30.3",
     "react-tsparticles": "^2.12.2",
     "slick-carousel": "^1.8.1",
