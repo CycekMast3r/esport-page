@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { HashLink } from 'react-router-hash-link';
 import "../styles/Header.css";
 import Button from "./Button";
 
@@ -19,8 +20,8 @@ function Header({ isHome }) {
                         <a className="nav-link">Turniej ▾</a>
                         <div className="dropdown-content">
                             <Link to="/druzyny">Drużyny</Link>
-                            <Link to="/harmonogram">Harmonogram</Link>
-                            <Link to="/drabinka">Drabinka</Link>
+                            <HashLink smooth to="/wyniki#schedule">Harmonogram</HashLink>
+                            <HashLink smooth to="/wyniki#bracket">Drabinka</HashLink>
                             <Link to="/sponsorzy">Sponsorzy</Link>
                         </div>
                     </div>
