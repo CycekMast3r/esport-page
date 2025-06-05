@@ -1,0 +1,243 @@
+/* === GLOBAL PAGE STYLES === */
+.schedule-page.full-screen {
+    min-height: 100vh;
+    height: auto;
+    padding: 5rem 2rem;
+    background-color: transparent;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.schedule-page {
+    height: auto;
+    padding: 5rem 2rem;
+    background-color: #0d0d0d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* === TITLE === */
+.schedule-title {
+    font-size: 2.5rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff88;
+    margin-bottom: 2rem;
+}
+
+/* === PHASE SELECTOR === */
+.phase-selector {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.phase-selector label {
+    margin-bottom: 0.5rem;
+    color: #aaa;
+    font-size: 1rem;
+}
+
+.phase-selector select {
+    padding: 0.6rem 1rem;
+    background: #0a0a0a;
+    color: white;
+    border: 1px solid #00ffff55;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border 0.3s, background 0.3s;
+    box-shadow: 0 0 6px #00ffff22;
+}
+
+.phase-selector select:hover {
+    border-color: #00ffff;
+    background-color: #111;
+}
+
+/* === MATCH LIST === */
+.match-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* === MATCH CARD === */
+.match-card {
+    padding: 1rem;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 1px solid #222;
+    box-shadow: 0 0 10px #00000055;
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: default;
+}
+
+.match-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 16px #00ffff55;
+}
+
+.match-card.finished {
+    background: linear-gradient(145deg, #1c1c1c, #111);
+    border-left: 4px solid #00ff99;
+}
+
+.match-card.upcoming {
+    background: linear-gradient(145deg, #111111, #070707);
+    border-left: 4px solid #007bff;
+}
+
+/* === MATCH ELEMENTS === */
+.match-date {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+}
+
+.match-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.match-round {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #00ffff;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    background: #0a0a0a;
+    border: 1px solid #00ffff44;
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    box-shadow: 0 0 6px #00ffff33;
+}
+
+/* === TEAMS === */
+.team {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.team img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid #00ffff88;
+    box-shadow: 0 0 6px #00ffff55;
+}
+
+/* Zielony kolor dla zwycięzcy */
+.team.winner span {
+    color: #00ff88;
+    font-weight: bold;
+    text-shadow: 0 0 4px #00ff88aa;
+}
+
+/* === SCORE === */
+.match-score {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #00ffff;
+}
+
+
+.match-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    /* pozwala na łamanie linii w małych kafelkach */
+}
+
+.match-score {
+    white-space: nowrap;
+    /* zapobiega łamaniu wyniku */
+    flex-shrink: 0;
+    margin: 0 1rem;
+}
+
+.team {
+    flex: 1 1 40%;
+    /* pozwala zespołom zajmować miejsce elastycznie */
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    /* umożliwia zawijanie tekstu, jeśli to konieczne */
+}
+
+@media (max-width: 480px) {
+    .match-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .match-score {
+        margin: 0.5rem 0;
+        font-size: 1.2rem;
+    }
+
+    .team {
+        width: 100%;
+    }
+}
+
+.match-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.team-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.team-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.team-logo.winner {
+    transform: scale(1.1);
+    box-shadow: 0 0 6px 2px #00ffae;
+}
+
+.match-score {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #00eaff;
+    white-space: nowrap;
+    min-width: 40px;
+    text-align: center;
+}
+
+.team-names {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+}
+
+.team {
+    flex: 1;
+    text-align: center;
+}

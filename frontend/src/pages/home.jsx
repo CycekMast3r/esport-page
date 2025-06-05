@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import Particles from "react-tsparticles";
 import TeamsTeaser from "./TeamTeaser";
 import BracketTeaser from "./BracketTeaser";
+import ScheduleTeaser from "./ScheduleTeaser";
 import StreamTeaser from "./StreamTeaser";
 import ContactTeaser from "./ContactTeaser";
 import SponsorsTeaser from "./SponsorsTeaser";
@@ -102,70 +103,7 @@ function Home() {
                 </div>
             </Parallax>
             <BracketTeaser />
-
-            <section className="schedule-section">
-                <h2 className="section-title">Harmonogram</h2>
-                <div className="match-grid">
-
-                    {/* Mecz 1 */}
-                    <div className="match-card">
-                        <div className="match-round">Group Stage</div>
-                        <div className="team team-left">
-                            <img src="/teams/team1.png" alt="Team Alpha" />
-                            <span>Team Alpha</span>
-                        </div>
-                        <div className="match-info">
-                            <span className="match-date">14.06.2025</span>
-                            <span className="match-score">2 : 1</span>
-                        </div>
-                        <div className="team team-right">
-                            <img src="/teams/team2.png" alt="Team Bravo" />
-                            <span>Team Bravo</span>
-                        </div>
-                    </div>
-
-                    {/* Mecz 2 */}
-                    <div className="match-card">
-                        <div className="match-round">Group Stage</div>
-                        <div className="team team-left">
-                            <img src="/teams/team3.png" alt="Team Rockets" />
-                            <span>Team Rockets</span>
-                        </div>
-                        <div className="match-info">
-                            <span className="match-date">15.06.2025</span>
-                            <span className="match-score">0 : 3</span>
-                        </div>
-                        <div className="team team-right">
-                            <img src="/teams/team4.png" alt="Team Neon" />
-                            <span>Team Neon</span>
-                        </div>
-                    </div>
-
-                    {/* Mecz 3 – bez wyniku */}
-                    <div className="match-card">
-                        <div className="match-round">Group Stage</div>
-                        <div className="team team-left">
-                            <img src="/teams/team5.png" alt="Cyber Wolves" />
-                            <span>Cyber Wolves</span>
-                        </div>
-                        <div className="match-info">
-                            <span className="match-date">16.06.2025</span>
-                            <span className="match-score">– : –</span>
-                        </div>
-                        <div className="team team-right">
-                            <img src="/teams/team6.png" alt="Dark Phoenix" />
-                            <span>Dark Phoenix</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div className="see-more-container">
-                    <Link to="/harmonogram">
-                        <Button variant="neon">Zobacz więcej</Button>
-                    </Link>
-                </div>
-            </section>
+            <ScheduleTeaser />
             <StreamTeaser />
             <SponsorsTeaser />
             <ContactTeaser />
