@@ -37,50 +37,59 @@ function SponsorsTeaser() {
     };
 
     return (
-        <section className="sponsors-section">
-            <div className="sponsors-header">
-                <h2 className="section-title">Główny Sponsor</h2>
-                <p className="section-subtitle">To dzięki nim Łódź Rocket Masters 2025 może rozwinąć skrzydła!</p>
-            </div>
+    <section className="sponsors-section">
+        <div className="sponsors-header">
+            <h2 className="section-title">Główny Sponsor</h2>
+            <p className="section-subtitle">To dzięki nim Łódź Rocket Masters 2025 może rozwinąć skrzydła!</p>
+        </div>
 
-            {/* Główny sponsor */}
-            <div className="main-sponsor glowing-border">
-                <div className="main-sponsor-visuals">
-                    <img
-                        src="/sponsors/sponsor1.png"
-                        alt="Główny Sponsor"
-                        className="main-sponsor-logo"
-                    />
-                    <img
-                        src="/sponsors/product4.png"
-                        alt="Produkt sponsora"
-                        className="main-sponsor-product"
-                    />
-                </div>
-                <p className="main-sponsor-description">
-                    <strong>Jastrzab Energy</strong> to polska marka energetyków stworzona z myślą o graczach, którzy wiedzą, że każda decyzja i refleks liczą się w drodze po zwycięstwo.  Zapomnij o konkurencji pokroju Orzeł Power – z Jastrzab Energy poczujesz prawdziwą moc! Jesteśmy dumni, że możemy wspierać turniej Łódź Rocket Masters, dostarczając zawodnikom paliwo do wygrywania!
+        {/* NOWA STRUKTURA GŁÓWNEGO SPONSORA */}
+        <div className="main-sponsor-card">
+            {/* Kolumna z tekstem */}
+            <div className="sponsor-content">
+                <h3 className="sponsor-name">Jastrząb Energy</h3>
+                <p className="sponsor-description">
+                    To polska marka energetyków stworzona z myślą o graczach, którzy wiedzą, że każda decyzja i refleks liczą się w drodze po zwycięstwo. Zapomnij o konkurencji pokroju Orzeł Power – z <strong>Jastrząb Energy</strong> poczujesz prawdziwą moc! Jesteśmy dumni, że możemy wspierać turniej Łódź Rocket Masters, dostarczając zawodnikom paliwo do wygrywania!
                 </p>
-            </div>
-            <p className="section-subtitle">Pozostali sponsorzy:</p>
-
-            {/* Slider z partnerami */}
-            <div className="partners-carousel">
-                <Slider {...settings}>
-                    {sponsorLogos.map((src, i) => (
-                        <div key={i} className="carousel-logo">
-                            <img src={src} alt={`Sponsor ${i + 2}`} />
-                        </div>
-                    ))}
-                </Slider>
+                <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline">Odwiedź stronę sponsora</Button>
+                </a>
             </div>
 
-            <div className="sponsor-cta">
-                <Link to="/kontakt">
-                    <Button variant="neon">Zostań sponsorem</Button>
-                </Link>
+            {/* Kolumna z grafikami */}
+            <div className="sponsor-visuals-new"> {/* Używamy nowej klasy, aby uniknąć konfliktu */}
+                <img
+                    src="/sponsors/sponsor1.png"
+                    alt="Logo Jastrzab Energy"
+                    className="visual-logo"
+                />
+                <img
+                    src="/sponsors/product4.png"
+                    alt="Produkt Jastrzab Energy"
+                    className="visual-product"
+                />
             </div>
-        </section>
-    );
+        </div>
+
+        <h3 className="section-subtitle partners-title">Pozostali Sponsorzy i Partnerzy</h3>
+        {/* Slider z partnerami (pozostaje bez zmian) */}
+        <div className="partners-carousel">
+            <Slider {...settings}>
+                {sponsorLogos.map((src, i) => (
+                    <div key={i} className="carousel-logo">
+                        <img src={src} alt={`Sponsor ${i + 2}`} />
+                    </div>
+                ))}
+            </Slider>
+        </div>
+
+        <div className="sponsor-cta">
+            <Link to="/kontakt">
+                <Button variant="neon">Zostań sponsorem</Button>
+            </Link>
+        </div>
+    </section>
+);
 }
 
 export default SponsorsTeaser;

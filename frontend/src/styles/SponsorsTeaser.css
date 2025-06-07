@@ -1,6 +1,9 @@
-/* 🔹 Sekcja główna sponsorów */
+/* SponsorsTeaser.css - Kompletna, połączona wersja */
+
+/* --- Tło całej sekcji --- */
 .sponsors-section {
-    background: linear-gradient(135deg, #0d0d0d, #111);
+    background: #0d0d0d;
+    background-image: radial-gradient(circle at 50% 30%, rgba(0, 255, 255, 0.05), transparent 40%);
     padding: 5rem 2rem;
     text-align: center;
     color: white;
@@ -8,151 +11,121 @@
     position: relative;
 }
 
-/* 🔹 Nagłówek sekcji */
+/* --- Nagłówek sekcji --- */
 .sponsors-header {
     margin-bottom: 3rem;
 }
-
 .section-subtitle {
     font-size: 1.1rem;
     color: #aaa;
     margin-top: 0.5rem;
 }
+.partners-title {
+    margin-top: 5rem;
+    font-size: 1.5rem;
+}
 
-/* 🔹 Główny sponsor */
-.main-sponsor {
+/* --- NOWA, PRZEBUDOWANA SEKCJA GŁÓWNEGO SPONSORA --- */
+.main-sponsor-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1100px;
     margin: 2rem auto;
-    max-width: 950px;
-    padding: 2rem;
-    border-radius: 16px;
-    background: #111;
-    position: relative;
-    z-index: 1;
-}
-
-.glowing-border {
+    background: linear-gradient(145deg, #1f1f1f, #111);
     border: 1px solid #00ffff44;
-    box-shadow: 0 0 12px #00ffff55;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    align-items: center;
 }
-
-/* 🧱 Układ logo + produkt */
-.main-sponsor-visuals {
+.sponsor-content {
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
     gap: 1.5rem;
-    margin-bottom: 2rem;
 }
-
-.main-sponsor-logo {
-    min-width: 220px;
-    filter: drop-shadow(0 0 10px #00ffff88);
-    transition: transform 0.3s;
+.sponsor-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
-
-.main-sponsor-logo:hover {
-    /* transform: scale(1.05); */
-    filter: drop-shadow(0 0 12px #00ffff);
-}
-
-.main-sponsor-product {
-    max-width: 300px;
-    border-radius: 12px;
-    transition: transform 0.3s, filter 0.3s;
-}
-
-.main-sponsor-product:hover {
-    filter: brightness(1.2);
-}
-
-/* 🧾 Opis sponsora */
-.main-sponsor-description {
+.sponsor-description {
     font-size: 1.1rem;
     color: #ccc;
-    line-height: 1.6;
-    margin-top: 1rem;
-    border-top: 1px solid #00ffff44;
-    padding-top: 1.5rem;
+    line-height: 1.7;
+}
+.sponsor-description strong {
+    color: #00ffff;
+    font-weight: 700;
+}
+.sponsor-visuals-new {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.visual-logo {
+    max-width: 250px;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 0 15px #00ffff88);
+    transition: transform 0.4s ease;
+}
+.visual-product {
+    max-width: 280px;
+    position: absolute;
+    z-index: 1;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px #000;
+    transition: transform 0.4s ease;
+    transform: rotate(5deg) translateX(20px);
+}
+.main-sponsor-card:hover .visual-logo {
+    transform: scale(1.05) translateX(-10px) rotate(-3deg);
+}
+.main-sponsor-card:hover .visual-product {
+    transform: scale(1.05) rotate(-5deg) translateX(-20px);
 }
 
-/* 🔁 Karuzela sponsorów (react-slick) */
+/* --- Karuzela i CTA (style z Twojej pierwotnej wersji) --- */
 .partners-carousel {
-    margin: 4rem auto 2rem;
+    margin: 3rem auto;
     max-width: 1100px;
-    padding: 0 1rem;
 }
-
 .carousel-logo {
     display: flex !important;
     justify-content: center;
     align-items: center;
     padding: 1rem;
 }
-
 .carousel-logo img {
     height: 60px;
     filter: grayscale(100%) brightness(1.4);
     transition: filter 0.3s, transform 0.3s;
 }
-
 .carousel-logo img:hover {
     filter: drop-shadow(0 0 8px #00ffff) brightness(1.1);
     transform: scale(1.1);
 }
-
-/* CTA na dole sekcji */
 .sponsor-cta {
     margin-top: 3rem;
 }
 
-/* 🔄 Keyframes (zachowane jeśli będą używane gdzieś indziej) */
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-50%);
-    }
-}
-
-/* 📱 Responsywność – poziome logo/produkt + linia pionowa */
+/* --- Responsywność --- */
 @media (min-width: 768px) {
-    .main-sponsor-visuals {
-        display: grid;
-        grid-template-columns: 1fr 1px 1fr;
-        align-items: center;
-        justify-content: center;
-        gap: 2rem;
-        position: relative;
+    /* Nowy układ dla głównego sponsora */
+    .main-sponsor-card {
+        grid-template-columns: 1fr 1fr;
+        padding: 3rem 4rem;
     }
-
-    .main-sponsor-visuals::before {
-        content: "";
-        background-color: #00ffff66;
-        width: 1px;
-        height: 100%;
-        grid-column: 2;
-        grid-row: 1;
+    .sponsor-content {
+        order: 1;
     }
-
-    .main-sponsor-logo {
-        grid-column: 1;
-        max-width: 260px;
-        justify-self: center;
-    }
-
-    .main-sponsor-product {
-        grid-column: 3;
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        border-radius: 12px;
-        box-shadow: 0 0 12px #00ffff55;
-        justify-self: center;
-    }
-
-    .main-sponsor-visuals>*:not(:nth-child(2)) {
-        z-index: 1;
+    .sponsor-visuals-new {
+        order: 2;
     }
 }

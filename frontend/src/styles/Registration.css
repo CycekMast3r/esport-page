@@ -1,26 +1,24 @@
 /* src/styles/Registration.css */
 
-/* Nowa, poprawiona wersja */
 .registration-page {
-    color: white;
-    height: 80vh; /* Ustawiamy sztywną wysokość na 100% okna */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Ukrywamy paski przewijania, jeśli coś się nie zmieści */
-
-    /* Właściwości tła pozostają bez zmian */
+    /* ... te style pozostają bez zmian ... */
+    padding: 60px 20px;
     background-image: url('/background-arena.jpg');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .registration-container {
     width: 100%;
     max-width: 600px;
-    background-color: rgba(18, 18, 22, 0.8);
+    background-color: rgba(18, 18, 22, 0.85); /* Lekko zwiększona nieprzezroczystość dla czytelności */
     padding: 40px;
     border-radius: 12px;
     border: 1px solid #00ffff55;
@@ -51,7 +49,10 @@
     color: #ccc;
 }
 
-.registration-form input {
+.registration-form input[type="text"],
+.registration-form input[type="email"],
+.registration-form input[type="number"]
+.registration-form input[type="date"] {
     width: 100%;
     padding: 12px 15px;
     background-color: #1e1e2d;
@@ -61,6 +62,7 @@
     font-size: 1rem;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: inherit;
 }
 
 .registration-form input:focus {
@@ -69,27 +71,97 @@
     box-shadow: 0 0 10px #00ffff55;
 }
 
+/* --- NOWE STYLE --- */
+
+/* Style dla inputów graczy */
+.player-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Style dla danych kapitana (email i wiek obok siebie) */
+.captain-inputs {
+    display: flex;
+    gap: 20px;
+}
+.captain-inputs > div {
+    flex: 1;
+}
+
+/* Style dla inputu do przesyłania plików */
+.registration-form input[type="file"] {
+    width: 100%;
+    color: #ccc;
+    background-color: #1e1e2d;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px;
+}
+.registration-form input[type="file"]::file-selector-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-right: 15px;
+}
+.registration-form input[type="file"]::file-selector-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style dla checkboxa i jego etykiety */
+.terms-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.terms-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #00ffff; /* Kolor zaznaczenia */
+}
+.terms-group label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.terms-group a {
+    color: #00ffff;
+    text-decoration: underline;
+}
+
+/* Komunikaty o błędach i sukcesie */
 .message {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 6px;
     font-weight: bold;
 }
-
 .error-message {
     color: #ff4d4d;
     background-color: rgba(255, 77, 77, 0.1);
     border: 1px solid #ff4d4d;
 }
-
 .success-message {
     color: #4dff88;
     background-color: rgba(77, 255, 136, 0.1);
     border: 1px solid #4dff88;
 }
 
-/* Dostosowanie przycisku */
 .registration-form button {
     width: 100%;
     margin-top: 10px;
+}
+/* kalendarz */
+.registration-form input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.registration-form input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }

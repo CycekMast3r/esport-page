@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 import Home from "./pages/Home";
-import Registration from "./pages/Registration";
+import Registration from './pages/Registration';
 import Schedule from "./pages/Schedule";
 import Teams from "./pages/Teams";
 import Bracket from "./pages/Bracket";
@@ -12,6 +12,7 @@ import Footer from "./pages/Footer";
 import { useEffect } from "react";
 import Results from "./pages/Results";
 import Steam from './pages/Stream';
+import Regulamin from "./pages/Regulamin";
 
 function AppWrapper() {
     const location = useLocation();
@@ -36,7 +37,7 @@ function AppWrapper() {
                     <Route path="/sponsorzy" element={<Sponsors />} />
                     <Route path="/kontakt" element={<Contact />} />
                     <Route path="/stream" element={<Stream />} />
-
+                    <Route path="/regulamin" element={<Regulamin />} />
                 </Routes>
             </main>
             <Footer isHome={isHome} />

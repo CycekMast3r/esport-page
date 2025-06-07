@@ -7,6 +7,7 @@ function Button({
     variant = "primary",
     className = "",
     disabled = false,
+    icon = null, 
 }) {
     return (
         <button
@@ -15,7 +16,9 @@ function Button({
             disabled={disabled}
             className={`btn ${variant} ${className}`}
         >
-            {children}
+            {/* Jeśli ikona istnieje, wyświetl ją */}
+            {icon && <span className="btn-icon">{icon}</span>}
+            <span className="btn-text">{children}</span>
         </button>
     );
 }
