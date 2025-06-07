@@ -11,6 +11,7 @@ import Contact from "./pages/Contact";
 import Footer from "./pages/Footer";
 import { useEffect } from "react";
 import Results from "./pages/Results";
+import Steam from './pages/Stream';
 
 function AppWrapper() {
     const location = useLocation();
@@ -34,6 +35,8 @@ function AppWrapper() {
                     <Route path="/stream" element={<Stream />} />
                     <Route path="/sponsorzy" element={<Sponsors />} />
                     <Route path="/kontakt" element={<Contact />} />
+                    <Route path="/stream" element={<Stream />} />
+
                 </Routes>
             </main>
             <Footer isHome={isHome} />
