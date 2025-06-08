@@ -1,3 +1,5 @@
+/* SponsorsTeaser.css - Wersja z ostateczną poprawką dla widoku mobilnego */
+
 .sponsors-teaser-section {
     background: linear-gradient(135deg, #0d0d0d, #111);
     padding: 5rem 2rem;
@@ -46,8 +48,12 @@
     margin-bottom: 2rem;
 }
 
+/* --- KLUCZOWA POPRAWKA JEST TUTAJ --- */
 .sponsors-teaser-logo {
-    min-width: 220px;
+    /* Zamiast min-width, używamy tych dwóch reguł */
+    width: 60%; /* Logo zajmie 60% dostępnego miejsca */
+    max-width: 200px; /* Ale nigdy nie będzie szersze niż 200px */
+
     filter: drop-shadow(0 0 10px #00ffff88);
     transition: transform 0.3s;
 }
@@ -57,7 +63,10 @@
 }
 
 .sponsors-teaser-product {
-    max-width: 300px;
+    /* Upewniamy się, że ten obrazek też jest responsywny */
+    width: 80%;
+    max-width: 300px; 
+    
     border-radius: 12px;
     transition: transform 0.3s, filter 0.3s;
 }
@@ -73,6 +82,7 @@
     margin-top: 1rem;
     border-top: 1px solid #00ffff44;
     padding-top: 1.5rem;
+    text-align: left; /* Lepsza czytelność na mobilnych */
 }
 
 .sponsors-teaser-carousel {
@@ -103,18 +113,16 @@
     margin-top: 3rem;
 }
 
-/* Keyframes (opcjonalne) */
 @keyframes scroll {
     0% {
         transform: translateX(0);
     }
-
     100% {
         transform: translateX(-50%);
     }
 }
 
-/* Responsive design */
+/* Responsywność dla desktopa pozostaje bez zmian */
 @media (min-width: 768px) {
     .sponsors-teaser-visuals {
         display: grid;
@@ -136,7 +144,7 @@
 
     .sponsors-teaser-logo {
         grid-column: 1;
-        max-width: 260px;
+        max-width: 260px; /* Przywracamy większy rozmiar na desktopie */
         justify-self: center;
     }
 
@@ -152,5 +160,9 @@
 
     .sponsors-teaser-visuals>*:not(:nth-child(2)) {
         z-index: 1;
+    }
+
+    .sponsors-teaser-description {
+        text-align: center; /* Przywracamy centrowanie na desktopie */
     }
 }

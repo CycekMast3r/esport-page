@@ -10,7 +10,7 @@ function Registration() {
     const [captainEmail, setCaptainEmail] = useState('');
     const [captainDob, setCaptainDob] = useState('');
     const [teamLogo, setTeamLogo] = useState(null);
-    const [logoPreview, setLogoPreview] = useState(null); // NEW
+    const [logoPreview, setLogoPreview] = useState(null);
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -80,7 +80,7 @@ function Registration() {
             setCaptainEmail('');
             setCaptainDob('');
             setTeamLogo(null);
-            setLogoPreview(null); // reset preview
+            setLogoPreview(null);
             setTermsAccepted(false);
             e.target.reset();
         } catch (err) {
@@ -107,7 +107,7 @@ function Registration() {
                         <input type="text" placeholder="Gracz 3" value={players.player3} onChange={(e) => handlePlayerChange(e, 'player3')} required />
                     </div>
 
-                    <div className="form-group captain-inputs">
+                    <div className="form-group captain-fields">
                         <div>
                             <label htmlFor="captain-email">Email kontaktowy kapitana:</label>
                             <input type="email" id="captain-email" value={captainEmail} onChange={(e) => setCaptainEmail(e.target.value)} required />
