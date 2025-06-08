@@ -1,12 +1,17 @@
-import { Link } from "react-router-dom";
+// src/pages/Header.jsx
+
+import { NavLink, Link } from "react-router-dom"; // Zmieniamy import, dodajemy NavLink
 import { HashLink } from 'react-router-hash-link';
 import "../styles/Header.css";
 import Button from "./Button";
 
 function Header({ isHome }) {
+    // Funkcja, która doda klasę 'active-link' do aktywnego NavLinka
+    const getLinkClass = ({ isActive }) => isActive ? "nav-link active-link" : "nav-link";
+
     return (
         <header className={`header ${isHome ? "transparent-header" : ""}`}>
-            {isHome && <div className="header-overlay" />}
+            {/* Usunęliśmy header-overlay, bo efekt szkła go zastąpi */}
             <nav className="nav-bar">
                 <div className="nav-section left">
                     <Link to="/" className="logo">
@@ -14,20 +19,21 @@ function Header({ isHome }) {
                     </Link>
                 </div>
                 <div className="nav-section center">
-                    <Link to="/">Strona Główna</Link>
+                    {/* Zamieniamy Link na NavLink i używamy naszej funkcji dla 'className' */}
+                    <NavLink to="/" className={getLinkClass} end>Strona Główna</NavLink>
 
                     <div className="dropdown">
                         <a className="nav-link">Turniej ▾</a>
                         <div className="dropdown-content">
-                            <Link to="/druzyny">Drużyny</Link>
-                            <HashLink smooth to="/wyniki#schedule">Harmonogram</HashLink>
-                            <HashLink smooth to="/wyniki#bracket">Drabinka</HashLink>
-                            <Link to="/sponsorzy">Sponsorzy</Link>
+                            <NavLink to="/druzyny" className={getLinkClass}>Drużyny</NavLink>
+                            <HashLink smooth to="/wyniki#schedule" className="nav-link">Harmonogram</HashLink>
+                            <HashLink smooth to="/wyniki#bracket" className="nav-link">Drabinka</HashLink>
+                            <NavLink to="/sponsorzy" className={getLinkClass}>Sponsorzy</NavLink>
                         </div>
                     </div>
 
-                    <Link to="/stream">Transmisje</Link>
-                    <Link to="/kontakt">Kontakt</Link>
+                    <NavLink to="/stream" className={getLinkClass}>Transmisje</NavLink>
+                    <NavLink to="/kontakt" className={getLinkClass}>Kontakt</NavLink>
                 </div>
 
                 <div className="nav-section right">

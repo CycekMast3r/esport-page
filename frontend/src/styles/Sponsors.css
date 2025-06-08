@@ -165,6 +165,10 @@
     text-align: center;
     box-shadow: 0 0 8px #00ffff22;
     transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sponsor-card:hover {
@@ -199,20 +203,69 @@
 
 /* === Korzyści === */
 .sponsor-benefits {
-    margin: 4rem auto;
-    max-width: 600px;
+    margin: 6rem auto;
+    max-width: 1200px;
     text-align: center;
 }
 
-.sponsor-benefits ul {
-    list-style: none;
-    padding: 0;
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
 }
 
-.sponsor-benefits li {
-    margin: 1rem 0;
-    font-size: 1.1rem;
+.benefit-card {
+    background: linear-gradient(145deg, #1a1a1a, #222222);
+    border: 1px solid #00ffff22;
+    /* Bardzo subtelna ramka */
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+    /* Efekt "unoszenia się" karty */
+    border-color: #00ffff88;
+    box-shadow: 0 10px 30px #00000066, 0 0 20px #00ffff33;
+}
+
+.benefit-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 255, 255, 0.05);
+    /* Lekka poświata tła */
+    border-radius: 50%;
+    /* Okrągłe tło dla ikony */
+    border: 1px solid #00ffff44;
+}
+
+.benefit-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: #00ffff;
+    /* Kolor ikony */
+}
+
+.benefit-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 0.5rem;
+}
+
+.benefit-description {
+    font-size: 1rem;
     color: #ccc;
+    line-height: 1.5;
 }
 
 /* === CTA === */

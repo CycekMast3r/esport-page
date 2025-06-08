@@ -1,27 +1,24 @@
+/* src/styles/Header.css - WERSJA POPRAWIONA */
+
 .header {
-    background-color: #111;
+    /* --- EFEKT SZKŁA (GLASSMORPHISM) --- */
+    background-color: rgba(18, 18, 22, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 2rem;
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid #222;
+    transition: background-color 0.4s ease;
 }
 
 .transparent-header {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.3);
     border-bottom: none;
     position: absolute;
-    /* potrzebne dla absolutnego overlaya */
-    width: 96%;
-}
-
-.header-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* ciemne przezroczyste tło */
-    z-index: -1;
-    /* schowane za nawigacją */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .nav-bar {
@@ -29,59 +26,85 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /* z-index: 2; */
 }
 
 .nav-section {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1.5rem;
     font-weight: 600;
 }
 
 .nav-section.left {
     flex: 1;
     justify-content: flex-start;
-
 }
 
 .nav-section.right {
     flex: 1;
     justify-content: flex-end;
-    gap: 2rem;
-    font-size: 1.2rem;
-    font-weight: 500;
 }
 
 .nav-section.center {
-    flex: 1;
-    gap: 2rem;
+    flex: 2;
+    gap: 2.5rem;
     justify-content: center;
 }
 
-.nav-section.left img {
-    height: 64px;
-    transition: transform 0.2s ease-in-out;
-    margin: 0 4rem;
+.logo img {
+    height: 60px;
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-.nav-section.left img:hover {
+.logo img:hover {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 6px #00ffff);
+    filter: drop-shadow(0 0 8px #00ffff);
 }
 
-a {
-    color: white;
+.nav-section.center>a,
+.dropdown>a {
+    /* Celujemy w linki bezpośrednio w centrum i w link "Turniej" */
+    color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
 }
 
-a:hover {
+.nav-section.center>a::after,
+.dropdown>a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #00ffff;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.nav-section.center>a:hover {
+    color: white;
+}
+
+.nav-section.center>a:hover::after,
+.dropdown:hover>a::after {
+    transform: scaleX(1);
+}
+
+.nav-link.active-link {
     color: #00ffff;
+    font-weight: 700;
 }
 
-/* 🔽 DROPDOWN MENU */
+.nav-link.active-link::after {
+    transform: scaleX(1);
+}
+
+/* --- DROPDOWN MENU --- */
 .dropdown {
     position: relative;
 }
@@ -90,60 +113,60 @@ a:hover {
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
-    background-color: #1a1a1a;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding: 0.5rem 0;
-    border-radius: 5px;
-    box-shadow: 0 0 6px #000000aa;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 999;
-    min-width: 160px;
+    min-width: 180px;
 }
 
+/* *** TUTAJ JEST KLUCZOWA ZMIANA ***
+   Zamiast ".dropdown-content .nav-link" używamy ".dropdown-content a",
+   aby stylić WSZYSTKIE linki wewnątrz menu.
+*/
 .dropdown-content a {
     display: block;
-    padding: 0.6rem 1.2rem;
+    padding: 0.8rem 1.5rem;
     white-space: nowrap;
+    text-align: left;
+    /* Zmienione na 'left' dla lepszego wyglądu */
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .dropdown-content a:hover {
-    background-color: #2a2a2a;
+    background-color: rgba(0, 255, 255, 0.1);
     color: #00ffff;
-    /* color: #00ffaa; */
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-/* 🔹 PRZYCISK REJESTRACJI */
-/* .register-btn {
-    color: #00ffcc;
-    font-weight: bold;
-    border: 1px solid #00ffcc;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
-    transition: background 0.2s;
+/* --- RESPONSYWNOŚĆ --- */
+@media (max-width: 992px) {
+    .nav-section.center {
+        display: none;
+    }
+
+    .nav-section.left,
+    .nav-section.right {
+        flex: 1;
+    }
 }
 
-.register-btn:hover {
-    background-color: #00ffcc;
-    color: #000;
-} */
-
-/* RESPONSYWNOŚĆ */
 @media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
     .nav-bar {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .nav-section {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .nav-section.center img {
-        height: 40px;
-        margin: 1rem 0;
+        flex-wrap: nowrap;
     }
 }
