@@ -1,42 +1,31 @@
+import { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import "../styles/TeamTeaser.css";
 import Button from "./Button";
 
 function TeamSlider() {
-    const fakeTeams = [
-        {
-            name: "ShadowFox",
-            logo: "/teams/team1.png",
-            players: ["GhostRider", "Blaze", "NightWolf"]
-        },
-        {
-            name: "PulseCore",
-            logo: "/teams/team2.png",
-            players: ["Hyper", "Echo", "Storm"]
-        },
-        {
-            name: "NovaStrike",
-            logo: "/teams/team3.png",
-            players: ["Zeta", "Photon", "Drift"]
-        },
-        {
-            name: "IronHowl",
-            logo: "/teams/team4.png",
-            players: ["Rogue", "Shield", "Crank"]
-        },
-        {
-            name: "VoidFlare",
-            logo: "/teams/team5.png",
-            players: ["Ash", "Fury", "Nova"]
-        },
-        {
-            name: "CrimsonRush",
-            logo: "/teams/team6.png",
-            players: ["Strike", "Cinder", "Volt"]
-        }
-    ];
+    const [teams, setTeams] = useState([]);
 
+    useEffect(() => {
+        fetch("/uploads/teams.json")
+            .then(res => res.json())
+            .then(data => setTeams(data))
+            .catch(err => console.error("Błąd ładowania drużyn:", err));
+    }, []);
+
+    // Minimalna liczba slajdów do wyświetlenia (np. 6)
+    const MIN_SLIDES = 6;
+    const totalSlots = Math.max(teams.length, MIN_SLIDES);
+
+    // Uzupełnij do wymaganej liczby slotów pustymi miejscami
+    const filledTeams = [
+        ...teams,
+        ...Array.from({ length: totalSlots - teams.length }, (_, idx) => ({
+            id: `empty-${idx}`,
+            empty: true
+        }))
+    ];
 
     const settings = {
         infinite: true,
@@ -48,10 +37,16 @@ function TeamSlider() {
         pauseOnHover: false,
         responsive: [
             {
+                breakpoint: 1024,
+                settings: { slidesToShow: 3 }
+            },
+            {
                 breakpoint: 768,
-                settings: {
-                    slidesToShow: 2
-                }
+                settings: { slidesToShow: 2 }
+            },
+            {
+                breakpoint: 480,
+                settings: { slidesToShow: 1 }
             }
         ]
     };
@@ -60,25 +55,35 @@ function TeamSlider() {
         <section className="team-slider-section">
             <h2 className="team-slider-title">Zgłoszone drużyny</h2>
             <Slider {...settings} className="team-slider">
-                {fakeTeams.map((team) => (
-                    <div key={team.name} className="team-slide">
+                {filledTeams.map((team, index) => (
+                    <div key={team.id || index} className="team-slide">
                         <div className="team-card-glow">
-                            <h3 className="team-name">{team.name}</h3>
-
-                            <div className="team-content">
-                                <img src={team.logo} alt={team.name} className="team-logo" />
-                                <ul className="player-list">
-                                    {team.players.map((player, idx) => (
-                                        <li key={idx}>{player}</li>
-                                    ))}
-                                </ul>
-                            </div>
-
+                            {team.empty ? (
+                                <>
+                                    <h3 className="team-name">Wolne miejsce</h3>
+                                    <div className="team-content">
+                                        <img src="/images/question-mark.png" alt="wolne" className="team-logo" />
+                                        <p className="empty-label">Zgłoś swoją drużynę!</p>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <h3 className="team-name">{team.name}</h3>
+                                    <div className="team-content">
+                                        <img src={`/uploads/${team.logo}`} alt={team.name} className="team-logo" />
+                                        <ul className="player-list">
+                                            {team.players.map((player, idx) => (
+                                                <li key={idx}>{player.name}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
-
                 ))}
             </Slider>
+
             <Link to="/druzyny">
                 <Button variant="neon">Zobacz wszystkie drużyny</Button>
             </Link>

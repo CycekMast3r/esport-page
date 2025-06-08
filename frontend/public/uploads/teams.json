@@ -1,0 +1,119 @@
+[
+  {
+    "id": "9224e89a-efdd-49e3-a18e-6b9e19ad0879",
+    "name": "Widzew",
+    "email": "hubert2004s@wp.pl",
+    "players": [
+      {
+        "name": "taz",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "snax",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "pasha",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ],
+    "logo": "logo_9224e89a-efdd-49e3-a18e-6b9e19ad0879.png"
+  },
+  {
+    "id": "69738be8-c5ba-4932-a447-34e977296591",
+    "name": "Ceramika Opoczno Esports",
+    "email": "rzepy4kotlety@opoczno.com",
+    "players": [
+      {
+        "name": "mlody_rzepa",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "CeramikaPL",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "badboy69",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ],
+    "logo": "logo_69738be8-c5ba-4932-a447-34e977296591.png"
+  },
+  {
+    "id": "86544f96-76a3-4140-963f-9f2449bba852",
+    "name": "PRL",
+    "email": "edward@gmaicm",
+    "players": [
+      {
+        "name": "edward_the_player",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "nikck",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "kmicic",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ],
+    "logo": "logo_86544f96-76a3-4140-963f-9f2449bba852.jpg"
+  },
+  {
+    "id": "f30df3ef-7eaf-4bc5-8cd5-e05591a7a392",
+    "name": "Virtus Pro",
+    "logo": "logo_f30df3ef-7eaf-4bc5-8cd5-e05591a7a392.png",
+    "email": "ratatouile@rat.com",
+    "dateOfBirth": "2000-03-03",
+    "players": [
+      {
+        "name": "pasha ",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "snax",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "ratatuj",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ]
+  }
+]
