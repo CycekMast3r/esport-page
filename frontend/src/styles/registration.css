@@ -1,0 +1,256 @@
+/* === Registration.css (połączenie stylu kafelka z glassmorphism + overlay) === */
+
+.registration-page {
+    position: relative;
+    min-height: 100vh;
+    background: url('/background-arena.jpg') no-repeat center center / cover;
+    background-attachment: fixed;
+    /* 🔁 Efekt paralaksy */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+    overflow: hidden;
+    z-index: 0;
+}
+
+
+/* === Overlay === */
+.registration-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom right, rgba(0, 255, 255, 0.1), rgba(0, 0, 0, 0.6));
+    z-index: 1;
+}
+
+
+/* === Glassmorphism box === */
+.registration-container {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    width: 100%;
+    padding: 2.5rem;
+    background: rgba(10, 10, 10, 0.8);
+    border-radius: 16px;
+    border: 1px solid #00ffff44;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px #00ffff33;
+    animation: fadeSlideUp 0.8s ease-out, pulseNeon 4.5s infinite ease-in-out;
+    text-align: center;
+}
+
+/* === Nagłówki === */
+.registration-container h1 {
+    font-size: 2.4rem;
+    color: #00ffff;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 8px #00ffff88;
+}
+
+.registration-container p {
+    margin-bottom: 2rem;
+    color: #ccc;
+}
+
+/* === Formularz === */
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: left;
+}
+
+.registration-form label {
+    font-weight: 500;
+    color: #ccc;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.registration-form input[type="text"],
+.registration-form input[type="email"],
+.registration-form input[type="date"],
+.registration-form input[type="file"] {
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #00ffff33;
+    background: #0c0c0c;
+    color: white;
+    width: 100%;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease-in-out;
+}
+
+.registration-form input:focus {
+    outline: none;
+    border: 1px solid #00ffff;
+    box-shadow: 0 0 8px #00ffff88;
+    background-color: #101010;
+}
+
+/* Kalendarz */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* === Grupowanie inputów === */
+.player-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.captain-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.captain-inputs>div {
+    flex: 1;
+}
+
+/* === Plik logo === */
+.registration-form input[type="file"]::file-selector-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background-color 0.2s;
+}
+
+.registration-form input[type="file"]::file-selector-button:hover {
+    background-color: #0056b3;
+}
+
+/* === Checkbox regulamin === */
+.terms-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terms-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #00ffff;
+}
+
+.terms-group a {
+    color: #00ffff;
+    text-decoration: underline;
+}
+
+/* === Komunikaty === */
+.message {
+    padding: 10px;
+    margin-top: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.error-message {
+    color: #ff4a4a;
+    background-color: rgba(255, 77, 77, 0.1);
+    border: 1px solid #ff4a4a;
+}
+
+.success-message {
+    color: #00ffcc;
+    background-color: rgba(0, 255, 204, 0.1);
+    border: 1px solid #00ffcc;
+    text-shadow: 0 0 6px #00ffff99;
+    font-size: 1.1rem;
+}
+
+.logo-preview-wrapper {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.logo-preview {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 8px;
+    border: 1px solid #00ffff55;
+    box-shadow: 0 0 10px #00ffff33;
+    object-fit: contain;
+}
+
+.registration-form input[type="file"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px dashed #00ffff88;
+    border-radius: 8px;
+    color: #ccc;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.registration-form input[type="file"]:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 8px #00ffff99;
+}
+
+/* Styl przycisku do wyboru pliku */
+.registration-form input[type="file"]::file-selector-button {
+    background: #00ffff22;
+    color: #00ffff;
+    border: 1px solid #00ffff88;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin-right: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+}
+
+.registration-form input[type="file"]::file-selector-button:hover {
+    background: #00ffff33;
+    box-shadow: 0 0 12px #00ffff66;
+}
+
+/* === Animacje === */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseNeon {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px #00ffff33, 0 0 40px #00ffff44;
+    }
+
+    50% {
+        box-shadow: 0 0 30px #00ffff66, 0 0 60px #00ffff55;
+    }
+}

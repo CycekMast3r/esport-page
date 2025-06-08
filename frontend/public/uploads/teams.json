@@ -115,5 +115,35 @@
         "MVP": 0
       }
     ]
+  },
+  {
+    "id": "0bec6b3a-2714-44e7-a3b2-1aba2d6d3f1d",
+    "name": "FC Drzewce",
+    "logo": "logo_0bec6b3a-2714-44e7-a3b2-1aba2d6d3f1d.png",
+    "email": "misiupysiu@rat.com",
+    "dateOfBirth": "2005-08-26",
+    "players": [
+      {
+        "name": "123",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "misiu",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "pysiu",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ]
   }
 ]
