@@ -1,15 +1,14 @@
+/* Footer.css - Wersja z powiększonym logo i wyróżnionym tekstem */
+
 .footer {
     background-color: #111;
     color: #ccc;
-    padding: 2rem;
-    border-top: 1px solid #222;
-    margin-top: 4rem;
+    padding: 4rem 2rem 2rem 2rem;
+    border-top: 2px solid #00ffff44;
+    box-shadow: 0 -10px 30px -15px #00ffff1a;
     font-size: 0.95rem;
+    margin-top: auto;
 }
-
-/* .transparent-footer {
-    background-color: transparent;
-} */
 
 .footer-container {
     display: flex;
@@ -22,74 +21,109 @@
 
 .footer-section {
     flex: 1;
-    min-width: 200px;
+    min-width: 220px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.footer-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.footer-section.left {
+    flex-basis: 35%;
 }
 
 .footer-logo {
-    height: 48px;
-    margin-bottom: 1rem;
-}
-
-.footer-section h4 {
-    color: white;
-    text-align: center;
+    height: 65px; /* <-- ZMIANA: Powiększamy logo z 50px na 65px */
     margin-bottom: 1rem;
 }
 
 .footer-section p {
     line-height: 1.6;
+    color: #ccc; /* Jaśniejszy kolor dla lepszej czytelności */
+    max-width: 350px;
+    font-size: 1rem; /* Lekkie powiększenie głównego tekstu */
 }
 
+/* --- NOWY STYL: Wyróżnienie tekstu w stopce --- */
+.footer-cta-text {
+    display: block; /* Sprawia, że tekst wskakuje do nowej linii */
+    margin-top: 0.75rem; /* Odstęp od tekstu powyżej */
+    color: #00ffff; /* Kolor akcentu */
+    font-weight: bold;
+}
+
+.footer-section h4 {
+    color: #00ffff;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 .footer-section ul {
-    gap: 0.5rem;
-    text-align: center;
     list-style: none;
     padding: 0;
 }
-
 .footer-section li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.footer-section.center a {
+    position: relative;
+    padding-bottom: 4px;
+    display: inline-block;
+}
+.footer-section.center a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ffff;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease-in-out;
+}
+.footer-section.center a:hover::after {
+    transform: scaleX(1);
 }
 
 .footer-section a {
     color: #ccc;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.3s ease;
 }
-
 .footer-section a:hover {
     color: #00ffff;
-    /* color: #00ffaa; */
+}
+
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+.social-icons a {
+    display: inline-block;
+    color: #aaa;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+.social-icons a:hover {
+    color: #00ffff;
+    transform: translateY(-3px);
+}
+.social-icons svg {
+    width: 28px;
+    height: 28px;
 }
 
 .footer-bottom {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 4rem;
     color: #777;
     font-size: 0.85rem;
     border-top: 1px solid #222;
-    padding-top: 1rem;
-}
-
-/* src/styles/Footer.css */
-
-.social-icons {
-    color: #ccc;
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-}
-
-.social-icons svg {
-    width: 2rem;
-    height: 2rem;
-    filter: grayscale(100%) brightness(1.4);
-    transition: filter 0.2s ease-in-out;
-}
-
-.social-icons svg:hover {
-    color: #00ffff;
-    filter: drop-shadow(0 0 5px #00ffff) brightness(1.1);
+    padding-top: 2rem;
 }

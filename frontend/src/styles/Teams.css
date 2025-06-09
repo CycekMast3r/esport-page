@@ -1,21 +1,20 @@
+/* Teams.css - WERSJA Z FINALNYM SZLIFEM WIDOKU MOBILNEGO */
+
 .teams-page {
     background: url("/images/parallax.jpg") no-repeat center center fixed;
     background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 5rem 2rem;
+    padding: 4rem 1rem;
     text-align: center;
     color: white;
     position: relative;
     z-index: 1;
     min-height: 100vh;
-    /* ← KLUCZOWE */
     width: 100%;
+    
+    /* Globalna reguła w index.css jest lepsza, ale ta linia to dodatkowe zabezpieczenie */
+    overflow-x: hidden;
 }
 
-
-/* Fallback gradient overlay for readability */
 .teams-page::before {
     content: "";
     position: absolute;
@@ -28,22 +27,23 @@
 }
 
 .teams-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #00ffff;
     text-shadow: 0 0 10px #00ffff88;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .teams-subtitle {
     color: #aaa;
     margin-bottom: 3rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
+/* --- Style Domyślne (Mobilne) --- */
 .teams-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 6rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
     perspective: 1000px;
@@ -53,8 +53,10 @@
     background: transparent;
     cursor: pointer;
     width: 100%;
-    height: 320px;
+    max-width: 260px;
+    justify-self: center;
     position: relative;
+    aspect-ratio: 4 / 5;
 }
 
 .flip-inner {
@@ -69,15 +71,15 @@
     transform: rotateY(180deg);
 }
 
-/* FRONT */
 .flip-front,
 .flip-back {
     position: absolute;
     width: 100%;
     height: 100%;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 12px;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1rem;
     box-shadow: 0 0 12px #00000055;
     background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
     display: flex;
@@ -91,8 +93,8 @@
 }
 
 .flip-front img.team-logo {
-    width: 80px;
-    height: 80px;
+    width: 65px;
+    height: 65px;
     object-fit: contain;
     margin-bottom: 1rem;
     border-radius: 50%;
@@ -100,68 +102,96 @@
     box-shadow: 0 0 8px #00ffff44;
 }
 
-.flip-front h3 {
+.flip-front h3.team-name {
     color: #00ffff;
-    font-size: 1.3rem;
+    font-size: 1.05rem;
+    line-height: 1.2;
 }
 
-/* BACK */
+/* Tył karty */
 .flip-back {
     transform: rotateY(180deg);
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: #ccc;
     text-align: left;
-    padding: 1.5rem;
+    padding: 1rem;
 }
-
-.team-captain {
-    margin-bottom: 0.8rem;
-    font-weight: 600;
-    color: #00ffff;
+.flip-back .team-logo.small {
+    display: none;
 }
-
 .player-stats {
     width: 100%;
     border-collapse: collapse;
 }
-
 .player-stats th,
 .player-stats td {
-    padding: 0.4rem;
-    border-bottom: 1px solid #333;
-    text-align: center;
+    padding: 0.25rem;
 }
-
 .player-stats th {
-    color: #00ffff;
-    font-size: 0.85rem;
-    text-transform: uppercase;
+    font-size: 0.7rem;
 }
 
+
+/* Pusta karta */
 .empty-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
-    border: 1px dashed #444;
-    color: #666;
-    font-style: italic;
-    text-align: center;
-    font-size: 0.95rem;
+    border: 2px dashed #444;
 }
-
 .empty-text {
-    padding: 1rem;
     color: #999;
 }
-
-.flip-card.has-team {
-    box-shadow: 0 0 12px #00ffff55;
-    border: 1px solid #00ffff33;
-    border-radius: 12px;
+.empty-card .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
 }
 
-.flip-card.has-team:hover {
-    box-shadow: 0 0 20px #00ffff88;
-    border-color: #00ffff;
+/* === Style dla Większych Ekranów (Tablety i Desktopy) === */
+@media (min-width: 768px) {
+    .teams-page {
+        padding: 5rem 2rem;
+    }
+    .teams-title {
+        font-size: 2.5rem;
+    }
+    .teams-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .teams-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 4rem;
+    }
+
+    .flip-card {
+        height: 320px;
+        aspect-ratio: auto;
+    }
+    
+    .flip-front img.team-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .flip-front h3.team-name {
+        font-size: 1.3rem;
+    }
+
+    .flip-back {
+        font-size: 0.95rem;
+        padding: 1.5rem;
+    }
+    .flip-back .team-logo.small {
+        display: block;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+    .player-stats th,
+    .player-stats td {
+        padding: 0.4rem;
+    }
+    .player-stats th {
+        font-size: 0.85rem;
+    }
 }

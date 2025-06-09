@@ -31,7 +31,7 @@ function Home() {
 
                         <div className="hero-info">
                             <p><strong>14–21 czerwca 2025</strong> </p>
-                            <p><strong>Whooi Arena, Łódź</strong></p>
+                            <p><strong>Atlas Arena, Łódź</strong></p>
                         </div>
 
                         {/* <Link to="/rejestracja">
@@ -80,11 +80,11 @@ function Home() {
                 <div className="overview-description">
                     <h2>Łódź Rocket Masters 2025</h2>
                     <p>
-                        Przygotujcie się na epickie starcia i niezapomniane akcje! W dniach <strong>14-21 czerwca, Whooi Arena w Łodzi</strong> stanie się sercem polskiego Rocket League, goszcząc turniej Łódź Rocket Masters.
+                        Przygotujcie się na epickie starcia i niezapomniane akcje! W dniach <strong>14-21 czerwca, Atlas Arena w Łodzi</strong> stanie się sercem polskiego Rocket League, goszcząc turniej Łódź Rocket Masters.
 
                         Czeka na Was nie tylko intensywna rywalizacja w grze, którą kochacie, ale i szansa na zgarnięcie części z puli nagród o wartości <strong>20 000 złotych!</strong> To Wasza okazja, by pokazać swoje umiejętności w powietrzu i na ziemi, zagrać pod presją i udowodnić, że to właśnie Wasza drużyna zasługuje na tytuł mistrza Łodzi.
 
-                        Nieważne, czy jesteś weteranem z tysiącami godzin na koncie, czy chcesz wspiąć się na wyższy poziom – Łódź Rocket Masters to idealna platforma do zaprezentowania swojego talentu. Przygotujcie swoje samochody i pokażcie, kto naprawdę rządzi w rakietowej piłce nożnej!
+                        Nieważne, czy jesteś weteranem z tysiącami godzin na koncie, czy chcesz wspiąć się na wyższy poziom – Łódź Rocket Masters to idealna platforma do zaprezentowania swojego talentu. Przygotujcie swoje samochody i pokażcie, kto naprawdę rządzi w samochodowej piłce nożnej!
 
                         <h3>Dołącz do nas!</h3>
                     </p>

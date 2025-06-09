@@ -138,7 +138,7 @@ function Registration() {
                     <div className="form-group terms-group">
                         <input type="checkbox" id="terms" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} required />
                         <label htmlFor="terms">
-                            Wyrażam zgodę na <Link to="/regulamin" target="_blank" rel="noopener noreferrer">regulamin turnieju</Link>.
+                            Wyrażam zgodę na <Link to="/regulamin" target="_blank" rel="noopener noreferrer">Regulamin Turnieju</Link>.
                         </label>
                     </div>
 
