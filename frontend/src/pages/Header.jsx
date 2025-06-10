@@ -1,92 +1,85 @@
-import { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { HashLink } from 'react-router-hash-link';
+import { useEffect } from "react";
 import "../styles/Header.css";
 import Button from "./Button";
 
 function Header({ isHome }) {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    // Efekt blokujący scrollowanie strony, gdy menu jest otwarte
-    useEffect(() => {
-        if (isMenuOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-        // Funkcja czyszcząca, przywraca scrollowanie po opuszczeniu komponentu
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [isMenuOpen]);
+    const location = useLocation();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const getLinkClass = ({ isActive }) => isActive ? "nav-link active-link" : "nav-link";
+    const isTurniejActive = ["/druzyny", "/wyniki", "/sponsorzy"].some(path =>
+        location.pathname.startsWith(path)
+    );
 
-    // Zamyka oba menu po kliknięciu w jakikolwiek link
-    const handleLinkClick = () => {
-        setIsMenuOpen(false);
-        setIsDropdownOpen(false);
-    };
+    const toggleMenu = () => setMenuOpen(prev => !prev);
+    const closeMenu = () => setMenuOpen(false);
 
-    // Przełącza widoczność tylko podmenu "Turniej" w widoku mobilnym
-    const toggleDropdown = (e) => {
-        e.preventDefault();
-        setIsDropdownOpen(!isDropdownOpen);
-    };
+    const isHomePage = location.pathname === "/";
 
     return (
         <header className={`header ${isHome ? "transparent-header" : ""}`}>
-            {/* Nakładka renderowana warunkowo, gdy menu jest otwarte */}
-            {isMenuOpen && <div className="menu-overlay" onClick={() => setIsMenuOpen(false)}></div>}
-            
             <nav className="nav-bar">
                 <div className="nav-section left">
-                    <Link to="/" className="logo" onClick={handleLinkClick}>
+                    <Link to="/" className="logo">
                         <img src="/images/logo.png" alt="Logo" />
                     </Link>
                 </div>
 
-                <div className={`nav-section center ${isMenuOpen ? "mobile-menu-open" : ""}`}>
-                    <NavLink to="/" className={getLinkClass} onClick={handleLinkClick} end>Strona Główna</NavLink>
+                {/* HAMBURGER ICON */}
+                <div className="hamburger-icon" onClick={toggleMenu}>
+                    <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+                    <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+                    <div className={`bar ${menuOpen ? "open" : ""}`}></div>
+                </div>
 
-                    <div className={`dropdown ${isDropdownOpen ? "submenu-open" : ""}`}>
-                        <a href="#" className="nav-link dropdown-toggle" onClick={toggleDropdown}>
-                            <span>Turniej</span>
-                            <span className="arrow">▾</span>
-                        </a>
+                <div className="nav-section center desktop-menu">
+                    <NavLink to="/" className={getLinkClass} end>Strona Główna</NavLink>
+
+                    <div className="dropdown">
+                        <a className={`nav-link ${isTurniejActive ? "active-link" : ""}`}>Turniej ▾</a>
                         <div className="dropdown-content">
-                            <NavLink to="/druzyny" className="nav-link" onClick={handleLinkClick}>Drużyny</NavLink>
-                            <HashLink smooth to="/wyniki#schedule" className="nav-link" onClick={handleLinkClick}>Harmonogram</HashLink>
-                            <HashLink smooth to="/wyniki#bracket" className="nav-link" onClick={handleLinkClick}>Drabinka</HashLink>
-                            <NavLink to="/sponsorzy" className="nav-link" onClick={handleLinkClick}>Sponsorzy</NavLink>
+                            <NavLink to="/druzyny" className={getLinkClass}>Drużyny</NavLink>
+                            <HashLink smooth to="/wyniki#schedule" className={`nav-link ${location.pathname === "/wyniki" && location.hash === "#schedule" ? "active-link" : ""}`}>Harmonogram</HashLink>
+                            <HashLink smooth to="/wyniki#bracket" className={`nav-link ${location.pathname === "/wyniki" && location.hash === "#bracket" ? "active-link" : ""}`}>Drabinka</HashLink>
+                            <NavLink to="/sponsorzy" className={getLinkClass}>Sponsorzy</NavLink>
                         </div>
                     </div>
 
-                    <NavLink to="/stream" className={getLinkClass} onClick={handleLinkClick}>Transmisje</NavLink>
-                    <NavLink to="/kontakt" className={getLinkClass} onClick={handleLinkClick}>Kontakt</NavLink>
-                    
-                    <Link to="/rejestracja" className="mobile-signup-btn" onClick={handleLinkClick}>
-                        <Button variant="neon">Zapisz się</Button>
-                    </Link>
+                    <NavLink to="/stream" className={getLinkClass}>Transmisje</NavLink>
+                    <NavLink to="/kontakt" className={getLinkClass}>Kontakt</NavLink>
                 </div>
 
-                <div className="nav-section right">
-                    <Link to="/rejestracja" className="desktop-signup-btn">
+                <div className="nav-section right desktop-menu">
+                    <Link to="/rejestracja">
                         <Button variant="neon">Zapisz się</Button>
                     </Link>
-                    
-                    <button
-                        className={`burger-menu-button ${isMenuOpen ? "open" : ""}`}
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        <span className="burger-line"></span>
-                        <span className="burger-line"></span>
-                        <span className="burger-line"></span>
-                    </button>
                 </div>
             </nav>
+
+            {/* MOBILE MENU */}
+            {menuOpen && (
+                <>
+                    {/* BACKDROP */}
+                    <div className="menu-backdrop" onClick={closeMenu}></div>
+
+                    {/* MOBILE MENU z klasą glass tylko na stronie głównej */}
+                    <div className={`mobile-menu ${isHomePage ? 'glass' : ''}`}>
+                        <NavLink to="/" onClick={closeMenu} className={getLinkClass} end>Strona Główna</NavLink>
+                        <NavLink to="/druzyny" onClick={closeMenu} className={getLinkClass}>Drużyny</NavLink>
+                        <HashLink smooth to="/wyniki#schedule" onClick={closeMenu} className={`nav-link ${location.pathname === "/wyniki" && location.hash === "#schedule" ? "active-link" : ""}`}>Harmonogram</HashLink>
+                        <HashLink smooth to="/wyniki#bracket" onClick={closeMenu} className={`nav-link ${location.pathname === "/wyniki" && location.hash === "#bracket" ? "active-link" : ""}`}>Drabinka</HashLink>
+                        <NavLink to="/sponsorzy" onClick={closeMenu} className={getLinkClass}>Sponsorzy</NavLink>
+                        <NavLink to="/stream" onClick={closeMenu} className={getLinkClass}>Transmisje</NavLink>
+                        <NavLink to="/kontakt" onClick={closeMenu} className={getLinkClass}>Kontakt</NavLink>
+                        <Link to="/rejestracja" onClick={closeMenu}>
+                            <Button variant="neon">Zapisz się</Button>
+                        </Link>
+                    </div>
+                </>
+            )}
         </header>
     );
 }

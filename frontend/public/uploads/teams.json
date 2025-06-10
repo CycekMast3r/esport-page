@@ -145,5 +145,35 @@
         "MVP": 0
       }
     ]
+  },
+  {
+    "id": "7583982f-6f18-4adc-981a-467b95b7acb1",
+    "name": "Virtus Pro",
+    "logo": "logo_7583982f-6f18-4adc-981a-467b95b7acb1.png",
+    "email": "ratatouile@rat.com",
+    "dateOfBirth": "2000-04-05",
+    "players": [
+      {
+        "name": "Adad",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "232",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "123",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ]
   }
 ]

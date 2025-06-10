@@ -1,18 +1,20 @@
-/* Teams.css - WERSJA Z FINALNYM SZLIFEM WIDOKU MOBILNEGO */
+/* ======================== */
+/* === BASE STYLES === */
+/* ======================== */
 
 .teams-page {
     background: url("/images/parallax.jpg") no-repeat center center fixed;
     background-size: cover;
-    padding: 4rem 1rem;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 5rem 2rem;
     text-align: center;
     color: white;
     position: relative;
     z-index: 1;
     min-height: 100vh;
     width: 100%;
-    
-    /* Globalna reguła w index.css jest lepsza, ale ta linia to dodatkowe zabezpieczenie */
-    overflow-x: hidden;
 }
 
 .teams-page::before {
@@ -27,36 +29,34 @@
 }
 
 .teams-title {
-    font-size: 2rem;
+    font-size: 3rem;
     color: #00ffff;
     text-shadow: 0 0 10px #00ffff88;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .teams-subtitle {
     color: #aaa;
     margin-bottom: 3rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
-/* --- Style Domyślne (Mobilne) --- */
 .teams-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    max-width: 1000px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 6rem;
+    max-width: 1200px;
     margin: 0 auto;
     perspective: 1000px;
+    width: 100%;
 }
 
 .flip-card {
     background: transparent;
     cursor: pointer;
     width: 100%;
-    max-width: 260px;
-    justify-self: center;
+    height: 320px;
     position: relative;
-    aspect-ratio: 4 / 5;
 }
 
 .flip-inner {
@@ -76,10 +76,9 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 12px;
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
     box-shadow: 0 0 12px #00000055;
     background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
     display: flex;
@@ -93,8 +92,8 @@
 }
 
 .flip-front img.team-logo {
-    width: 65px;
-    height: 65px;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
     margin-bottom: 1rem;
     border-radius: 50%;
@@ -102,96 +101,174 @@
     box-shadow: 0 0 8px #00ffff44;
 }
 
-.flip-front h3.team-name {
+.flip-front h3 {
     color: #00ffff;
-    font-size: 1.05rem;
-    line-height: 1.2;
+    font-size: 1.3rem;
 }
 
-/* Tył karty */
 .flip-back {
     transform: rotateY(180deg);
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     color: #ccc;
     text-align: left;
-    padding: 1rem;
+    padding: 1.5rem;
 }
-.flip-back .team-logo.small {
-    display: none;
+
+.team-captain {
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    color: #00ffff;
 }
+
 .player-stats {
     width: 100%;
     border-collapse: collapse;
 }
+
 .player-stats th,
 .player-stats td {
-    padding: 0.25rem;
+    padding: 0.4rem;
+    border-bottom: 1px solid #333;
+    text-align: center;
 }
+
 .player-stats th {
-    font-size: 0.7rem;
+    color: #00ffff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
 }
 
-
-/* Pusta karta */
 .empty-card {
-    border: 2px dashed #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+    border: 1px dashed #444;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    font-size: 0.95rem;
 }
+
 .empty-text {
+    padding: 1rem;
     color: #999;
 }
-.empty-card .btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+
+.flip-card.has-team {
+    box-shadow: 0 0 12px #00ffff55;
+    border: 1px solid #00ffff33;
+    border-radius: 12px;
 }
 
-/* === Style dla Większych Ekranów (Tablety i Desktopy) === */
-@media (min-width: 768px) {
-    .teams-page {
-        padding: 5rem 2rem;
-    }
+.flip-card.has-team:hover {
+    box-shadow: 0 0 20px #00ffff88;
+    border-color: #00ffff;
+}
+
+/* ======================== */
+/* === RESPONSIVE STYLES === */
+/* ======================== */
+
+/* TABLET */
+@media (max-width: 1024px) {
     .teams-title {
         font-size: 2.5rem;
     }
+
     .teams-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .flip-card {
+        height: 280px;
+    }
+
+    .flip-front img.team-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .flip-front h3 {
         font-size: 1.1rem;
     }
 
+    .player-stats th,
+    .player-stats td {
+        padding: 0.3rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* SMARTFONY średnie */
+@media (max-width: 768px) {
+    .teams-title {
+        font-size: 2rem;
+    }
+
+    .teams-subtitle {
+        font-size: 0.95rem;
+    }
+
     .teams-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 4rem;
     }
 
     .flip-card {
-        height: 320px;
-        aspect-ratio: auto;
+        height: 240px;
     }
-    
+
     .flip-front img.team-logo {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
     }
 
-    .flip-front h3.team-name {
-        font-size: 1.3rem;
+    .flip-front h3 {
+        font-size: 1rem;
     }
 
-    .flip-back {
-        font-size: 0.95rem;
-        padding: 1.5rem;
-    }
-    .flip-back .team-logo.small {
-        display: block;
-        width: 40px;
-        height: 40px;
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-    }
     .player-stats th,
     .player-stats td {
-        padding: 0.4rem;
+        font-size: 0.75rem;
     }
-    .player-stats th {
-        font-size: 0.85rem;
+}
+
+/* MAŁE TELEFONY */
+@media (max-width: 480px) {
+    .teams-title {
+        font-size: 1.6rem;
+    }
+
+    .teams-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+    }
+
+    .teams-grid {
+        gap: 3rem;
+    }
+
+    .flip-card {
+        height: 200px;
+    }
+
+    .flip-front img.team-logo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .flip-front h3 {
+        font-size: 0.9rem;
+    }
+
+    .flip-front,
+    .flip-back {
+        padding: 1rem;
+    }
+
+    .player-stats th,
+    .player-stats td {
+        font-size: 0.7rem;
     }
 }
