@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { registerTeam } from '../api';
 import { Link } from 'react-router-dom';
 import '../styles/Registration.css';
 import Button from './Button';
@@ -72,7 +72,7 @@ function Registration() {
         formData.append('logo', teamLogo);
 
         try {
-            const response = await axios.post("http://localhost:5000/api/register", formData);
+            const response = await registerTeam(formData);
             setSuccessMessage(response.data.message || 'Drużyna została pomyślnie zarejestrowana!');
 
             setTeamName('');

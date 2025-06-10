@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Ścieżki i ustawienia
-FRONTEND_PUBLIC = r"D:\esport-page\frontend\public"
+FRONTEND_PUBLIC = os.path.join(os.getcwd(), "frontend", "public")
 UPLOAD_FOLDER = os.path.join(FRONTEND_PUBLIC, "uploads")
 DATA_FILE = os.path.join(UPLOAD_FOLDER, "teams.json")
 ALLOWED_EXTENSIONS = {".png"}
@@ -151,4 +151,5 @@ def register():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
