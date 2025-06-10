@@ -3,6 +3,9 @@
 import { useState } from "react";
 import "../styles/ContactTeaser.css";
 import ParticlesBackground from "./ParticlesBackground";
+// Importujemy komponenty animacji
+import { Fade, Slide } from 'react-awesome-reveal';
+
 
 // Definicje ikon jako małe komponenty funkcyjne
 const EmailIcon = () => (
@@ -17,10 +20,14 @@ const DiscordIcon = () => (
 );
 
 
+// Modyfikacja FAQItem - dodamy animację tylko dla samego FAQItem,
+// rozwijana odpowiedź będzie kontrolowana przez stan 'open'.
 function FAQItem({ question, answer }) {
     const [open, setOpen] = useState(false);
 
     return (
+        // Używamy Fade, aby każdy element FAQ pojawił się płynnie.
+        // Opóźnienie będzie dodane w komponencie nadrzędnym.
         <div className={`faq-item ${open ? "open" : ""}`} onClick={() => setOpen(!open)}>
             <div className="faq-question">
                 <span>{question}</span>
@@ -38,45 +45,58 @@ function ContactTeaser() {
         <section className="contact-section">
             <ParticlesBackground />
             <div className="contact-container">
-                <h2 className="section-title">Skontaktuj się z nami</h2>
+                {/* Animacja dla tytułu sekcji */}
+                <Fade direction="down" triggerOnce>
+                    <h2 className="section-title">Skontaktuj się z nami</h2>
+                </Fade>
 
                 <div className="contact-content">
-                    <div className="contact-info">
-                        <a href="mailto:kontakt@rocketmasters.pl" className="contact-box-link">
-                            <div className="contact-box">
-                                <span className="contact-icon"><EmailIcon /></span>
-                                <div className="contact-text">
-                                    <strong>Email</strong>
-                                    <span>kontakt@rocketmasters.pl</span>
+                    {/* Animacja dla sekcji kontaktowej (Email i Discord) */}
+                    <Fade direction="left" cascade damping={0.2} triggerOnce delay={100}>
+                        <div className="contact-info">
+                            <a href="mailto:kontakt@rocketmasters.pl" className="contact-box-link">
+                                <div className="contact-box">
+                                    <span className="contact-icon"><EmailIcon /></span>
+                                    <div className="contact-text">
+                                        <strong>Email</strong>
+                                        <span>kontakt@rocketmasters.pl</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                        <a href="https://discord.gg/twojserwer" target="_blank" rel="noopener noreferrer" className="contact-box-link">
-                            <div className="contact-box">
-                                <span className="contact-icon"><DiscordIcon /></span>
-                                <div className="contact-text">
-                                    <strong>Discord</strong>
-                                    <span>Dołącz do naszego serwera</span>
+                            </a>
+                            <a href="https://discord.gg/twojserwer" target="_blank" rel="noopener noreferrer" className="contact-box-link">
+                                <div className="contact-box">
+                                    <span className="contact-icon"><DiscordIcon /></span>
+                                    <div className="contact-text">
+                                        <strong>Discord</strong>
+                                        <span>Dołącz do naszego serwera</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    </Fade>
 
+                    {/* Animacja dla sekcji FAQ */}
                     <div className="faq-section">
-                        <h3>Najczęściej zadawane pytania</h3>
+                        {/* Animacja dla tytułu FAQ */}
+                        <Fade direction="up" triggerOnce delay={300}>
+                            <h3>Najczęściej zadawane pytania</h3>
+                        </Fade>
 
-                        <FAQItem
-                            question="Jak mogę zarejestrować drużynę?"
-                            answer="Kliknij w przycisk 'Zapisz się' w prawym górnym rogu strony i wypełnij formularz rejestracyjny, podając wszystkie wymagane dane."
-                        />
-                        <FAQItem
-                            question="Czy udział jest płatny?"
-                            answer="Nie. Turniej Łódź Rocket Masters 2025 jest całkowicie darmowy dla wszystkich uczestników. Nie ma żadnych ukrytych opłat."
-                        />
-                        <FAQItem
-                            question="Jak wygląda system rozgrywek?"
-                            answer="Rozgrywki składają się z fazy grupowej, po której najlepsze drużyny awansują do fazy pucharowej (play-off) w systemie pojedynczej eliminacji."
-                        />
+                        {/* Animacja dla każdego FAQItem w kaskadzie */}
+                        <Fade direction="up" cascade damping={0.1} triggerOnce delay={400}>
+                            <FAQItem
+                                question="Jak mogę zarejestrować drużynę?"
+                                answer="Kliknij w przycisk 'Zapisz się' w prawym górnym rogu strony i wypełnij formularz rejestracyjny, podając wszystkie wymagane dane."
+                            />
+                            <FAQItem
+                                question="Czy udział jest płatny?"
+                                answer="Nie. Turniej Łódź Rocket Masters 2025 jest całkowicie darmowy dla wszystkich uczestników. Nie ma żadnych ukrytych opłat."
+                            />
+                            <FAQItem
+                                question="Jak wygląda system rozgrywek?"
+                                answer="Rozgrywki składają się z fazy grupowej, po której najlepsze drużyny awansują do fazy pucharowej (play-off) w systemie pojedynczej eliminacji."
+                            />
+                        </Fade>
                     </div>
                 </div>
             </div>

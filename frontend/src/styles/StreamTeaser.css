@@ -89,11 +89,8 @@
     right: 0;
     padding: 0.5rem 1rem;
     background: rgba(0, 0, 0, 0.7);
-    /* Spójne z tłem kontrolek */
     backdrop-filter: blur(8px);
-    /* Efekt glassmorphism */
     -webkit-backdrop-filter: blur(8px);
-    /* Wsparcie dla Safari */
     color: #00ffff;
     font-size: 1.1rem;
     font-weight: bold;
@@ -105,15 +102,12 @@
     text-shadow: 0 0 8px #00ffff80;
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
-    /* Dodajemy cienką ramkę, aby pasowała do ogólnego wyglądu */
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-    /* Cienka linia na dole */
 }
 
 .video-title.visible {
     opacity: 1;
 }
-
 
 /* STYLE DLA DOLNEGO PASKA (KONTROLEK) */
 .video-controls {
@@ -123,14 +117,12 @@
     right: 0;
     padding: 0.8rem 1.5rem;
     background: rgba(0, 0, 0, 0.7);
-    /* Zmieniono na 0.7, aby było spójne z tytułem */
     backdrop-filter: blur(8px);
-    /* Efekt glassmorphism */
     -webkit-backdrop-filter: blur(8px);
-    /* Wsparcie dla Safari */
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    /* Pozostałe przyciski po prawej */
     gap: 1.2rem;
     opacity: 0;
     pointer-events: none;
@@ -138,15 +130,62 @@
     z-index: 3;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
-    /* Dodajemy cienką ramkę, aby pasowała do ogólnego wyglądu */
     border-top: 1px solid rgba(0, 255, 255, 0.2);
-    /* Cienka linia na górze */
 }
 
 .video-controls.visible {
     opacity: 1;
     pointer-events: auto;
 }
+
+/* Nowe style dla przycisku Play/Pause w lewym dolnym rogu */
+.play-pause-standalone {
+    position: absolute;
+    bottom: 0.8rem;
+    /* Taka sama odległość od dołu jak kontrolki */
+    left: 1.5rem;
+    /* Taka sama odległość od lewej jak padding kontrolek */
+    background: rgba(0, 0, 0, 0.7);
+    /* Tło jak dla kontrolek */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 8px;
+    /* Zaokrąglenie jak dla przycisków */
+    padding: 0.6rem;
+    /* Padding jak dla przycisków */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-out, opacity 0.3s ease-in-out;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+    z-index: 4;
+    /* Wyższy z-index, aby był nad paskiem kontrolek */
+    opacity: 0;
+    /* Domyślnie niewidoczny */
+    pointer-events: none;
+    /* Domyślnie nieklikalny */
+    color: #00ffff;
+    /* Kolor ikony */
+}
+
+.play-pause-standalone.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.play-pause-standalone:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.play-pause-standalone svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    filter: drop-shadow(0 0 3px #00ffff);
+}
+
 
 .control-button {
     background: none;
@@ -226,7 +265,6 @@
     background: #00ffff;
     border-radius: 4px;
 }
-
 
 @media (min-width: 768px) {
     .stream-buttons {

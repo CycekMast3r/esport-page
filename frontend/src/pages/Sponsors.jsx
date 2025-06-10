@@ -12,13 +12,13 @@ function Sponsors() {
                         alt="NeonTech - Główny Sponsor"
                         className="main-sponsor-logo"
                     />
-                    <h3 className="main-sponsor-name">NeonTech – Oficjalny Partner Technologiczny</h3>
+                    <h3 className="main-sponsor-name">Jastrząb Energy – Oficjalny Sponsor Turnieju</h3>
                 </div>
 
                 <div className="main-sponsor-visuals">
                     <div className="main-sponsor-images">
                         <img
-                            src="/sponsors/product.png"
+                            src="/sponsors/product5.png"
                             alt="NeonTech Gear"
                             className="main-sponsor-product"
                         />
@@ -31,22 +31,22 @@ function Sponsors() {
 
                     <div className="main-sponsor-description">
                         <p>
-                            <strong>NeonTech</strong> to lider w dziedzinie technologii gamingowych i transmisji strumieniowej. Od lat wspiera profesjonalnych graczy i turnieje e-sportowe, dostarczając najwyższej jakości sprzęt i rozwiązania streamingowe.
+                            <strong>Jastrząb Energy</strong> to polska marka energetyków stworzona z myślą o graczach, którzy wiedzą, że każda decyzja i refleks liczą się w drodze po zwycięstwo. Zapomnij o konkurencji pokroju Orzeł Power – z Jastrząb Energy poczujesz prawdziwą moc!
                         </p>
                         <p>
-                            W ramach turnieju <strong>Rocket Masters 2025</strong>, NeonTech odpowiada za dostarczenie nowoczesnego zaplecza technicznego, transmisji na żywo w jakości 4K oraz specjalnych nagród dla zwycięzców.
+                            Jesteśmy dumni, że możemy wspierać turniej <strong>Łódź Rocket Masters</strong>, dostarczając zawodnikom paliwo do wygrywania! Wiemy, że w kluczowych momentach liczy się maksymalna koncentracja i energia, dlatego nasze napoje zostały stworzone, by pomóc graczom osiągnąć szczyt swoich możliwości.
                         </p>
                         <p>
-                            Wierzą, że e-sport to przyszłość rywalizacji, rozrywki i innowacji – dlatego inwestują w młode talenty i wspierają rozwój społeczności gamingowej.
+                            <strong>Jastrząb Energy</strong> to nie tylko napój – to partner każdego e-sportowca, który dąży do perfekcji. Z nami każdy klik, każdy ruch i każda strategia zyskują na precyzji i szybkości. Przygotuj się na niezapomniane emocje i zwycięstwa!!!
                         </p>
 
                         <div className="sponsor-extra-info">
-                            <h4>Dlaczego wspierają Rocket Masters?</h4>
+                            <h4>Dlaczego wspieramy Łódź Rocket Masters?</h4>
                             <ul>
-                                <li>Promują rozwój e-sportu w Polsce</li>
-                                <li>Prezentują swoje najnowsze produkty</li>
-                                <li>Wspierają młodych, utalentowanych graczy</li>
-                                <li>Budują relację z technologiczną społecznością</li>
+                                <li>Dostarczamy niezbędną energię i koncentrację w trakcie turnieju.</li>
+                                <li>Jesteśmy marką stworzoną przez graczy dla graczy.</li>
+                                <li>Wierzymy w potencjał polskiego e-sportu i lokalnych wydarzeń.</li>
+                                <li>Chcemy być częścią emocjonującej rywalizacji na najwyższym poziomie.</li>
                             </ul>
                         </div>
 
@@ -56,7 +56,7 @@ function Sponsors() {
                             rel="noopener noreferrer"
                             className="main-sponsor-link"
                         >
-                            Odwiedź stronę NeonTech →
+                            Odwiedź stronę Jastrząb Energy →
                         </a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@ function Sponsors() {
                         <p>Cyber-G – lider w branży sprzętu gamingowego.</p>
                     </div>
                     <div className="sponsor-card">
-                        <img src="/sponsors/firmab" alt="NeuroStream" />
+                        <img src="/sponsors/firmab.png" alt="NeuroStream" />
                         <p>NeuroStream – partner rozwiązań VR i streamingu.</p>
                     </div>
                     <div className="sponsor-card">

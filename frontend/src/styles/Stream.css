@@ -4,6 +4,7 @@
     padding: 40px 20px;
     background-color: #0d1117;
     color: white;
+    /* Domyślny kolor tekstu dla strony streamu */
     min-height: calc(100vh - 80px);
     /* Zakładając, że header ma ok. 80px */
     display: flex;
@@ -17,17 +18,31 @@
     text-align: center;
 }
 
+/* === Nagłówki: Stream Title === */
+/* Ujednolicony styl z h1 i h2 z HOME.CSS */
 .stream-title {
     font-size: 3rem;
+    /* Nieco większy niż 2.5rem z section-title, ale w zakresie hero h1 */
     color: #00ffff;
     margin-bottom: 10px;
     text-transform: uppercase;
+    /* Używamy podobnego text-shadow jak w HOME.CSS dla nagłówków */
+    text-shadow: 0 0 12px #00ffff80;
+    /* Bardziej intensywny niż 8px, ale spójny z hero h1 */
+    font-weight: 700;
+    /* Zakładamy, że nagłówki są pogrubione */
 }
 
+/* === Podtytuły: Stream Subtitle === */
+/* Ujednolicony styl z .hero-subtitle z HOME.CSS */
 .stream-subtitle {
-    font-size: 1.2rem;
-    color: #ccc;
+    font-size: 1.3rem;
+    /* Spójne z .hero-subtitle */
+    color: #eee;
+    /* Spójne z .hero-subtitle */
     margin-bottom: 40px;
+    line-height: 1.6;
+    /* Dodane dla lepszej czytelności, podobnie do .hero-info */
 }
 
 .stream-layout {
@@ -61,5 +76,16 @@
     .stream-chat {
         width: 100%;
         height: 60vh;
+    }
+
+    /* Dopasowanie rozmiarów czcionek dla mniejszych ekranów, jeśli to konieczne */
+    .stream-title {
+        font-size: 2.5rem;
+        /* Zmniejsz nagłówek na mniejszych ekranach */
+    }
+
+    .stream-subtitle {
+        font-size: 1.1rem;
+        /* Zmniejsz podtytuł na mniejszych ekranach */
     }
 }

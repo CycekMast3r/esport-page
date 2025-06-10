@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Button from "./Button";
 import "../styles/StreamTeaser.css";
+// Importujemy komponenty animacji
+import { Fade, Slide } from 'react-awesome-reveal';
 
 function StreamTeaser() {
     const videoRef = useRef(null);
@@ -13,6 +15,7 @@ function StreamTeaser() {
     const [volume, setVolume] = useState(0.5);
     const [previousVolume, setPreviousVolume] = useState(0.5);
     const [showControls, setShowControls] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true); // Domyślnie odtwarzane, bo `autoPlay`
 
     const updateVolume = useCallback((newVolumeValue) => {
         const video = videoRef.current;
@@ -30,6 +33,8 @@ function StreamTeaser() {
     useEffect(() => {
         const video = videoRef.current;
         if (video) {
+            setIsPlaying(!video.paused);
+
             if (video.muted) {
                 updateVolume(0);
                 setPreviousVolume(0.5);
@@ -38,6 +43,20 @@ function StreamTeaser() {
             }
         }
     }, [updateVolume]);
+
+    const togglePlayPause = () => {
+        const video = videoRef.current;
+        if (video) {
+            if (video.paused) {
+                video.play();
+                setIsPlaying(true);
+            } else {
+                video.pause();
+                setIsPlaying(false);
+            }
+        }
+    };
+
 
     const toggleMute = () => {
         const video = videoRef.current;
@@ -147,85 +166,123 @@ function StreamTeaser() {
         </svg>
     );
 
+    // Ikony Play i Pause
+    const PlayIcon = () => (
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+        </svg>
+    );
+
+    const PauseIcon = () => (
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+        </svg>
+    );
+
     return (
         <section className="stream-section-with-bg">
             <div className="stream-overlay" />
             <div className="stream-content">
-                <h2 className="section-title">Oglądaj z nami</h2>
-                <div
-                    className="stream-media"
-                    onMouseEnter={() => setShowControls(true)}
-                    onMouseLeave={() => setShowControls(false)}
-                >
+                <Fade direction="down" triggerOnce>
+                    <h2 className="section-title">Oglądaj z nami</h2>
+                </Fade>
+
+                <Slide direction="right" triggerOnce delay={100}>
                     <div
-                        ref={videoWrapperRef}
-                        className="video-wrapper"
-                        tabIndex="0"
+                        className="stream-media"
+                        onMouseEnter={() => setShowControls(true)}
+                        onMouseLeave={() => setShowControls(false)}
                     >
-                        <video
-                            ref={videoRef}
-                            id="streamVideo"
-                            className="promo-video"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
+                        <div
+                            ref={videoWrapperRef}
+                            className="video-wrapper"
+                            tabIndex="0"
                         >
-                            <source src="/videos/teaser.mp4" type="video/mp4" />
-                            Twoja przeglądarka nie obsługuje odtwarzacza wideo.
-                        </video>
-                        <div className={`video-title ${showControls ? "visible" : ""}`}>
-                            Łódź Rocket Masters – Transmisja
-                        </div>
-                        <div className={`video-controls ${showControls ? "visible" : ""}`}>
-                            <button
-                                ref={volumeButtonRef}
-                                onClick={toggleMute}
-                                className="control-button volume-button"
+                            <video
+                                ref={videoRef}
+                                id="streamVideo"
+                                className="promo-video"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                // Upewnij się, że atrybut controls jest WYŁĄCZONY
+                                controls={false} // <--- Dodaj lub upewnij się, że to jest ustawione na false
+                                onPlay={() => setIsPlaying(true)}
+                                onPause={() => setIsPlaying(false)}
                             >
-                                {isMuted || volume === 0 ? (
-                                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .9-.23 1.74-.63 2.5l1.43 1.43c.96-1.58 1.5-3.5 1.5-5.43 0-4.01-2.92-7.3-6.75-7.99v2.02c2.48.63 4.3 2.87 4.3 5.97zM4.27 3L3 4.27 7.73 9H3v6h4l5 5V4L7 9H3zm10.73 7.73L12 8.73v3.74l2.73 2.73z" /></svg>
-                                ) : (
-                                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 .9-.23 1.74-.63 2.5l1.43 1.43c.96-1.58 1.5-3.5 1.5-5.43 0-4.01-2.92-7.3-6.75-7.99v2.02c2.48.63 4.3 2.87 4.3 5.97z" /></svg>
-                                )}
+                                <source src="/videos/teaser.mp4" type="video/mp4" />
+                                Twoja przeglądarka nie obsługuje odtwarzacza wideo.
+                            </video>
+                            <div className={`video-title ${showControls ? "visible" : ""}`}>
+                                Łódź Rocket Masters – Intro
+                            </div>
+                            {/* Nowy kontener dla przycisku Play/Pause w lewym dolnym rogu */}
+                            <button
+                                onClick={togglePlayPause}
+                                className={`control-button play-pause-standalone ${showControls ? "visible" : ""}`}
+                            >
+                                {isPlaying ? <PauseIcon /> : <PlayIcon />}
                             </button>
-                            <input
-                                ref={volumeSliderRef}
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value={volume}
-                                onChange={handleVolumeChange}
-                                className="volume-slider"
-                                style={{ backgroundSize: `${volume * 100}% 100%` }}
-                            />
-                            <button onClick={toggleFullscreen} className="control-button fullscreen-button">
-                                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg>
-                            </button>
+
+                            <div className={`video-controls ${showControls ? "visible" : ""}`}>
+                                {/* Przycisk Volume */}
+                                <button
+                                    ref={volumeButtonRef}
+                                    onClick={toggleMute}
+                                    className="control-button volume-button"
+                                >
+                                    {isMuted || volume === 0 ? (
+                                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .9-.23 1.74-.63 2.5l1.43 1.43c.96-1.58 1.5-3.5 1.5-5.43 0-4.01-2.92-7.3-6.75-7.99v2.02c2.48.63 4.3 2.87 4.3 5.97zM4.27 3L3 4.27 7.73 9H3v6h4l5 5V4L7 9H3zm10.73 7.73L12 8.73v3.74l2.73 2.73z" /></svg>
+                                    ) : (
+                                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 .9-.23 1.74-.63 2.5l1.43 1.43c.96-1.58 1.5-3.5 1.5-5.43 0-4.01-2.92-7.3-6.75-7.99v2.02c2.48.63 4.3 2.87 4.3 5.97z" /></svg>
+                                    )}
+                                </button>
+                                <input
+                                    ref={volumeSliderRef}
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.01"
+                                    value={volume}
+                                    onChange={handleVolumeChange}
+                                    className="volume-slider"
+                                    style={{ backgroundSize: `${volume * 100}% 100%` }}
+                                />
+                                {/* Przycisk Fullscreen */}
+                                <button onClick={toggleFullscreen} className="control-button fullscreen-button">
+                                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <p className="stream-description">
-                    Emocje, rywalizacja i niesamowite akcje! Oglądaj najważniejsze momenty turnieju Łódź Rocket Masters 2025 i dołącz do naszej społeczności.
-                </p>
-                <div className="stream-buttons">
-                    <a href="https://twitch.tv/twojkanal" target="_blank" rel="noopener noreferrer">
-                        <Button variant="neon" icon={<TwitchIcon />}>
-                            Otwórz Twitch
-                        </Button>
-                    </a>
-                    <a href="https://discord.gg/twojserwer" target="_blank" rel="noopener noreferrer">
-                        <Button variant="neon" icon={<DiscordIcon />}>
-                            Dołącz do Discorda
-                        </Button>
-                    </a>
-                    <Link to="/stream">
-                        <Button variant="neon" icon={<StreamsIcon />}>
-                            Zobacz transmisje
-                        </Button>
-                    </Link>
-                </div>
+                </Slide>
+
+                <Fade direction="left" triggerOnce delay={400}>
+                    <p className="stream-description">
+                        Emocje, rywalizacja i niesamowite akcje! Oglądaj najważniejsze momenty turnieju Łódź Rocket Masters 2025 i dołącz do naszej społeczności.
+                    </p>
+                </Fade>
+
+                <Fade direction="up" cascade damping={0.15} triggerOnce delay={500}>
+                    <div className="stream-buttons">
+                        <a href="https://twitch.tv/twojkanal" target="_blank" rel="noopener noreferrer">
+                            <Button variant="neon" icon={<TwitchIcon />}>
+                                Otwórz Twitch
+                            </Button>
+                        </a>
+                        <a href="https://discord.gg/twojserwer" target="_blank" rel="noopener noreferrer">
+                            <Button variant="neon" icon={<DiscordIcon />}>
+                                Dołącz do Discorda
+                            </Button>
+                        </a>
+                        <Link to="/stream">
+                            <Button variant="neon" icon={<StreamsIcon />}>
+                                Zobacz transmisje
+                            </Button>
+                        </Link>
+                    </div>
+                </Fade>
             </div>
         </section>
     );
