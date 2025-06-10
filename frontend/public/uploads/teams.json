@@ -175,5 +175,35 @@
         "MVP": 0
       }
     ]
+  },
+  {
+    "id": "5f2c568d-b64c-4dfb-9021-aa93fd4d1d83",
+    "name": "zyzu",
+    "logo": "logo_5f2c568d-b64c-4dfb-9021-aa93fd4d1d83.png",
+    "email": "zyzu255@op.pl",
+    "dateOfBirth": "2000-02-02",
+    "players": [
+      {
+        "name": "zyzu",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "czorny",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      },
+      {
+        "name": "bioly",
+        "G": 0,
+        "A": 0,
+        "S": 0,
+        "MVP": 0
+      }
+    ]
   }
 ]
