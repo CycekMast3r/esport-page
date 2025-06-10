@@ -1,7 +1,7 @@
 // src/pages/Regulamin.jsx
 
 import React from 'react';
-import '../styles/Regulamin.css'; // Stworzymy ten plik w następnym kroku
+import '../styles/regulamin.css'; // Stworzymy ten plik w następnym kroku
 
 function Regulamin() {
     return (
