@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
-import Home from "./pages/Home";
-import Registration from './pages/Registration';
+import Home from "./pages/home";
+import Registration from './pages/registration';
 import Schedule from "./pages/Schedule";
 import Teams from "./pages/Teams";
 import Bracket from "./pages/Bracket";
