@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { registerTeam } from '../api';
 import { Link } from 'react-router-dom';
-import '../styles/Registration.css';
+import '../styles/registration.css';
 import Button from './Button';
 
 function Registration() {
