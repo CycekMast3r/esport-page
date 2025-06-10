@@ -4,8 +4,7 @@ import React from 'react';
 import '../styles/Stream.css';
 
 function Stream() {
-    // --- KONFIGURACJA ---
-    const twitchChannelName = "MrDzinold";
+    const twitchChannelName = "rocketleague";
     const domainName = "localhost";
 
     return (

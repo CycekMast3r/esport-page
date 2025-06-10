@@ -57,7 +57,7 @@ function SponsorsTeaser() {
                     />
                 </div>
                 <p className="sponsors-teaser-description">
-                    <strong>Jastrzab Energy</strong> to polska marka energetyków stworzona z myślą o graczach, którzy wiedzą, że każda decyzja i refleks liczą się w drodze po zwycięstwo. Zapomnij o konkurencji pokroju Orzeł Power – z Jastrzab Energy poczujesz prawdziwą moc! Jesteśmy dumni, że możemy wspierać turniej Łódź Rocket Masters, dostarczając zawodnikom paliwo do wygrywania!
+                    <strong>Jastrząb Energy</strong> to polska marka energetyków stworzona z myślą o graczach, którzy wiedzą, że każda decyzja i refleks liczą się w drodze po zwycięstwo. Zapomnij o konkurencji pokroju Orzeł Power – z Jastrzab Energy poczujesz prawdziwą moc! Jesteśmy dumni, że możemy wspierać turniej Łódź Rocket Masters, dostarczając zawodnikom paliwo do wygrywania!
                 </p>
             </div>
             <p className="sponsors-teaser-subtitle">Pozostali sponsorzy:</p>

@@ -67,16 +67,16 @@ function Sponsors() {
                 <h2 className="section-title">Partnerzy strategiczni</h2>
                 <div className="sponsor-grid">
                     <div className="sponsor-card">
-                        <img src="/sponsors/sponsor2.png" alt="Partner A" />
-                        <p>Firma A – lider w branży sprzętu gamingowego.</p>
+                        <img src="/sponsors/firmaa.png" alt="Cyber-G" />
+                        <p>Cyber-G – lider w branży sprzętu gamingowego.</p>
                     </div>
                     <div className="sponsor-card">
-                        <img src="/sponsors/sponsor3.png" alt="Partner B" />
-                        <p>Firma B – partner rozwiązań VR i streamingu.</p>
+                        <img src="/sponsors/firmab" alt="NeuroStream" />
+                        <p>NeuroStream – partner rozwiązań VR i streamingu.</p>
                     </div>
                     <div className="sponsor-card">
-                        <img src="/sponsors/sponsor4.png" alt="Partner C" />
-                        <p>Firma C – producent napojów dla graczy.</p>
+                        <img src="/sponsors/firmac.png" alt="Pixel Punch" />
+                        <p>Pixel Punch – producent napojów dla graczy.</p>
                     </div>
                 </div>
             </section>
