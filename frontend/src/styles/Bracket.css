@@ -145,13 +145,7 @@ tr.qualified {
 }
 
 
-/* .line-connector {
-    width: 60px;
-    height: 4px;
-    background: #00ffff44;
-    position: relative;
-    top: -20px;
-} */
+
 .team {
     display: flex;
     align-items: center;

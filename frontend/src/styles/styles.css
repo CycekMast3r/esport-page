@@ -21,7 +21,6 @@ body {
     background-color: #111;
 }
 
-/* Usuwamy padding ze strony głównej, ale zachowujemy go na innych */
 .home-main {
     flex-grow: 1;
     padding: 0;
@@ -38,5 +37,4 @@ body {
     display: flex;
     flex-direction: column;
     padding: 0;
-    /* lub zostaw 2rem jeśli chcesz */
 }

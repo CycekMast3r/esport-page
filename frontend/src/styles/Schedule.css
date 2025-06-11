@@ -1,4 +1,3 @@
-/* === GLOBAL PAGE STYLES === */
 .schedule-page.full-screen {
     min-height: 100vh;
     height: auto;
@@ -20,7 +19,6 @@
     align-items: center;
 }
 
-/* === TITLE === */
 .schedule-title {
     font-size: 2.5rem;
     color: #00ffff;
@@ -28,7 +26,6 @@
     margin-bottom: 2rem;
 }
 
-/* === PHASE SELECTOR === */
 .phase-selector {
     margin-bottom: 2rem;
     display: flex;
@@ -59,7 +56,6 @@
     background-color: #111;
 }
 
-/* === MATCH LIST === */
 .match-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -68,7 +64,6 @@
     max-width: 1200px;
 }
 
-/* === MATCH CARD === */
 .match-card {
     padding: 1rem;
     border-radius: 12px;
@@ -94,7 +89,6 @@
     border-left: 4px solid #007bff;
 }
 
-/* === MATCH ELEMENTS === */
 .match-date {
     color: #ccc;
     font-size: 0.9rem;
@@ -121,7 +115,6 @@
     box-shadow: 0 0 6px #00ffff33;
 }
 
-/* === TEAMS === */
 .team {
     display: flex;
     align-items: center;
@@ -137,14 +130,12 @@
     box-shadow: 0 0 6px #00ffff55;
 }
 
-/* Zielony kolor dla zwycięzcy */
 .team.winner span {
     color: #00ff88;
     font-weight: bold;
     text-shadow: 0 0 4px #00ff88aa;
 }
 
-/* === SCORE === */
 .match-score {
     font-size: 1.4rem;
     font-weight: bold;
@@ -158,24 +149,20 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    /* pozwala na łamanie linii w małych kafelkach */
 }
 
 .match-score {
     white-space: nowrap;
-    /* zapobiega łamaniu wyniku */
     flex-shrink: 0;
     margin: 0 1rem;
 }
 
 .team {
     flex: 1 1 40%;
-    /* pozwala zespołom zajmować miejsce elastycznie */
     display: flex;
     align-items: center;
     gap: 0.6rem;
     min-width: 0;
-    /* umożliwia zawijanie tekstu, jeśli to konieczne */
 }
 
 @media (max-width: 480px) {

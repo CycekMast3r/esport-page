@@ -10,7 +10,6 @@
     font-size: 1rem;
 }
 
-/* 🟢 PRIMARY */
 .btn.primary {
     background-color: #00ffff66;
     color: black;
@@ -20,7 +19,6 @@
     background-color: #00ffff;
 }
 
-/* ⚫ OUTLINE (przezroczyste z obramowaniem) */
 .btn.outline {
     background-color: transparent;
     color: #00ffcc;
@@ -32,7 +30,6 @@
     color: black;
 }
 
-/* 🔴 DANGER (np. usuwanie) */
 .btn.danger {
     background-color: #ff4444;
     color: white;
@@ -42,7 +39,6 @@
     background-color: #ff6666;
 }
 
-/* 🌟 NEON (dla akcji e-sportowych) */
 .btn.neon {
     background-color: #1f1f1f;
     color: #00ffff;
@@ -56,7 +52,6 @@
     box-shadow: 0 0 16px #02bebe;
 }
 
-/* 🔒 DISABLED */
 .btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;

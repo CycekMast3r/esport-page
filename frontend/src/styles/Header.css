@@ -1,7 +1,6 @@
 /* src/styles/Header.css - WERSJA POPRAWIONA */
 
 .header {
-    /* --- EFEKT SZKŁA (GLASSMORPHISM) --- */
     background-color: rgba(18, 18, 22, 0.75);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -61,11 +60,8 @@
     filter: drop-shadow(0 0 8px #00ffff);
 }
 
-/* WAŻNA ZMIANA: Zwiększona specyficzność dla linków w sekcji center */
 .nav-section.center>a.nav-link,
-/* Dodano .nav-link dla specyficzności */
 .dropdown>a.nav-link {
-    /* Dodano .nav-link dla specyficzności */
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
@@ -75,9 +71,7 @@
 }
 
 .nav-section.center>a.nav-link::after,
-/* Dopasowanie do powyższego */
 .dropdown>a.nav-link::after {
-    /* Dopasowanie do powyższego */
     content: '';
     position: absolute;
     width: 100%;
@@ -91,36 +85,28 @@
 }
 
 .nav-section.center>a.nav-link:hover {
-    /* Dopasowanie do powyższego */
     color: white;
 }
 
 .nav-section.center>a.nav-link:hover::after,
-/* Dopasowanie do powyższego */
 .dropdown:hover>a.nav-link::after {
-    /* Dopasowanie do powyższego */
     transform: scaleX(1);
 }
 
 
-/* --- TO JEST KLUCZOWA SEKCJA, Upewnij się, że jest na końcu i ma wystarczającą specyficzność --- */
-/* Zwiększona specyficzność dla aktywnych linków */
+
 .nav-section.center>a.nav-link.active-link,
 .dropdown>a.nav-link.active-link {
-    /* Dodano dla linku Turniej */
     color: #00ffff;
     font-weight: 700;
 }
 
 .nav-section.center>a.nav-link.active-link::after,
 .dropdown>a.nav-link.active-link::after {
-    /* Dodano dla linku Turniej */
     transform: scaleX(1);
-    /* Aktywne podkreślenie */
 }
 
 
-/* --- DROPDOWN MENU --- */
 .dropdown {
     position: relative;
 }
@@ -141,24 +127,18 @@
     min-width: 180px;
 }
 
-/* *** TUTAJ JEST KLUCZOWA ZMIANA ***
-    Zamiast ".dropdown-content .nav-link" używamy ".dropdown-content a",
-    aby stylić WSZYSTKIE linki wewnątrz menu.
-*/
+
 .dropdown-content a {
     display: block;
     padding: 0.8rem 1.5rem;
     white-space: nowrap;
     text-align: left;
-    /* Zmienione na 'left' dla lepszego wyglądu */
     color: #e0e0e0;
     text-decoration: none;
     transition: background-color 0.2s, color 0.2s;
     position: relative;
-    /* Dodaj, aby ::after wewnątrz dropdownu działało */
 }
 
-/* Podkreślenie dla linków w dropdownie na hover */
 .dropdown-content a::after {
     content: '';
     position: absolute;
@@ -185,21 +165,16 @@
     display: block;
 }
 
-/* Aktywny stan dla linków w dropdownie (jeśli są NavLinkami) */
 .dropdown-content a.active-link {
-    /* Specyficzność dla linków w dropdownie */
     color: #00ffff;
-    /* Kolor aktywnego linku w dropdownie */
     font-weight: 700;
 }
 
 .dropdown-content a.active-link::after {
     transform: scaleX(1);
-    /* Podkreślenie aktywnego linku w dropdownie */
 }
 
 
-/* Hamburger Icon */
 .hamburger-icon {
     display: none;
     flex-direction: column;
@@ -227,7 +202,6 @@
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Mobile Menu */
 .mobile-menu {
     display: flex;
     flex-direction: column;
@@ -260,7 +234,6 @@
 
 .mobile-menu.glass {
     background: rgba(0, 0, 0, 0.6);
-    /* ciemne, półprzezroczyste tło */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -268,7 +241,6 @@
     color: white;
 }
 
-/* Linki w menu */
 .mobile-menu .nav-link,
 .mobile-menu a,
 .mobile-menu button {
@@ -276,7 +248,6 @@
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Dla hover efektu */
 .mobile-menu .nav-link:hover,
 .mobile-menu a:hover {
     color: #00ffff;
@@ -284,7 +255,6 @@
 
 
 
-/* Responsiveness */
 @media (max-width: 992px) {
     .desktop-menu {
         display: none;
@@ -296,7 +266,6 @@
 }
 
 
-/* --- RESPONSYWNOŚĆ --- */
 @media (max-width: 992px) {
     .nav-section.center {
         display: none;

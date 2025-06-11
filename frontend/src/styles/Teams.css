@@ -1,7 +1,3 @@
-/* ======================== */
-/* === BASE STYLES === */
-/* ======================== */
-
 .teams-page {
     background: url("/images/parallax.jpg") no-repeat center center fixed;
     background-size: cover;
@@ -166,11 +162,6 @@
     border-color: #00ffff;
 }
 
-/* ======================== */
-/* === RESPONSIVE STYLES === */
-/* ======================== */
-
-/* TABLET */
 @media (max-width: 1024px) {
     .teams-title {
         font-size: 2.5rem;
@@ -201,7 +192,6 @@
     }
 }
 
-/* SMARTFONY średnie */
 @media (max-width: 768px) {
     .teams-title {
         font-size: 2rem;
@@ -234,7 +224,6 @@
     }
 }
 
-/* MAŁE TELEFONY */
 @media (max-width: 480px) {
     .teams-title {
         font-size: 1.6rem;

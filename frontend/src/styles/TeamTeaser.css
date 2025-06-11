@@ -1,6 +1,5 @@
 .team-slider-section {
     background: rgba(0, 0, 0, 0.4);
-    /* półprzezroczyste ciemne tło */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;

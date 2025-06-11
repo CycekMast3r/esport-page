@@ -18,7 +18,6 @@ function AppWrapper() {
     const location = useLocation();
     const isHome = location.pathname === "/";
 
-    // Opcjonalnie: usuwanie paddingu tylko na stronie głównej
     useEffect(() => {
         document.body.style.margin = "0";
     }, []);

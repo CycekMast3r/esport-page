@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Button from "./Button";
 import "../styles/StreamTeaser.css";
-// Importujemy komponenty animacji
 import { Fade, Slide } from 'react-awesome-reveal';
 
 function StreamTeaser() {
@@ -15,7 +14,7 @@ function StreamTeaser() {
     const [volume, setVolume] = useState(0.5);
     const [previousVolume, setPreviousVolume] = useState(0.5);
     const [showControls, setShowControls] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(true); // Domyślnie odtwarzane, bo `autoPlay`
+    const [isPlaying, setIsPlaying] = useState(true);
 
     const updateVolume = useCallback((newVolumeValue) => {
         const video = videoRef.current;
@@ -222,7 +221,6 @@ function StreamTeaser() {
                             </button>
 
                             <div className={`video-controls ${showControls ? "visible" : ""}`}>
-                                {/* Przycisk Volume */}
                                 <button
                                     ref={volumeButtonRef}
                                     onClick={toggleMute}
@@ -245,7 +243,6 @@ function StreamTeaser() {
                                     className="volume-slider"
                                     style={{ backgroundSize: `${volume * 100}% 100%` }}
                                 />
-                                {/* Przycisk Fullscreen */}
                                 <button onClick={toggleFullscreen} className="control-button fullscreen-button">
                                     <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg>
                                 </button>

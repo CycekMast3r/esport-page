@@ -2,23 +2,19 @@ import { useEffect, useState } from "react";
 import "../styles/Schedule.css";
 
 function Schedule() {
-    // ZMIANA: Zamiast jednego stanu 'teams', dodajemy 'loading' i 'error'
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
 
-    // DODANE: Pobranie bazowego URL API ze zmiennych środowiskowych Vite
     const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        // ZMIANA: Logika pobierania danych z API zamiast statycznego pliku JSON
         const fetchTeams = async () => {
             setLoading(true);
             setError(null);
             try {
-                // Używamy tego samego endpointu co TournamentBracket.jsx
                 const response = await fetch(`${API_BASE_URL}/api/teams`);
                 if (!response.ok) {
                     throw new Error(`Błąd HTTP! Status: ${response.status}`);
@@ -34,7 +30,7 @@ function Schedule() {
         };
 
         fetchTeams();
-    }, [API_BASE_URL]); // Dodajemy zależność, aby zapewnić spójność
+    }, [API_BASE_URL]);
 
     const isFinished = (score) => /\d\s*:\s*\d/.test(score);
     const placeholderTeam = {
@@ -42,7 +38,6 @@ function Schedule() {
         logo: "/images/question-mark.png"
     };
 
-    // === Generowanie fazy grupowej ===
     const groupLabels = ["A", "B", "C", "D"];
     const groups = groupLabels.map((_, idx) => {
         const group = teams.slice(idx * 4, (idx + 1) * 4);
@@ -72,11 +67,9 @@ function Schedule() {
                         round: `Grupa ${label}`,
                         date: "",
                         teamA: teamA
-                            // ZMIANA: Używamy bezpośrednio 'teamA.logo', które jest pełnym URL-em
                             ? { name: teamA.name, logo: teamA.logo }
                             : placeholderTeam,
                         teamB: teamB
-                            // ZMIANA: Używamy bezpośrednio 'teamB.logo'
                             ? { name: teamB.name, logo: teamB.logo }
                             : placeholderTeam,
                         score: "– : –",
@@ -87,7 +80,6 @@ function Schedule() {
             return matches;
         });
 
-        // Ta logika pozostaje bez zmian, ale teraz operuje na danych z API
         const startDate = new Date("2025-06-14T18:00:00");
         let matchDay = 0;
         const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
@@ -126,9 +118,7 @@ function Schedule() {
         return allGroupMatches;
     };
 
-    // === Pozostała logika generowania (ćwierćfinały, etc.) pozostaje bez zmian ===
     const generateQuarterfinals = () => {
-        // Ta sekcja nadal używa placeholderów, co jest OK na tym etapie.
         return [
             { round: "Ćwierćfinał", date: "17.06.2025, 14:00", teamA: { name: "A1", logo: "" }, teamB: { name: "B2", logo: "" }, score: "– : –" },
             { round: "Ćwierćfinał", date: "17.06.2025, 16:00", teamA: { name: "C2", logo: "" }, teamB: { name: "D1", logo: "" }, score: "– : –" },
@@ -155,7 +145,6 @@ function Schedule() {
 
     const matches = scheduleByPhase[selectedPhase] || [];
 
-    // DODANE: Obsługa ładowania i błędów w JSX
     if (loading) {
         return (
             <section className="schedule-page full-screen">

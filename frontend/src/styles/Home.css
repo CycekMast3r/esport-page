@@ -1,4 +1,3 @@
-/* === HERO Sekcja === */
 .home-hero {
     position: relative;
     height: 100vh;
@@ -192,13 +191,6 @@
 }
 
 
-
-/* === Sekcja: Harmonogram === */
-
-
-
-
-
 .teams-parallax-wrapper {
     position: relative;
     padding: 100px 20px;
@@ -210,7 +202,6 @@
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    /* lekka przyciemniona warstwa */
     z-index: 1;
 }
 

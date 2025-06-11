@@ -7,10 +7,8 @@
     color: white;
     text-align: center;
     overflow: hidden;
-    /* Ukrywa elementy cząsteczek wychodzące poza sekcję */
 }
 
-/* Kontener, aby cząsteczki nie zakrywały treści */
 .contact-container {
     position: relative;
     z-index: 2;
@@ -35,7 +33,6 @@
     margin-top: 3rem;
 }
 
-/* --- LEWA KOLUMNA - KARTY KONTAKTOWE --- */
 .contact-info {
     flex: 1;
     min-width: 300px;
@@ -97,10 +94,8 @@
     color: #aaa;
 }
 
-/* --- PRAWA KOLUMNA - FAQ --- */
 .faq-section {
     flex: 1.5;
-    /* Dajemy więcej miejsca dla FAQ */
     min-width: 300px;
     text-align: left;
 }
@@ -119,7 +114,6 @@
     border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
-    /* Ważne dla animacji max-height */
     transition: background 0.3s ease;
 }
 
@@ -140,7 +134,6 @@
     color: #00ffff;
 }
 
-/* Animowany plus/minus */
 .faq-icon {
     width: 24px;
     height: 24px;
@@ -166,10 +159,8 @@
 
 .faq-item.open .faq-icon {
     transform: rotate(45deg);
-    /* Obraca plus w znak 'x' */
 }
 
-/* Płynne rozwijanie odpowiedzi */
 .faq-answer-wrapper {
     max-height: 0;
     transition: max-height 0.5s cubic-bezier(0.2, 1, 0.2, 1);
@@ -190,10 +181,8 @@
 
 .faq-item.open .faq-answer-wrapper {
     max-height: 200px;
-    /* Wystarczająco duża wartość */
 }
 
-/* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
     .contact-content {
         flex-direction: column;

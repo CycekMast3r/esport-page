@@ -1,5 +1,3 @@
-/* === Registration.css (Wersja Ostateczna z CSS Grid) === */
-
 .registration-page {
     position: relative;
     min-height: 100vh;
@@ -15,7 +13,6 @@
     z-index: 0;
 }
 
-/* === Overlay === */
 .registration-page::before {
     content: "";
     position: absolute;
@@ -24,7 +21,6 @@
     z-index: 1;
 }
 
-/* === Glassmorphism box === */
 .registration-container {
     position: relative;
     z-index: 2;
@@ -40,7 +36,6 @@
     text-align: center;
 }
 
-/* === Nagłówki === */
 .registration-container h1 {
     font-size: 2.4rem;
     color: #00ffff;
@@ -53,7 +48,6 @@
     color: #ccc;
 }
 
-/* === Formularz === */
 .registration-form {
     display: flex;
     flex-direction: column;
@@ -89,7 +83,6 @@
     background-color: #101010;
 }
 
-/* Kalendarz */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
@@ -101,23 +94,19 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
 }
 
-/* === Grupowanie inputów === */
 .player-inputs {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-/* --- OSTATECZNA POPRAWKA Z UŻYCIEM CSS GRID --- */
 .captain-inputs {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
-/* Reguła dla .captain-inputs > div nie jest już potrzebna */
 
 
-/* === Plik logo === */
 .logo-preview-wrapper {
     margin-top: 10px;
     text-align: center;
@@ -168,7 +157,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 0 12px #00ffff66;
 }
 
-/* === Checkbox regulamin === */
 .terms-group {
     display: flex;
     align-items: center;
@@ -186,7 +174,6 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     text-decoration: underline;
 }
 
-/* === Komunikaty === */
 .message {
     padding: 10px;
     margin-top: 1rem;
@@ -209,12 +196,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     font-size: 1.1rem;
 }
 
-/* === Animacje === */
 @keyframes fadeSlideUp {
     from {
         opacity: 0;
         transform: translateY(40px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -222,9 +209,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 @keyframes pulseNeon {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 20px #00ffff33, 0 0 40px #00ffff44;
     }
+
     50% {
         box-shadow: 0 0 30px #00ffff66, 0 0 60px #00ffff55;
     }
