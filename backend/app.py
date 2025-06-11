@@ -3,7 +3,7 @@ import json
 import os
 import re
 import traceback
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta, date
@@ -13,14 +13,21 @@ from psycopg2 import sql # Importuj sql dla bezpiecznego budowania zapytań
 app = Flask(__name__)
 CORS(app)
 
+app.add_url_rule(
+    '/uploads/<path:filename>',
+    endpoint='uploaded_file',
+    view_func=lambda filename: send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+)
 # Ustawienie URL bazy danych.
 DATABASE_URL = os.environ.get('DATABASE_URL')
+print(f"DEBUG: Odczytana DATABASE_URL: {DATABASE_URL}")
 # Jeśli testujesz lokalnie i nie masz zmiennej środowiskowej, możesz użyć:
 # DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db"
 
 # Ścieżki i ustawienia
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = {".png"}
 MAX_FILE_SIZE_MB = 2
