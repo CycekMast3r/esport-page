@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CustomVideoPlayer from '../CustomVideoPlayer'; // Importujemy CustomVideoPlayer
+import CustomVideoPlayer from './CustomVideoPlayer'; // Importujemy CustomVideoPlayer
 import MatchCard from '../components/MatchCard'; // Będziemy potrzebować MatchCard z sekcji Schedule
 import '../styles/Stream.css'; // Ten plik CSS będziemy modyfikować
 import { format } from 'date-fns';
