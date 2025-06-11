@@ -6,7 +6,7 @@ import traceback
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import psycopg2
 from psycopg2 import sql # Importuj sql dla bezpiecznego budowania zapytań
 
@@ -120,12 +120,13 @@ def get_teams():
         cur.execute("SELECT id, name, logo, email, date_of_birth, players FROM teams ORDER BY name")
         teams_from_db = []
         for row in cur.fetchall():
+            # ZMIANA TUTAJ: użyj 'date' bezpośrednio, ponieważ zostało zaimportowane
             team = {
                 "id": row[0],
                 "name": row[1],
                 "logo": row[2],
                 "email": row[3],
-                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else str(row[4]), # Konwersja na str jeśli nie jest datą
+                "dateOfBirth": row[4].isoformat() if isinstance(row[4], date) else str(row[4]),
                 "players": row[5]
             }
             teams_from_db.append(team)
