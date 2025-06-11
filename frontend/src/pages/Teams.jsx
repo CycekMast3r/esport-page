@@ -7,7 +7,7 @@ function TeamsPage() {
     const [teams, setTeams] = useState([]);
     const [flippedIndex, setFlippedIndex] = useState(null);
     const [loading, setLoading] = useState(true); // Dodajemy stan ładowania
-    const [error, setError] = useState(null);   // Dodajemy stan błędu
+    const [error, setError] = useState(null);    // Dodajemy stan błędu
 
     const totalSlots = 16;
 
@@ -96,13 +96,13 @@ function TeamsPage() {
                             {team ? (
                                 <>
                                     <div className="flip-front">
-                                        {/* Zmieniamy ścieżkę do logo, aby wskazywała na backend */}
-                                        <img src={`${API_BASE_URL}/uploads/${team.logo}`} alt={team.name} className="team-logo" />
+                                        {/* ZMIANA TUTAJ: Używamy team.logo bezpośrednio, ponieważ jest już pełnym URL-em Cloudinary */}
+                                        {team.logo && <img src={team.logo} alt={team.name} className="team-logo" />}
                                         <h3 className="team-name">{team.name}</h3>
                                     </div>
                                     <div className="flip-back">
-                                        {/* Zmieniamy ścieżkę do logo, aby wskazywała na backend */}
-                                        <img src={`${API_BASE_URL}/uploads/${team.logo}`} alt={team.name} className="team-logo small" />
+                                        {/* ZMIANA TUTAJ: Używamy team.logo bezpośrednio */}
+                                        {team.logo && <img src={team.logo} alt={team.name} className="team-logo small" />}
                                         <table className="player-stats">
                                             <thead>
                                                 <tr>
