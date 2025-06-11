@@ -1,0 +1,235 @@
+/* Kontener główny odtwarzacza */
+.custom-video-player {
+    width: 100%;
+    /* max-width: 720px; */
+    /* To będzie zmienne w zależności od użycia */
+    margin: 0;
+    /* Marginesy będą kontrolowane przez rodzica */
+    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+    border: 2px solid #00ffffaa;
+    border-radius: 20px;
+    box-shadow: 0 0 25px #00ffff44, 0 0 50px #00ffff22;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    height: 100%;
+    /* Ważne dla stream.jsx aby wypełniło dostępne miejsce */
+}
+
+.custom-video-player:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 30px #00ffff66, 0 0 60px #00ffff33;
+}
+
+/* Wrapper wideo (dla proporcji 16:9 lub dopasowania Twitcha) */
+.custom-video-player .video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* Proporcje 16:9 */
+    height: 0;
+    /* Ustawiamy na 0, bo padding-bottom kontroluje wysokość */
+    border-radius: 18px;
+    overflow: hidden;
+    background-color: black;
+    /* Aby tło było czarne przed załadowaniem wideo */
+}
+
+.custom-video-player .promo-video,
+.custom-video-player iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 18px;
+    z-index: 1;
+}
+
+/* NOWE STYLE DLA GÓRNEGO PASKA (TYTUŁU) */
+.custom-video-player .video-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #00ffff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 3;
+    text-shadow: 0 0 8px #00ffff80;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.custom-video-player .video-title.visible {
+    opacity: 1;
+}
+
+/* STYLE DLA DOLNEGO PASKA (KONTROLEK) */
+.custom-video-player .video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.8rem 1.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* Pozostałe przyciski po prawej */
+    gap: 1.2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 3;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.custom-video-player .video-controls.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Nowe style dla przycisku Play/Pause w lewym dolnym rogu */
+.custom-video-player .play-pause-standalone {
+    position: absolute;
+    bottom: 0.8rem;
+    /* Taka sama odległość od dołu jak kontrolki */
+    left: 1.5rem;
+    /* Taka sama odległość od lewej jak padding kontrolek */
+    background: rgba(0, 0, 0, 0.7);
+    /* Tło jak dla kontrolek */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 8px;
+    /* Zaokrąglenie jak dla przycisków */
+    padding: 0.6rem;
+    /* Padding jak dla przycisków */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-out, opacity 0.3s ease-in-out;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+    z-index: 4;
+    /* Wyższy z-index, aby był nad paskiem kontrolek */
+    opacity: 0;
+    /* Domyślnie niewidoczny */
+    pointer-events: none;
+    /* Domyślnie nieklikalny */
+    color: #00ffff;
+    /* Kolor ikony */
+    border: none;
+    /* Remove default button border */
+    cursor: pointer;
+}
+
+.custom-video-player .play-pause-standalone.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.custom-video-player .play-pause-standalone:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.custom-video-player .play-pause-standalone svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    filter: drop-shadow(0 0 3px #00ffff);
+}
+
+.custom-video-player .control-button {
+    background: none;
+    border: none;
+    color: #00ffff;
+    cursor: pointer;
+    padding: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-out;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+}
+
+.custom-video-player .control-button:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+.custom-video-player .control-button svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    filter: drop-shadow(0 0 3px #00ffff);
+}
+
+.custom-video-player .volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 8px;
+    background: linear-gradient(to right, #00ffff 0%, #00ffff 0%, #333 0%, #333 100%);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-video-player .volume-slider:hover {
+    opacity: 1;
+}
+
+/* Stylizacja "kciuka" suwaka */
+.custom-video-player .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #00ffff;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.custom-video-player .volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #00ffff;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.custom-video-player .volume-slider::-moz-range-track {
+    background: #333;
+    border-radius: 4px;
+}
+
+.custom-video-player .volume-slider::-moz-range-progress {
+    background: #00ffff;
+    border-radius: 4px;
+}
