@@ -3,11 +3,9 @@
 import { useState } from "react";
 import "../styles/ContactTeaser.css";
 import ParticlesBackground from "./ParticlesBackground";
-// Importujemy komponenty animacji
 import { Fade, Slide } from 'react-awesome-reveal';
 
 
-// Definicje ikon jako małe komponenty funkcyjne
 const EmailIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
@@ -20,18 +18,14 @@ const DiscordIcon = () => (
 );
 
 
-// Modyfikacja FAQItem - dodamy animację tylko dla samego FAQItem,
-// rozwijana odpowiedź będzie kontrolowana przez stan 'open'.
 function FAQItem({ question, answer }) {
     const [open, setOpen] = useState(false);
 
     return (
-        // Używamy Fade, aby każdy element FAQ pojawił się płynnie.
-        // Opóźnienie będzie dodane w komponencie nadrzędnym.
         <div className={`faq-item ${open ? "open" : ""}`} onClick={() => setOpen(!open)}>
             <div className="faq-question">
                 <span>{question}</span>
-                <div className="faq-icon">{/* Znak '+' zostanie dodany przez CSS */}</div>
+                <div className="faq-icon"></div>
             </div>
             <div className="faq-answer-wrapper">
                 <div className="faq-answer">{answer}</div>
@@ -45,13 +39,11 @@ function ContactTeaser() {
         <section className="contact-section">
             <ParticlesBackground />
             <div className="contact-container">
-                {/* Animacja dla tytułu sekcji */}
                 <Fade direction="down" triggerOnce>
                     <h2 className="section-title">Skontaktuj się z nami</h2>
                 </Fade>
 
                 <div className="contact-content">
-                    {/* Animacja dla sekcji kontaktowej (Email i Discord) */}
                     <Fade direction="left" cascade damping={0.2} triggerOnce delay={100}>
                         <div className="contact-info">
                             <a href="mailto:kontakt@rocketmasters.pl" className="contact-box-link">
@@ -75,14 +67,11 @@ function ContactTeaser() {
                         </div>
                     </Fade>
 
-                    {/* Animacja dla sekcji FAQ */}
                     <div className="faq-section">
-                        {/* Animacja dla tytułu FAQ */}
                         <Fade direction="up" triggerOnce delay={300}>
                             <h3>Najczęściej zadawane pytania</h3>
                         </Fade>
 
-                        {/* Animacja dla każdego FAQItem w kaskadzie */}
                         <Fade direction="up" cascade damping={0.1} triggerOnce delay={400}>
                             <FAQItem
                                 question="Jak mogę zarejestrować drużynę?"

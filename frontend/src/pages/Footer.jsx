@@ -3,24 +3,20 @@ import { useState, useRef, useEffect } from "react"; // Potrzebne hooki
 import "../styles/Footer.css";
 
 function Footer() {
-    // Ref do śledzenia elementu stopki
     const footerRef = useRef(null);
-    // Stan do śledzenia, czy stopka jest widoczna
     const [isVisible, setIsVisible] = useState(false);
 
-    // Efekt, który uruchomi się raz i będzie obserwował stopkę
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 const entry = entries[0];
-                // Gdy element jest widoczny w oknie przeglądarki
                 if (entry.isIntersecting) {
-                    setIsVisible(true); // Ustawiamy stan na 'widoczny'
-                    observer.unobserve(entry.target); // Przestajemy obserwować, by animacja nie powtórzyła się
+                    setIsVisible(true);
+                    observer.unobserve(entry.target);
                 }
             },
             {
-                threshold: 0.1, // Uruchom, gdy 10% elementu jest widoczne
+                threshold: 0.1,
             }
         );
 
@@ -28,10 +24,8 @@ function Footer() {
             observer.observe(footerRef.current);
         }
 
-        // Funkcja czyszcząca, która uruchomi się, gdy komponent zniknie
         return () => {
             if (footerRef.current) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
                 observer.unobserve(footerRef.current);
             }
         };

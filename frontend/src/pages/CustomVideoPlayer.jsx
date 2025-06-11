@@ -11,9 +11,7 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
     const [volume, setVolume] = useState(0.5);
     const [previousVolume, setPreviousVolume] = useState(0.5);
     const [showControls, setShowControls] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false); // Domyślnie na false, Twitch może nie być autoPlay
-
-    // State dla Twitch iframe (jeśli używany)
+    const [isPlaying, setIsPlaying] = useState(false);
     const [isTwitchPlayer, setIsTwitchPlayer] = useState(false);
 
     const updateVolume = useCallback((newVolumeValue) => {
@@ -29,21 +27,16 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                 }
             }
         }
-        // Brak bezpośredniej kontroli głośności dla Twitcha
     }, [isTwitchPlayer]);
 
     useEffect(() => {
         if (twitchChannelName) {
             setIsTwitchPlayer(true);
-            // Twitch player logic - doesn't have direct volume/play control via video element
-            // We'll show/hide controls, but play/pause/volume will be handled by Twitch's player
-            // For now, assume it's "playing" if a channel is provided
             setIsPlaying(true);
         } else if (videoSrc) {
             setIsTwitchPlayer(false);
             const video = videoRef.current;
             if (video) {
-                // Ensure video is loaded to determine initial state
                 video.onloadedmetadata = () => {
                     setIsPlaying(!video.paused);
                     if (video.muted) {
@@ -53,7 +46,6 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                         updateVolume(video.volume);
                     }
                 };
-                // If already loaded, set state directly
                 if (video.readyState >= 3) {
                     setIsPlaying(!video.paused);
                     if (video.muted) {
@@ -63,7 +55,6 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                         updateVolume(video.volume);
                     }
                 }
-                // Also handle play/pause events from actual video playback
                 video.onplay = () => setIsPlaying(true);
                 video.onpause = () => setIsPlaying(false);
                 video.onvolumechange = () => {
@@ -87,8 +78,6 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                 }
             }
         }
-        // For Twitch, we can't control play/pause directly, so this button would be inactive or hidden.
-        // We will hide play/pause for Twitch.
     };
 
     const toggleMute = () => {
@@ -107,7 +96,6 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                 }
             }
         }
-        // For Twitch, we can't control mute directly.
     };
 
     const handleVolumeChange = (e) => {
@@ -131,7 +119,7 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
     };
 
     const handleVolumeScroll = useCallback((e) => {
-        if (!showControls || isTwitchPlayer) return; // Disable for Twitch
+        if (!showControls || isTwitchPlayer) return;
         e.preventDefault();
         const delta = e.deltaY;
         const volumeChange = 0.05;
@@ -166,7 +154,6 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
         const volumeButton = volumeButtonRef.current;
         const volumeSlider = volumeSliderRef.current;
 
-        // Clean up previous event listeners if videoSrc or twitchChannelName changes
         const cleanup = () => {
             if (videoWrapper) {
                 videoWrapper.removeEventListener('keydown', handleKeyDown);
@@ -178,23 +165,21 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                 volumeSlider.removeEventListener('wheel', handleVolumeScroll);
             }
         };
-        cleanup(); // Call cleanup on component mount/update
+        cleanup();
 
-        // Add new event listeners
         if (videoWrapper) {
             videoWrapper.addEventListener('keydown', handleKeyDown);
         }
-        if (volumeButton && !isTwitchPlayer) { // Volume controls not for Twitch
+        if (volumeButton && !isTwitchPlayer) {
             volumeButton.addEventListener('wheel', handleVolumeScroll, { passive: false });
         }
-        if (volumeSlider && !isTwitchPlayer) { // Volume controls not for Twitch
+        if (volumeSlider && !isTwitchPlayer) {
             volumeSlider.addEventListener('wheel', handleVolumeScroll, { passive: false });
         }
 
-        return cleanup; // Cleanup on unmount
+        return cleanup;
     }, [handleKeyDown, handleVolumeScroll, isTwitchPlayer]);
 
-    // Ikony Play i Pause
     const PlayIcon = () => (
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />
@@ -235,7 +220,7 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                         className="promo-video"
                         autoPlay
                         loop
-                        muted // Muted by default for autoPlay policy
+                        muted
                         playsInline
                         controls={false}
                     >
@@ -248,7 +233,7 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                     {title || (twitchChannelName ? `Transmisja na żywo: ${twitchChannelName}` : "Łódź Rocket Masters – Intro")}
                 </div>
 
-                {!isTwitchPlayer && ( // Play/Pause only for non-Twitch video
+                {!isTwitchPlayer && (
                     <button
                         onClick={togglePlayPause}
                         className={`control-button play-pause-standalone ${showControls ? "visible" : ""}`}
@@ -258,7 +243,7 @@ function CustomVideoPlayer({ videoSrc, twitchChannelName, domainName, title }) {
                 )}
 
                 <div className={`video-controls ${showControls ? "visible" : ""}`}>
-                    {!isTwitchPlayer && ( // Volume controls only for non-Twitch video
+                    {!isTwitchPlayer && (
                         <>
                             <button
                                 ref={volumeButtonRef}

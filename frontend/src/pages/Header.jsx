@@ -28,7 +28,6 @@ function Header({ isHome }) {
                     </Link>
                 </div>
 
-                {/* HAMBURGER ICON */}
                 <div className="hamburger-icon" onClick={toggleMenu}>
                     <div className={`bar ${menuOpen ? "open" : ""}`}></div>
                     <div className={`bar ${menuOpen ? "open" : ""}`}></div>
@@ -59,13 +58,10 @@ function Header({ isHome }) {
                 </div>
             </nav>
 
-            {/* MOBILE MENU */}
             {menuOpen && (
                 <>
-                    {/* BACKDROP */}
                     <div className="menu-backdrop" onClick={closeMenu}></div>
 
-                    {/* MOBILE MENU z klasą glass tylko na stronie głównej */}
                     <div className={`mobile-menu ${isHomePage ? 'glass' : ''}`}>
                         <NavLink to="/" onClick={closeMenu} className={getLinkClass} end>Strona Główna</NavLink>
                         <NavLink to="/druzyny" onClick={closeMenu} className={getLinkClass}>Drużyny</NavLink>

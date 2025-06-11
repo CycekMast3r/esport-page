@@ -31,8 +31,8 @@ const rounds = [
                 id: 3,
                 date: "22.06.2025",
                 teams: [
-                    { name: "Cyber Wolves" }, // zwycięzca z 1
-                    { name: "Dark Phoenix" }  // zwycięzca z 2
+                    { name: "Cyber Wolves" },
+                    { name: "Dark Phoenix" }
                 ]
             }
         ]

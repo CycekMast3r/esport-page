@@ -10,8 +10,8 @@ function TournamentBracket() {
 
     useEffect(() => {
         const fetchTeams = async () => {
-            setLoading(true); // Rozpocznij ładowanie
-            setError(null);   // Resetuj błędy
+            setLoading(true);
+            setError(null);
             try {
                 const response = await fetch(`${API_BASE_URL}/api/teams`);
                 if (!response.ok) {
@@ -21,7 +21,7 @@ function TournamentBracket() {
                 setTeams(data);
             } catch (err) {
                 console.error("Nie udało się pobrać drużyn dla drabinki:", err);
-                setError("Nie udało się załadować drabinki. Spróbuj odświeżyć stronę."); // Ustaw komunikat błędu
+                setError("Nie udało się załadować drabinki. Spróbuj odświeżyć stronę.");
             } finally {
                 setLoading(false);
             }
@@ -35,14 +35,14 @@ function TournamentBracket() {
         const start = i * 4;
         const groupTeams = teams.slice(start, start + 4);
         while (groupTeams.length < 4) {
-            groupTeams.push(null); // wolne miejsce
+            groupTeams.push(null);
         }
         return groupTeams;
     });
 
     const placeholderTeamData = {
         name: "???",
-        logo: "/images/question-mark.png" // Zakładam, że ten placeholder logo jest statycznym plikiem w frontendzie
+        logo: "/images/question-mark.png"
     };
 
     if (loading) {

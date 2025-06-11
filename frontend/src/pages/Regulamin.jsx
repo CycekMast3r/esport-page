@@ -1,8 +1,7 @@
 // src/pages/Regulamin.jsx
 
 import React from 'react';
-import '../styles/regulamin.css'; // Stworzymy ten plik w następnym kroku
-
+import '../styles/regulamin.css';
 function Regulamin() {
     return (
         <main className="rules-page">

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// Importujemy komponenty animacji
 import { Fade, Slide } from 'react-awesome-reveal';
 
 
@@ -41,7 +40,6 @@ function SponsorsTeaser() {
 
     return (
         <section className="sponsors-teaser-section">
-            {/* Animacja dla nagłówka sekcji */}
             <Fade direction="down" triggerOnce>
                 <div className="sponsors-teaser-header">
                     <h2 className="sponsors-teaser-title">Główny Sponsor</h2>
@@ -49,7 +47,6 @@ function SponsorsTeaser() {
                 </div>
             </Fade>
 
-            {/* Animacja dla głównego sponsora */}
             <Slide direction="left" triggerOnce delay={200}>
                 <div className="sponsors-teaser-main-sponsor sponsors-teaser-glowing-border">
                     <div className="sponsors-teaser-visuals">
@@ -70,12 +67,10 @@ function SponsorsTeaser() {
                 </div>
             </Slide>
 
-            {/* Animacja dla podtytułu "Pozostali sponsorzy" */}
             <Fade direction="up" triggerOnce delay={400}>
                 <p className="sponsors-teaser-subtitle">Pozostali sponsorzy:</p>
             </Fade>
 
-            {/* Animacja dla karuzeli (cała karuzela pojawi się razem) */}
             <Fade direction="up" triggerOnce delay={500}>
                 <div className="sponsors-teaser-carousel">
                     <Slider {...settings}>
@@ -88,7 +83,6 @@ function SponsorsTeaser() {
                 </div>
             </Fade>
 
-            {/* Animacja dla przycisku CTA */}
             <Fade direction="up" triggerOnce delay={600}>
                 <div className="sponsors-teaser-cta">
                     <Link to="/kontakt">
