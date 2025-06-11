@@ -8,24 +8,48 @@ import { Fade, Slide } from 'react-awesome-reveal';
 
 function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się TeamTeaser lub być w pliku o takiej nazwie
     const [teams, setTeams] = useState([]);
+    const [loading, setLoading] = useState(true); // Dodajemy stan ładowania, podobnie jak w TeamsPage
+    const [error, setError] = useState(null);    // Dodajemy stan błędu
+
+    // Uzyskaj URL backendu z zmiennych środowiskowych Vite
+    const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        fetch("/uploads/teams.json")
-            .then(res => res.json())
-            .then(data => setTeams(data))
-            .catch(err => console.error("Błąd ładowania drużyn:", err));
+        const fetchTeams = async () => {
+            setLoading(true); // Rozpocznij ładowanie
+            setError(null);   // Resetuj błędy
+            try {
+                // ZMIANA 1: Pobieramy dane z endpointu API backendu
+                const response = await fetch(`${API_BASE_URL}/api/teams`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setTeams(data);
+            } catch (err) {
+                console.error("Błąd ładowania drużyn dla TeamTeaser:", err);
+                setError("Nie udało się załadować drużyn w sekcji teaser. Spróbuj odświeżyć stronę.");
+            } finally {
+                setLoading(false); // Zakończ ładowanie
+            }
+        };
+
+        fetchTeams();
     }, []);
 
     const MIN_SLIDES = 6;
     const totalSlots = Math.max(teams.length, MIN_SLIDES);
 
-    const filledTeams = [
-        ...teams,
-        ...Array.from({ length: totalSlots - teams.length }, (_, idx) => ({
-            id: `empty-${idx}`,
-            empty: true
-        }))
-    ];
+    // Wypełniamy puste sloty tylko, jeśli nie ma błędu ładowania i dane są dostępne
+    const filledTeams = loading || error ?
+        Array.from({ length: totalSlots }, (_, idx) => ({ id: `loading-${idx}`, empty: true })) // Puste sloty podczas ładowania/błędu
+        : [
+            ...teams,
+            ...Array.from({ length: totalSlots - teams.length }, (_, idx) => ({
+                id: `empty-${idx}`,
+                empty: true
+            }))
+        ];
 
     const settings = {
         infinite: true,
@@ -51,23 +75,51 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
         ]
     };
 
+    // Dodajemy obsługę stanów ładowania i błędów, podobnie jak w TeamsPage
+    if (loading) {
+        return (
+            <section className="team-slider-section">
+                <h2 className="team-slider-title">Zgłoszone drużyny</h2>
+                <p className="teams-subtitle">Ładowanie drużyn...</p>
+                <div className="team-slider">
+                    {Array.from({ length: MIN_SLIDES }, (_, i) => (
+                        <div key={i} className="team-slide loading">
+                            <div className="team-card-glow">
+                                <h3 className="team-name">Ładowanie...</h3>
+                                <div className="team-content">
+                                    <img src="/images/placeholder-logo.png" alt="Loading" className="team-logo" /> {/* Przykładowy placeholder */}
+                                    <p className="empty-label">...</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="team-slider-section">
+                <h2 className="team-slider-title">Zgłoszone drużyny</h2>
+                <p className="teams-subtitle error-message">{error}</p>
+                <p className="teams-subtitle">Sprawdź połączenie internetowe lub spróbuj ponownie.</p>
+                <Link to="/rejestracja">
+                    <Button variant="primary">Zgłoś drużynę</Button>
+                </Link>
+            </section>
+        );
+    }
+
+
     return (
-        // Cały TeamTeaser jest już otoczony Fade w Home.jsx,
-        // więc tutaj animujemy wewnętrzne elementy.
         <section className="team-slider-section">
-            {/* Animacja dla tytułu sekcji */}
-            <Fade direction="up" triggerOnce delay={50}> {/* Lekkie opóźnienie, aby pojawił się po sekcji */}
+            <Fade direction="up" triggerOnce delay={50}>
                 <h2 className="team-slider-title">Zgłoszone drużyny</h2>
             </Fade>
 
-            {/* Możesz zastosować animację do całego slidera,
-                albo do pojedynczych slajdów w zależności od preferowanego efektu.
-                Tutaj zastosuję do każdego slajdu z kaskadą. */}
             <Slider {...settings} className="team-slider">
                 {filledTeams.map((team, index) => (
-                    // Animacja dla każdego pojedynczego slajdu
-                    // Używamy Fade z cascade, aby slajdy pojawiały się kolejno
-                    // Damping kontroluje "gęstość" kaskady
                     <Fade key={team.id || index} direction="up" cascade damping={0.08} triggerOnce>
                         <div className="team-slide">
                             <div className="team-card-glow">
@@ -75,6 +127,7 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                                     <>
                                         <h3 className="team-name">Wolne miejsce</h3>
                                         <div className="team-content">
+                                            {/* Ścieżka do wolnego miejsca może być lokalna, jeśli to statyczny obrazek */}
                                             <img src="/images/question-mark.png" alt="wolne" className="team-logo" />
                                             <p className="empty-label">Zgłoś swoją drużynę!</p>
                                         </div>
@@ -83,7 +136,8 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                                     <>
                                         <h3 className="team-name">{team.name}</h3>
                                         <div className="team-content">
-                                            <img src={`/uploads/${team.logo}`} alt={team.name} className="team-logo" />
+                                            {/* ZMIANA 2: Używamy team.logo bezpośrednio, ponieważ jest już pełnym URL-em Cloudinary */}
+                                            {team.logo && <img src={team.logo} alt={team.name} className="team-logo" />}
                                             <ul className="player-list">
                                                 {team.players.map((player, idx) => (
                                                     <li key={idx}>{player.name}</li>
@@ -98,8 +152,7 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                 ))}
             </Slider>
 
-            {/* Animacja dla przycisku */}
-            <Fade direction="up" triggerOnce delay={filledTeams.length * 50 + 100}> {/* Opóźnienie po slajdach */}
+            <Fade direction="up" triggerOnce delay={filledTeams.length * 50 + 100}>
                 <Link to="/druzyny">
                     <Button variant="neon">Zobacz wszystkie drużyny</Button>
                 </Link>
@@ -108,4 +161,4 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
     );
 }
 
-export default TeamSlider; // Jeśli plik to TeamTeaser.jsx, zmień eksport na `export default TeamTeaser;`
+export default TeamSlider;
