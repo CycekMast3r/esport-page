@@ -6,8 +6,6 @@ function Schedule() {
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
 
     useEffect(() => {
-        // Pobieramy drużyny z backendu. Zakładamy, że /api/teams zwróci 16 drużyn,
-        // posortowanych w kolejności, w jakiej mają być przydzielone do grup.
         fetch("/api/teams")
             .then((res) => {
                 if (!res.ok) {
@@ -16,13 +14,7 @@ function Schedule() {
                 return res.json();
             })
             .then((data) => {
-                // Jeśli teams jest puste lub ma mniej niż 16 elementów,
-                // uzupełniamy je placeholderami, aby uniknąć błędów indeksowania.
-                const filledTeams = [...data];
-                while (filledTeams.length < 16) {
-                    filledTeams.push(null); // Używamy null, aby oznaczyć brak drużyny
-                }
-                setTeams(filledTeams);
+                setTeams(data); // Po prostu ustawiamy drużyny, nie uzupełniamy ich tutaj do 16
             })
             .catch((err) => console.error("Błąd ładowania danych drużyn z backendu:", err));
     }, []);
@@ -35,13 +27,29 @@ function Schedule() {
     };
 
     const groupLabels = ["A", "B", "C", "D"];
-    // Podziel zarejestrowane drużyny na grupy po 4
-    const groups = groupLabels.map((_, idx) => {
-        const group = teams.slice(idx * 4, (idx + 1) * 4);
-        // Uzupełniamy grupy nullami, jeśli brakuje drużyn, aby utrzymać strukturę
-        while (group.length < 4) group.push(null);
+    // Podziel dostępne zarejestrowane drużyny na grupy
+    // Dostępne drużyny są rozdzielane równomiernie do grup, a reszta miejsc jest pusta (null)
+    const groups = groupLabels.map((_, groupIdx) => {
+        const group = [];
+        // Rozdziel drużyny do grup, próbując rozłożyć je równomiernie
+        // Dla 16 drużyn: group[0] = teams[0], teams[1], teams[2], teams[3] itd.
+        // Dla mniej niż 16 drużyn: np. 5 drużyn: G_A=[t0, t1], G_B=[t2], G_C=[t3], G_D=[t4]
+        // Jeśli masz np. 5 drużyn, to:
+        // group A: teams[0], teams[1]
+        // group B: teams[2]
+        // group C: teams[3]
+        // group D: teams[4]
+        for (let i = 0; i < 4; i++) { // Każda grupa ma maksymalnie 4 miejsca
+            const teamIndex = groupIdx * 4 + i;
+            if (teamIndex < teams.length) {
+                group.push(teams[teamIndex]);
+            } else {
+                group.push(null); // Brak drużyny w tym miejscu
+            }
+        }
         return group;
     });
+
 
     // Funkcja pomocnicza do pobierania danych drużyny lub placeholdera
     const getTeamDisplayInfo = (team) => {
@@ -53,9 +61,9 @@ function Schedule() {
     const generateGroupMatches = () => {
         const allGroupMatches = [];
         const matchPairs = [
-            [[0, 1], [2, 3]], // Mecz 1, Mecz 2
-            [[0, 2], [1, 3]], // Mecz 3, Mecz 4
-            [[0, 3], [1, 2]]  // Mecz 5, Mecz 6
+            [[0, 1], [2, 3]],
+            [[0, 2], [1, 3]],
+            [[0, 3], [1, 2]]
         ];
 
         const groupMatchMap = groups.map((group, groupIdx) => {
@@ -67,9 +75,12 @@ function Schedule() {
                     const teamA = group[i];
                     const teamB = group[j];
 
+                    // Generuj mecz tylko jeśli obie drużyny istnieją (nie są null)
+                    // lub jeśli chcemy pokazać "??? vs ???", to zawsze generujemy
+                    // Obecna logika: generujemy, nawet jeśli to "??? vs ???", ale teamA i teamB są brane jako placeholder
                     matches.push({
                         round: `Grupa ${label}`,
-                        date: "", // Data zostanie przypisana później
+                        date: "",
                         teamA: getTeamDisplayInfo(teamA),
                         teamB: getTeamDisplayInfo(teamB),
                         score: "– : –",
@@ -84,30 +95,30 @@ function Schedule() {
         const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5]; // Co 30 minut
         let matchIndex = 0;
 
-        // Logika rozłożenia meczów grupowych w czasie (tak jak w Twojej wersji)
-        while (groupMatchMap.some(group => group.length > 0)) {
-            for (let g = 0; g < groupMatchMap.length; g++) {
-                const groupMatches = groupMatchMap[g];
-                let added = 0;
+        // Flatten the group matches and assign dates
+        const flatGroupMatches = groupMatchMap.flat();
+        // Sortowanie po to, aby mecze były równomiernie rozłożone, np. Mecz A1, B1, C1, D1, A2, B2, C2, D2
+        // To jest tylko dla lepszej prezentacji, faktyczna kolejność nie ma znaczenia dla logiki turnieju
+        flatGroupMatches.sort((a, b) => {
+            const groupAIndex = groupLabels.indexOf(a.round.split(' ')[1]);
+            const groupBIndex = groupLabels.indexOf(b.round.split(' ')[1]);
+            return groupAIndex - groupBIndex;
+        });
 
-                for (let i = 0; i < groupMatches.length; i++) {
-                    const match = groupMatches[i];
-                    const hourOffset = matchHourOffsets[matchIndex % 8];
-                    const matchDate = new Date(startDate);
-                    matchDate.setDate(startDate.getDate() + matchDay);
-                    matchDate.setMinutes(matchDate.getMinutes() + hourOffset * 60);
 
-                    match.date = `${matchDate.toLocaleDateString("pl-PL")} ${matchDate.getHours().toString().padStart(2, '0')}:${matchDate.getMinutes().toString().padStart(2, '0')}`;
-                    allGroupMatches.push(match);
+        // Logika rozłożenia meczów grupowych w czasie
+        while (flatGroupMatches.length > 0) {
+            const match = flatGroupMatches.shift(); // Pobierz pierwszy mecz z listy
+            const hourOffset = matchHourOffsets[matchIndex % 8];
+            const matchDate = new Date(startDate);
+            matchDate.setDate(startDate.getDate() + matchDay);
+            matchDate.setMinutes(matchDate.getMinutes() + hourOffset * 60);
 
-                    groupMatches.splice(i, 1); // Usuń dodany mecz
-                    added++;
-                    matchIndex++;
+            match.date = `${matchDate.toLocaleDateString("pl-PL")} ${matchDate.getHours().toString().padStart(2, '0')}:${matchDate.getMinutes().toString().padStart(2, '0')}`;
+            allGroupMatches.push(match);
 
-                    if (added === 2) break; // Dodano 2 mecze z tej grupy, przejdź do następnej
-                    i--; // Dostosuj indeks po usunięciu elementu
-                }
-            }
+            matchIndex++;
+
             if (matchIndex % 8 === 0) { // Przejdź do następnego dnia, jeśli zapełniono 8 slotów
                 matchDay++;
             }
@@ -117,25 +128,27 @@ function Schedule() {
 
     const generateQuarterfinals = () => {
         // Logika przydzielania drużyn do ćwierćfinałów
-        // Zakładamy, że teams[0] to A1, teams[1] to A2, teams[4] to B1 itd.
-        // To wymaga, aby teams było posortowane w konkretnej kolejności (np. alfabetycznie według nazwy)
-        // i aby A1, A2, B1, B2 itd. były pierwszymi dwoma drużynami z każdej grupy.
-        // W prawdziwym turnieju potrzebny byłby ranking grup.
+        // Zakładamy, że groups[0][0] to A1, groups[1][1] to B2 itp.
+        // Jeśli drużyna nie istnieje (jest null), użyjemy placeholdera.
 
-        const A = groups[0];
-        const B = groups[1];
-        const C = groups[2];
-        const D = groups[3];
+        const A1 = groups[0][0];
+        const B2 = groups[1][1];
+        const C2 = groups[2][1];
+        const D1 = groups[3][0];
+        const B1 = groups[1][0];
+        const A2 = groups[0][1];
+        const C1 = groups[2][0];
+        const D2 = groups[3][1];
 
         const matchups = [
-            // A1 vs B2
-            { teamA: getTeamDisplayInfo(A[0]), teamB: getTeamDisplayInfo(B[1]) },
-            // C2 vs D1
-            { teamA: getTeamDisplayInfo(C[1]), teamB: getTeamDisplayInfo(D[0]) },
-            // B1 vs A2
-            { teamA: getTeamDisplayInfo(B[0]), teamB: getTeamDisplayInfo(A[1]) },
-            // C1 vs D2
-            { teamA: getTeamDisplayInfo(C[0]), teamB: getTeamDisplayInfo(D[1]) },
+            // QF1
+            { teamA: getTeamDisplayInfo(A1), teamB: getTeamDisplayInfo(B2) },
+            // QF2
+            { teamA: getTeamDisplayInfo(C2), teamB: getTeamDisplayInfo(D1) },
+            // QF3
+            { teamA: getTeamDisplayInfo(B1), teamB: getTeamDisplayInfo(A2) },
+            // QF4
+            { teamA: getTeamDisplayInfo(C1), teamB: getTeamDisplayInfo(D2) },
         ];
 
         const qf = [];
@@ -160,7 +173,7 @@ function Schedule() {
             {
                 round: "Półfinał",
                 date: "19.06.2025, 16:00",
-                teamA: placeholderTeam, // Zwycięzcy są nieznani na początku
+                teamA: placeholderTeam,
                 teamB: placeholderTeam,
                 score: "– : –",
             },
@@ -186,17 +199,12 @@ function Schedule() {
         ];
     };
 
-    // Oblicz harmonogram tylko wtedy, gdy teams są załadowane
-    const scheduleByPhase = teams.length === 16 ? {
+    // Generuj harmonogram zawsze
+    const scheduleByPhase = {
         "Faza grupowa": generateGroupMatches(),
         "Ćwierćfinały": generateQuarterfinals(),
-        "Półfinały": generateSemifinals(), // Używamy nowej funkcji
-        "Finał": generateFinal(),           // Używamy nowej funkcji
-    } : {
-        "Faza grupowa": [],
-        "Ćwierćfinały": [],
-        "Półfinały": [],
-        "Finał": [],
+        "Półfinały": generateSemifinals(),
+        "Finał": generateFinal(),
     };
 
     const matches = scheduleByPhase[selectedPhase] || [];
@@ -221,8 +229,10 @@ function Schedule() {
             </div>
 
             <div className="match-list">
-                {teams.length < 16 ? (
-                    <p className="no-matches-message">Oczekiwanie na pełną rejestrację 16 drużyn, aby wygenerować harmonogram.</p>
+                {matches.length === 0 && selectedPhase === "Faza grupowa" && teams.length === 0 ? (
+                    <p className="no-matches-message">Brak zarejestrowanych drużyn do wyświetlenia harmonogramu fazy grupowej.</p>
+                ) : matches.length === 0 ? (
+                    <p className="no-matches-message">Brak meczów w tej fazie.</p>
                 ) : (
                     matches.map((match, i) => {
                         const finished = isFinished(match.score);
