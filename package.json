@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "date-fns": "^4.1.0",
     "react-awesome-reveal": "^4.3.1",
     "scrollreveal": "^4.0.9"
   }
