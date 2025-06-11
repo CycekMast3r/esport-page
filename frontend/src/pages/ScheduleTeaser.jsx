@@ -16,15 +16,15 @@ function ScheduleTeaser() {
         {
             round: "Grupa A",
             date: "14.06.2025, 18:00",
-            teamA: { name: "Ceramika Opoczno Esports", logo: "/images/team7.png" }, // Zaktualizuj na prawdziwe logo
-            teamB: { name: "FC Drzewce", logo: "/images/team8.png" }, // Zaktualizuj na prawdziwe logo
+            teamA: { name: "Ceramika Opoczno Esports", logo: "/teams/team7.png" }, // Zaktualizuj na prawdziwe logo
+            teamB: { name: "FC Drzewce", logo: "/teams/team8.png" }, // Zaktualizuj na prawdziwe logo
             score: "– : –",
         },
         {
             round: "Grupa B",
             date: "14.06.2025, 18:30",
-            teamA: { name: "Vamos", logo: "/images/team3.png" }, // Zaktualizuj na prawdziwe logo
-            teamB: { name: "Virtus Pro", logo: "/images/team9.png" }, // Zaktualizuj na prawdziwe logo
+            teamA: { name: "Vamos", logo: "/teams/team3.png" }, // Zaktualizuj na prawdziwe logo
+            teamB: { name: "Virtus Pro", logo: "/teams/team9.png" }, // Zaktualizuj na prawdziwe logo
             score: "– : –",
         },
         {
