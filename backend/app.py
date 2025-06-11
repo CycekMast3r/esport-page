@@ -11,16 +11,13 @@ import psycopg2
 from psycopg2 import sql
 import cloudinary
 import cloudinary.uploader
-from functools import wraps # Dodajemy import wraps do dekoratora uwierzytelniania
 
 app = Flask(__name__)
 CORS(app)
 
-# Ustawienie URL bazy danych.
 DATABASE_URL = os.environ.get('DATABASE_URL')
 print(f"DEBUG: Odczytana DATABASE_URL: {DATABASE_URL}")
 
-# Konfiguracja Cloudinary
 cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
     api_key=os.environ.get('CLOUDINARY_API_KEY'),
@@ -31,11 +28,9 @@ if not all([cloudinary.config().cloud_name, cloudinary.config().api_key, cloudin
 else:
     print("[✅] Cloudinary skonfigurowano pomyślnie.")
 
-# UPLOAD_FOLDER już nie będzie używane do przechowywania plików, ale zostawiamy na wypadek innych zastosowań
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 ALLOWED_EXTENSIONS = {".png"}
 MAX_FILE_SIZE_MB = 2
@@ -69,22 +64,19 @@ def get_db_connection():
         traceback.print_exc()
         return None
 
-# --- FUNKCJA TWORZĄCA TABELĘ (rozszerzona o tabelę matches) ---
 def create_table_if_not_exists():
     if not DATABASE_URL:
         print("[⚠️] OSTRZEŻENIE: Zmienna środowiskowa 'DATABASE_URL' nie jest ustawiona. Nie można utworzyć tabel.")
         return
 
-    conn = None # Inicjalizacja poza try, aby była dostępna w finally
+    conn = None
     try:
         conn = get_db_connection()
         if not conn:
-            print("[❌] Nie można utworzyć tabel, brak połączenia z bazą danych.")
+            print("[❌] Nie można utworzyć tabeli, brak połączenia z bazą danych po błędzie.")
             return
 
         cur = conn.cursor()
-
-        # Tabela 'teams'
         cur.execute(sql.SQL("""
             CREATE TABLE IF NOT EXISTS teams (
                 id UUID PRIMARY KEY,
@@ -95,51 +87,23 @@ def create_table_if_not_exists():
                 players JSONB NOT NULL
             );
         """))
-        print("[✅] Tabela 'teams' sprawdzona/utworzona pomyślnie.")
-
-        # ZMIANA: Dodajemy tabelę 'matches'
-        cur.execute(sql.SQL("""
-            CREATE TABLE IF NOT EXISTS matches (
-                id UUID PRIMARY KEY,
-                team1_id UUID NOT NULL REFERENCES teams(id),
-                team2_id UUID NOT NULL REFERENCES teams(id),
-                score_team1 INTEGER,
-                score_team2 INTEGER,
-                match_date TIMESTAMP WITH TIME ZONE NOT NULL, -- Używamy TIMESTAMP WITH TIME ZONE dla lepszej obsługi czasu
-                stage VARCHAR(255) NOT NULL,
-                is_played BOOLEAN DEFAULT FALSE,
-                winner_team_id UUID REFERENCES teams(id),
-                loser_team_id UUID REFERENCES teams(id),
-                match_details JSONB,
-                created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-            );
-        """))
-        # Dodaj indeksy dla szybszych zapytań na 'matches'
-        cur.execute(sql.SQL("CREATE INDEX IF NOT EXISTS idx_matches_match_date ON matches (match_date);"))
-        cur.execute(sql.SQL("CREATE INDEX IF NOT EXISTS idx_matches_stage ON matches (stage);"))
-        print("[✅] Tabela 'matches' sprawdzona/utworzona pomyślnie.")
-
         conn.commit()
         cur.close()
+        print("[✅] Tabela 'teams' sprawdzona/utworzona pomyślnie.")
     except Exception as e:
-        print(f"[❌] Błąd podczas tworzenia tabel: {str(e)}")
+        print(f"[❌] Błąd podczas tworzenia tabeli 'teams': {str(e)}")
         traceback.print_exc()
         if conn:
-            conn.rollback() # Wycofaj zmiany, jeśli wystąpi błąd
+            conn.rollback()
     finally:
         if conn:
             conn.close()
 
-
-# WAŻNA ZMIANA: Wywołanie funkcji tworzącej tabelę przy starcie aplikacji
 if DATABASE_URL:
     create_table_if_not_exists()
 else:
     print("[⚠️] DATABASE_URL nie jest ustawione. Nie można zainicjować bazy danych przy starcie.")
 
-
-# --- Endpointy publiczne (Teams, Register) ---
 
 @app.route("/api/teams", methods=["GET"])
 def get_teams():
@@ -153,7 +117,7 @@ def get_teams():
         teams_from_db = []
         for row in cur.fetchall():
             team = {
-                "id": str(row[0]), # Konwertuj UUID na string
+                "id": str(row[0]),
                 "name": row[1],
                 "logo": row[2],
                 "email": row[3],
@@ -287,252 +251,63 @@ def register():
         return jsonify({"status": "error", "message": "Błąd serwera."}), 500
 
 
-# --- ZMIANA: Endpointy dla zarządzania meczami (Admin Panel) ---
-
-# --- BARDZO PROSTE UWIERZYTELNIENIE (TYLKO DLA TESTÓW LOKALNYCH/DEWELOPERSKICH) ---
-# W PRODUKCJI WYMAGANE BĘDZIE PRAWDZIWE UWIERZYTELNIANIE
-ADMIN_TOKEN = os.environ.get('ADMIN_TOKEN', 'supersecretadminpassword') # Ustaw to w zmiennych środowiskowych Render!
-
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        # Sprawdzamy token w nagłówku 'X-Admin-Token'
-        admin_token_header = request.headers.get('X-Admin-Token')
-        if not admin_token_header or admin_token_header != ADMIN_TOKEN:
-            return jsonify({"status": "error", "message": "Unauthorized. Admin token required."}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
-# Endpoint do pobierania wszystkich meczów (Dla Admina - może pobierać wszystko)
-@app.route("/api/admin/matches", methods=["GET"])
-@admin_required
-def admin_get_matches():
+# --- ZMIANA: Nowy endpoint API do symulowania meczów ---
+@app.route("/api/schedule/teaser", methods=["GET"])
+def get_schedule_teaser_matches():
     try:
         conn = get_db_connection()
         if not conn:
             return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
 
         cur = conn.cursor()
-        # Złączenie z tabelą drużyn, aby uzyskać nazwy i logo
-        query = sql.SQL("""
-            SELECT
-                m.id,
-                m.team1_id,
-                t1.name AS team1_name,
-                t1.logo AS team1_logo,
-                m.score_team1,
-                m.team2_id,
-                t2.name AS team2_name,
-                t2.logo AS team2_logo,
-                m.score_team2,
-                m.match_date,
-                m.stage,
-                m.is_played,
-                m.winner_team_id,
-                t_winner.name AS winner_team_name,
-                m.loser_team_id,
-                t_loser.name AS loser_team_name,
-                m.match_details
-            FROM matches m
-            JOIN teams t1 ON m.team1_id = t1.id
-            JOIN teams t2 ON m.team2_id = t2.id
-            LEFT JOIN teams t_winner ON m.winner_team_id = t_winner.id
-            LEFT JOIN teams t_loser ON m.loser_team_id = t_loser.id
-            ORDER BY m.match_date ASC;
-        """)
-        cur.execute(query)
-        matches_data = []
+        cur.execute("SELECT id, name, logo FROM teams ORDER BY name")
+        teams_from_db = []
         for row in cur.fetchall():
-            match = {
+            teams_from_db.append({
                 "id": str(row[0]),
-                "team1Id": str(row[1]),
-                "team1Name": row[2],
-                "team1Logo": row[3],
-                "score1": row[4],
-                "team2Id": str(row[5]),
-                "team2Name": row[6],
-                "team2Logo": row[7],
-                "score2": row[8],
-                "matchDate": row[9].isoformat(), # Formatuj datę do ISO
-                "stage": row[10],
-                "isPlayed": row[11],
-                "winnerTeamId": str(row[12]) if row[12] else None,
-                "winnerTeamName": row[13],
-                "loserTeamId": str(row[14]) if row[14] else None,
-                "loserTeamName": row[15],
-                "matchDetails": row[16] # JSONB jest już obiektem/listą Pythona
-            }
-            matches_data.append(match)
+                "name": row[1],
+                "logo": row[2]
+            })
         cur.close()
         conn.close()
-        return jsonify(matches_data), 200
+
+        # Symulacja generowania meczów na podstawie zarejestrowanych drużyn
+        # To jest uproszczona logika dla TEASER'a, w pełnym harmonogramie
+        # będziesz potrzebować bardziej zaawansowanej logiki (np. podział na grupy, drabinki).
+        
+        matches = []
+        num_teams = len(teams_from_db)
+        if num_teams >= 2:
+            # Tworzymy proste pary meczowe
+            for i in range(num_teams):
+                for j in range(i + 1, num_teams):
+                    teamA = teams_from_db[i]
+                    teamB = teams_from_db[j]
+                    
+                    # Generujemy symulowaną datę meczu
+                    # Na potrzeby teasera, niech to będą nadchodzące mecze w ciągu kilku dni
+                    match_date = datetime.now() + timedelta(days=(i + j) % 5 + 1, hours=i % 24, minutes=j % 60)
+                    
+                    matches.append({
+                        "id": str(uuid.uuid4()), # Unikalne ID dla każdego meczu
+                        "teamA": teamA,
+                        "teamB": teamB,
+                        "round": "Faza Grupowa", # Prosta nazwa rundy
+                        "matchDate": match_date.isoformat(), # Format ISO dla daty
+                        "score": "VS" # Domyślny wynik dla nierozegranych meczów
+                        # Jeśli chcesz rozegrane mecze, musisz dodać logikę do symulacji wyników
+                        # np. "score": f"{random.randint(0, 3)} - {random.randint(0, 3)}"
+                    })
+        
+        # Sortujemy mecze po dacie i bierzemy 3 najbliższe
+        matches.sort(key=lambda x: x["matchDate"])
+        upcoming_matches_teaser = matches[:3] # Bierzemy 3 pierwsze, czyli 3 najbliższe
+
+        return jsonify(upcoming_matches_teaser), 200
     except Exception as e:
-        print(f"[❌] Błąd pobierania meczów (admin): {str(e)}")
+        print(f"[❌] Błąd generowania meczów teasera: {str(e)}")
         traceback.print_exc()
-        return jsonify({"status": "error", "message": "Błąd serwera podczas pobierania meczów."}), 500
-
-# Endpoint do dodawania meczu
-@app.route("/api/admin/matches", methods=["POST"])
-@admin_required
-def admin_add_match():
-    data = request.json
-    team1_id = data.get("team1Id")
-    team2_id = data.get("team2Id")
-    match_date_str = data.get("matchDate") # Oczekujemy formatu ISO
-    stage = data.get("stage")
-
-    if not all([team1_id, team2_id, match_date_str, stage]):
-        return jsonify({"status": "error", "message": "Brakuje wymaganych danych meczu (team1Id, team2Id, matchDate, stage)."}), 400
-
-    conn = None
-    try:
-        match_date = datetime.fromisoformat(match_date_str.replace('Z', '+00:00')) # Obsługa formatu ISO, konwersja do UTC
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
-
-        cur = conn.cursor()
-        match_id = str(uuid.uuid4())
-        cur.execute(
-            """
-            INSERT INTO matches (id, team1_id, team2_id, match_date, stage)
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (match_id, uuid.UUID(team1_id), uuid.UUID(team2_id), match_date, stage) # Konwersja stringów ID na UUID
-        )
-        conn.commit()
-        cur.close()
-        return jsonify({"status": "ok", "message": "Mecz dodany pomyślnie!", "matchId": match_id}), 201
-    except ValueError:
-        return jsonify({"status": "error", "message": "Nieprawidłowy format daty lub ID drużyny."}), 400
-    except Exception as e:
-        print(f"[❌] Błąd dodawania meczu (admin): {str(e)}")
-        traceback.print_exc()
-        if conn:
-            conn.rollback()
-        return jsonify({"status": "error", "message": "Błąd serwera podczas dodawania meczu."}), 500
-    finally:
-        if conn:
-            conn.close()
-
-# Endpoint do aktualizacji meczu (do edycji wyników, statusu)
-@app.route("/api/admin/matches/<uuid:match_id>", methods=["PUT"])
-@admin_required
-def admin_update_match(match_id):
-    data = request.json
-
-    conn = None
-    try:
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
-
-        cur = conn.cursor()
-        update_fields = []
-        update_values = []
-
-        if "score1" in data:
-            update_fields.append("score_team1 = %s")
-            update_values.append(data["score1"])
-        if "score2" in data:
-            update_fields.append("score_team2 = %s")
-            update_values.append(data["score2"])
-        if "matchDate" in data:
-            update_fields.append("match_date = %s")
-            update_values.append(datetime.fromisoformat(data["matchDate"].replace('Z', '+00:00')))
-        if "stage" in data:
-            update_fields.append("stage = %s")
-            update_values.append(data["stage"])
-
-        # Automatyczne ustawianie winner_team_id i loser_team_id
-        is_played_val = data.get("isPlayed")
-        if is_played_val is not None:
-            update_fields.append("is_played = %s")
-            update_values.append(is_played_val)
-            if is_played_val: # Jeśli mecz został rozegrany
-                score1 = data.get("score1")
-                score2 = data.get("score2")
-                team1_id = data.get("team1Id") # Potrzebujemy ID drużyn do ustawienia zwycięzcy/przegranego
-                team2_id = data.get("team2Id")
-
-                if score1 is not None and score2 is not None and team1_id and team2_id:
-                    winner_id = None
-                    loser_id = None
-                    if score1 > score2:
-                        winner_id = uuid.UUID(team1_id)
-                        loser_id = uuid.UUID(team2_id)
-                    elif score2 > score1:
-                        winner_id = uuid.UUID(team2_id)
-                        loser_id = uuid.UUID(team1_id)
-                    # Jeśli remis, winner/loser pozostają NULL
-
-                    update_fields.append("winner_team_id = %s")
-                    update_values.append(winner_id)
-                    update_fields.append("loser_team_id = %s")
-                    update_values.append(loser_id)
-
-        if "matchDetails" in data:
-            update_fields.append("match_details = %s::jsonb")
-            update_values.append(json.dumps(data["matchDetails"], ensure_ascii=False))
-
-        update_fields.append("updated_at = NOW()")
-
-        if not update_fields:
-            return jsonify({"status": "error", "message": "Brak danych do aktualizacji."}), 400
-
-        query = sql.SQL("UPDATE matches SET {} WHERE id = %s").format(
-            sql.SQL(", ").join(map(sql.SQL, update_fields))
-        )
-        update_values.append(str(match_id))
-
-        cur.execute(query, update_values)
-        conn.commit()
-
-        if cur.rowcount == 0:
-            return jsonify({"status": "error", "message": "Mecz o podanym ID nie znaleziony."}), 404
-
-        cur.close()
-        return jsonify({"status": "ok", "message": "Mecz zaktualizowany pomyślnie!"}), 200
-    except ValueError:
-        return jsonify({"status": "error", "message": "Nieprawidłowy format daty, ID drużyny lub danych JSONB."}), 400
-    except Exception as e:
-        print(f"[❌] Błąd aktualizacji meczu {match_id} (admin): {str(e)}")
-        traceback.print_exc()
-        if conn:
-            conn.rollback()
-        return jsonify({"status": "error", "message": "Błąd serwera podczas aktualizacji meczu."}), 500
-    finally:
-        if conn:
-            conn.close()
-
-# Endpoint do usuwania meczu
-@app.route("/api/admin/matches/<uuid:match_id>", methods=["DELETE"])
-@admin_required
-def admin_delete_match(match_id):
-    conn = None
-    try:
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
-
-        cur = conn.cursor()
-        cur.execute("DELETE FROM matches WHERE id = %s", (str(match_id),))
-        conn.commit()
-
-        if cur.rowcount == 0:
-            return jsonify({"status": "error", "message": "Mecz o podanym ID nie znaleziony."}), 404
-
-        cur.close()
-        return jsonify({"status": "ok", "message": "Mecz usunięty pomyślnie!"}), 200
-    except Exception as e:
-        print(f"[❌] Błąd usuwania meczu {match_id} (admin): {str(e)}")
-        traceback.print_exc()
-        if conn:
-            conn.rollback()
-        return jsonify({"status": "error", "message": "Błąd serwera podczas usuwania meczu."}), 500
-    finally:
-        if conn:
-            conn.close()
+        return jsonify({"status": "error", "message": "Błąd serwera podczas generowania meczów teasera."}), 500
 
 
 if __name__ == "__main__":
