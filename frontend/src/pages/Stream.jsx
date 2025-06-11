@@ -87,6 +87,7 @@ function Stream() {
                             title={`Mecz: ${currentTwitchChannel}`} // Dynamiczny tytuł
                         />
                         {/* Możesz dodać tutaj opis wybranego meczu, jeśli chcesz */}
+                        {/* Możesz dodać tutaj opis wybranego meczu, jeśli chcesz */}
                         <div className="match-description-live">
                             {/* Przykład wyświetlania informacji o bieżącym meczu */}
                             {matches.length > 0 && matches.find(m => m.id === currentTwitchChannel) ? (
