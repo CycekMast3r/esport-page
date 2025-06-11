@@ -70,10 +70,10 @@ function Schedule() {
                         round: `Grupa ${label}`,
                         date: "", // dodamy później
                         teamA: teamA
-                            ? { name: teamA.name, logo: `${API_BASE_URL}/uploads/${teamA.logo}` } // Użyj API_BASE_URL
+                            ? { name: teamA.name, logo: teamA.logo } // ZMIANA: logo już jest pełnym URL-em
                             : placeholderTeam,
                         teamB: teamB
-                            ? { name: teamB.name, logo: `${API_BASE_URL}/uploads/${teamB.logo}` } // Użyj API_BASE_URL
+                            ? { name: teamB.name, logo: teamB.logo } // ZMIANA: logo już jest pełnym URL-em
                             : placeholderTeam,
                         score: "– : –",
                     });
@@ -146,8 +146,8 @@ function Schedule() {
             qf.push({
                 round: "Ćwierćfinał",
                 date: `17.06.2025, ${14 + i * 2}:00`,
-                teamA: { name: teamA.name, logo: teamA.logo.startsWith(API_BASE_URL) ? teamA.logo : `${API_BASE_URL}/uploads/${teamA.logo}` },
-                teamB: { name: teamB.name, logo: teamB.logo.startsWith(API_BASE_URL) ? teamB.logo : `${API_BASE_URL}/uploads/${teamB.logo}` },
+                teamA: { name: teamA.name, logo: teamA.logo }, // ZMIANA: logo już jest pełnym URL-em
+                teamB: { name: teamB.name, logo: teamB.logo }, // ZMIANA: logo już jest pełnym URL-em
                 score: "– : –",
             });
         });

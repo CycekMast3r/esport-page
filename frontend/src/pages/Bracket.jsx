@@ -46,7 +46,7 @@ function TournamentBracket() {
     // Ustawiamy placeholder team z obrazkiem z frontendu
     const placeholderTeamData = {
         name: "???",
-        logo: "/images/question-mark.png"
+        logo: "/images/question-mark.png" // Zakładam, że ten placeholder logo jest statycznym plikiem w frontendzie
     };
 
     // Dodajemy warunki ładowania i błędu
@@ -96,8 +96,8 @@ function TournamentBracket() {
                                         <td className="team-cell">
                                             {team ? (
                                                 <>
-                                                    {/* Zmieniamy ścieżkę do logo na API_BASE_URL */}
-                                                    <img src={`${API_BASE_URL}/uploads/${team.logo}`} alt={team.name} />
+                                                    {/* ZMIANA: team.logo już jest pełnym URL-em z Cloudinary */}
+                                                    {team.logo && <img src={team.logo} alt={team.name} />}
                                                     <span>{team.name}</span>
                                                 </>
                                             ) : (
