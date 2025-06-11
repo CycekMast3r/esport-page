@@ -7,16 +7,16 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import psycopg2  # Dodaj import psycopg2
+import psycopg2
+from psycopg2 import sql # Importuj sql dla bezpiecznego budowania zapytań
 
 app = Flask(__name__)
 CORS(app)
 
-# --- Zmiany tutaj ---
 # Ustawienie URL bazy danych.
-# W środowisku produkcyjnym, używaj:
-# DATABASE_URL = os.environ.get('DATABASE_URL')
-DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db" # TYLKO DO TESTÓW
+DATABASE_URL = os.environ.get('DATABASE_URL')
+# Jeśli testujesz lokalnie i nie masz zmiennej środowiskowej, możesz użyć:
+# DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db"
 
 # Ścieżki i ustawienia
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
@@ -29,10 +29,9 @@ MINUTES_BETWEEN_SUBMISSIONS = 2
 last_submission_time = {}
 
 BANNED_EMAIL_DOMAINS = {
-    "mailinator.com", "tempmail.com", "10minutemail.com", "guerrillamail.com",
+    "mailinator.com", "tempmail.com", "10minutemail.com", "guerrillail.com",
     "yopmail.com", "trashmail.com", "dispostable.com"
 }
-
 
 # Pamięć dla rate limiting
 last_submission_time = {}  # IP -> datetime
@@ -62,14 +61,60 @@ def get_db_connection():
         traceback.print_exc()
         return None  # Zwróć None w przypadku błędu
 
+# --- FUNKCJA TWORZĄCA TABELĘ (przeniesiona i ulepszona) ---
+def create_table_if_not_exists():
+    if not DATABASE_URL:
+        print("[⚠️] OSTRZEŻENIE: Zmienna środowiskowa 'DATABASE_URL' nie jest ustawiona. Nie można utworzyć tabeli.")
+        return
 
-# --- NOWY ENDPOINT do pobierania drużyn ---
+    try:
+        conn = get_db_connection()
+        if not conn:
+            print("[❌] Nie można utworzyć tabeli, brak połączenia z bazą danych po błędzie.")
+            return
+
+        cur = conn.cursor()
+        # Użycie psycopg2.sql do bezpiecznego budowania zapytań SQL
+        cur.execute(sql.SQL("""
+            CREATE TABLE IF NOT EXISTS teams (
+                id UUID PRIMARY KEY,
+                name VARCHAR(255) UNIQUE NOT NULL,
+                logo VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                date_of_birth DATE NOT NULL,
+                players JSONB NOT NULL
+            );
+        """))
+        conn.commit()
+        cur.close()
+        conn.close()
+        print("[✅] Tabela 'teams' sprawdzona/utworzona pomyślnie.")
+    except Exception as e:
+        print(f"[❌] Błąd podczas tworzenia tabeli 'teams': {str(e)}")
+        traceback.print_exc()
+        # Ważne: Jeśli wystąpi błąd tutaj, Rollback może być potrzebny
+        if conn:
+            conn.rollback() # Wycofaj zmiany, jeśli wystąpi błąd
+            conn.close()
+
+
+# --- WAŻNA ZMIANA: Wywołanie funkcji tworzącej tabelę przy starcie aplikacji ---
+# To zapewni, że tabela zostanie utworzona, niezależnie od tego, jak Gunicorn uruchamia aplikację.
+# Upewnij się, że DATABASE_URL jest ustawione przed tym wywołaniem.
+if DATABASE_URL:
+    create_table_if_not_exists()
+else:
+    print("[⚠️] DATABASE_URL nie jest ustawione. Nie można zainicjować bazy danych przy starcie.")
+
+
+# --- ENDPOINTY FLASK POZOSTAJĄ BEZ ZMIAN W LOGICE, TYLKO DODANO KONTROLE POŁĄCZENIA ---
+
 @app.route("/api/teams", methods=["GET"])
 def get_teams():
     try:
         conn = get_db_connection()
         if not conn:
-            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
+            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych. Nie można pobrać drużyn."}), 500
 
         cur = conn.cursor()
         cur.execute("SELECT id, name, logo, email, date_of_birth, players FROM teams ORDER BY name")
@@ -80,7 +125,7 @@ def get_teams():
                 "name": row[1],
                 "logo": row[2],
                 "email": row[3],
-                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else row[4],
+                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else str(row[4]), # Konwersja na str jeśli nie jest datą
                 "players": row[5]
             }
             teams_from_db.append(team)
@@ -122,7 +167,7 @@ def register():
             if len(nick) > 16:
                 return jsonify({"status": "error", "message": "Nick gracza może mieć maks. 16 znaków."}), 400
 
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", captain_email):
+        if not re.match(r"[^@]+@[^@]+\.\w+$", captain_email): # Poprawiona regex dla emaila, aby był bardziej rygorystyczny
             return jsonify({"status": "error", "message": "Nieprawidłowy email."}), 400
 
         if any(captain_email.endswith(f"@{domain}") for domain in BANNED_EMAIL_DOMAINS):
@@ -147,7 +192,7 @@ def register():
         # --- Wczytaj dane i sprawdź unikalność z BAZY DANYCH ---
         conn = get_db_connection()
         if not conn:
-            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
+            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych. Nie można zarejestrować drużyny."}), 500
 
         cur = conn.cursor()
 
@@ -173,7 +218,7 @@ def register():
             conn.close()
             return jsonify({"status": "error", "message": "Ten email już został użyty do rejestracji."}), 409
 
-        # --- Zapis LOGO na serwerze (jeśli chcesz) ---
+        # --- Zapis LOGO na serwerze ---
         team_id = str(uuid.uuid4())
         logo_filename = secure_filename(f"logo_{team_id}{ext}")
         logo_path = os.path.join(UPLOAD_FOLDER, logo_filename)
@@ -210,37 +255,8 @@ def register():
 
 
 if __name__ == "__main__":
-    # Funkcja do tworzenia tabeli, jeśli nie istnieje
-    def create_table_if_not_exists():
-        try:
-            conn = get_db_connection()
-            if not conn:
-                print("[❌] Nie można utworzyć tabeli, brak połączenia z bazą danych.")
-                return  # Przerywamy, jeśli nie ma połączenia
-
-            cur = conn.cursor()
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS teams (
-                    id UUID PRIMARY KEY,
-                    name VARCHAR(255) UNIQUE NOT NULL,
-                    logo VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    date_of_birth DATE NOT NULL,
-                    players JSONB NOT NULL
-                );
-            """)
-            conn.commit()
-            cur.close()
-            conn.close()
-            print("[✅] Tabela 'teams' sprawdzona/utworzona.")
-        except Exception as e:
-            print(f"[❌] Błąd tworzenia tabeli: {str(e)}")
-            traceback.print_exc()
-
-    if DATABASE_URL:
-        create_table_if_not_exists()
-    else:
-        print("[⚠️] OSTRZEŻENIE: Zmienna środowiskowa 'DATABASE_URL' nie jest ustawiona. Nie można połączyć się z bazą danych.")
-
+    # Ten blok jest głównie do uruchamiania lokalnego.
+    # W środowisku produkcyjnym na Renderze (z Gunicornem), wywołanie `create_table_if_not_exists()`
+    # poza tym blokiem (jak to zrobiliśmy powyżej) jest bardziej niezawodne.
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
