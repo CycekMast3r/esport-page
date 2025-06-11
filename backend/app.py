@@ -13,16 +13,14 @@ app = Flask(__name__)
 CORS(app)
 
 # --- Zmiany tutaj ---
-# Ustawienie URL bazy danych bezpośrednio.
-# W środowisku produkcyjnym na Renderze, zaleca się używanie:
+# Ustawienie URL bazy danych.
+# W środowisku produkcyjnym, używaj:
 # DATABASE_URL = os.environ.get('DATABASE_URL')
-DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db"
+DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db" # TYLKO DO TESTÓW
 
 # Ścieżki i ustawienia
-# Upewnij się, że 'uploads' jest dostępne do zapisu na Renderze dla Twojego serwisu backendowego.
-# Jeśli frontend jest oddzielną usługą statyczną, to ten katalog 'uploads' będzie po stronie backendu.
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Upewnij się, że katalog 'uploads' istnieje
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {".png"}
 MAX_FILE_SIZE_MB = 2
@@ -55,16 +53,25 @@ def calculate_age(dob_str):
 
 # Funkcja do połączenia z bazą danych
 def get_db_connection():
-    conn = psycopg2.connect(DATABASE_URL)
-    return conn
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        print("[✅] Połączono z bazą danych.")
+        return conn
+    except Exception as e:
+        print(f"[❌] Błąd połączenia z bazą danych: {str(e)}")
+        traceback.print_exc()
+        return None  # Zwróć None w przypadku błędu
+
 
 # --- NOWY ENDPOINT do pobierania drużyn ---
 @app.route("/api/teams", methods=["GET"])
 def get_teams():
     try:
         conn = get_db_connection()
+        if not conn:
+            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
+
         cur = conn.cursor()
-        # Wybieramy wszystkie kolumny. date_of_birth jest przechowywane jako DATE, players jako JSONB
         cur.execute("SELECT id, name, logo, email, date_of_birth, players FROM teams ORDER BY name")
         teams_from_db = []
         for row in cur.fetchall():
@@ -73,8 +80,8 @@ def get_teams():
                 "name": row[1],
                 "logo": row[2],
                 "email": row[3],
-                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else row[4], # Formatuj datę do stringa
-                "players": row[5] # Jeśli players to JSONB, psycopg2 może już to zwrócić jako Python dict/list
+                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else row[4],
+                "players": row[5]
             }
             teams_from_db.append(team)
         cur.close()
@@ -122,7 +129,7 @@ def register():
             return jsonify({"status": "error", "message": "Użyto tymczasowego adresu e-mail. Wprowadź prawdziwy adres."}), 400
 
         # Wiek kapitana
-        birth_date_obj = datetime.strptime(captain_dob, "%Y-%m-%d").date() # Konwertuj na obiekt date
+        birth_date_obj = datetime.strptime(captain_dob, "%Y-%m-%d").date()
         age = (now.date() - birth_date_obj).days // 365
         if age < 16:
             return jsonify({"status": "error", "message": "Kapitan musi mieć co najmniej 16 lat."}), 400
@@ -139,6 +146,9 @@ def register():
 
         # --- Wczytaj dane i sprawdź unikalność z BAZY DANYCH ---
         conn = get_db_connection()
+        if not conn:
+            return jsonify({"status": "error", "message": "Błąd połączenia z bazą danych."}), 500
+
         cur = conn.cursor()
 
         # Sprawdź limit drużyn
@@ -164,8 +174,6 @@ def register():
             return jsonify({"status": "error", "message": "Ten email już został użyty do rejestracji."}), 409
 
         # --- Zapis LOGO na serwerze (jeśli chcesz) ---
-        # Pamiętaj, że w Renderze ten folder 'uploads' na serwerze webowym nie jest trwały.
-        # Po restarcie/redeployu pliki znikną. Rozważ przechowywanie logo w chmurze (np. S3).
         team_id = str(uuid.uuid4())
         logo_filename = secure_filename(f"logo_{team_id}{ext}")
         logo_path = os.path.join(UPLOAD_FOLDER, logo_filename)
@@ -177,7 +185,7 @@ def register():
             {"name": player2, "G": 0, "A": 0, "S": 0, "MVP": 0},
             {"name": player3, "G": 0, "A": 0, "S": 0, "MVP": 0}
         ]
-        players_jsonb = json.dumps(players_data, ensure_ascii=False) # Upewnij się, że jest to string JSON
+        players_jsonb = json.dumps(players_data, ensure_ascii=False)
 
         # --- Zapis DANYCH do BAZY DANYCH ---
         cur.execute(
@@ -187,7 +195,7 @@ def register():
             """,
             (team_id, team_name, logo_filename, captain_email, birth_date_obj, players_jsonb)
         )
-        conn.commit()  # Zatwierdź transakcję w bazie danych
+        conn.commit()
         cur.close()
         conn.close()
 
@@ -197,7 +205,7 @@ def register():
 
     except Exception as e:
         print("[❌] Błąd:", str(e))
-        traceback.print_exc()  # Drukuj pełny traceback dla debugowania
+        traceback.print_exc()
         return jsonify({"status": "error", "message": "Błąd serwera."}), 500
 
 
@@ -206,6 +214,10 @@ if __name__ == "__main__":
     def create_table_if_not_exists():
         try:
             conn = get_db_connection()
+            if not conn:
+                print("[❌] Nie można utworzyć tabeli, brak połączenia z bazą danych.")
+                return  # Przerywamy, jeśli nie ma połączenia
+
             cur = conn.cursor()
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS teams (
@@ -225,7 +237,7 @@ if __name__ == "__main__":
             print(f"[❌] Błąd tworzenia tabeli: {str(e)}")
             traceback.print_exc()
 
-    if DATABASE_URL:  # Upewnij się, że masz URL bazy danych przed próbą połączenia
+    if DATABASE_URL:
         create_table_if_not_exists()
     else:
         print("[⚠️] OSTRZEŻENIE: Zmienna środowiskowa 'DATABASE_URL' nie jest ustawiona. Nie można połączyć się z bazą danych.")
