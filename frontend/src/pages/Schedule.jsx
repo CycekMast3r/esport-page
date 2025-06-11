@@ -1,56 +1,88 @@
 import { useEffect, useState } from "react";
 import "../styles/Schedule.css";
 
+// Stałe dla adresu API (możesz to wyciągnąć do pliku konfiguracyjnego)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"; // Upewnij się, że VITE_API_BASE_URL jest ustawione dla Render
+// const API_BASE_URL = "https://twoj-backend-na-renderze.onrender.com"; // Przykładowy adres Render
+
 function Schedule() {
-    const [teams, setTeams] = useState([]);
+    const [matches, setMatches] = useState([]);
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
-    const [loading, setLoading] = useState(true); // Dodajemy stan ładowania
-    const [error, setError] = useState(null);    // Dodajemy stan błędu
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Uzyskaj URL backendu z zmiennych środowiskowych Vite
-    const API_BASE_URL = import.meta.env.VITE_API_URL;
+    // Endpointy dla poszczególnych faz z backendu
+    const phaseEndpoints = {
+        "Faza grupowa": "/api/matches/group-phase", // Założenie, że backend ma taki endpoint
+        "Ćwierćfinały": "/api/matches/quarterfinals",
+        "Półfinały": "/api/matches/semifinals",
+        "Finał": "/api/matches/final",
+    };
 
+    // Obsługa zmiany fazy i pobierania danych
     useEffect(() => {
-        const fetchTeams = async () => {
-            setLoading(true); // Rozpocznij ładowanie
-            setError(null);   // Resetuj błędy
+        const fetchMatches = async () => {
+            setLoading(true);
+            setError(null);
+            const endpoint = phaseEndpoints[selectedPhase];
+
+            if (!endpoint) {
+                setMatches([]);
+                setLoading(false);
+                return;
+            }
+
             try {
-                // Zmieniamy ścieżkę z pliku JSON na endpoint API
-                const response = await fetch(`${API_BASE_URL}/api/teams`);
+                // To jest kluczowe: pobieramy dane z Twojego API backendowego
+                const response = await fetch(`${API_BASE_URL}${endpoint}`);
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`Błąd HTTP: ${response.status}`);
                 }
                 const data = await response.json();
-                setTeams(data);
+                setMatches(data);
             } catch (err) {
-                console.error("Nie udało się pobrać drużyn dla harmonogramu:", err);
-                setError("Nie udało się załadować harmonogramu. Spróbuj odświeżyć stronę."); // Ustaw komunikat błędu
+                console.error(`Błąd ładowania meczów dla fazy ${selectedPhase}:`, err);
+                setError("Nie udało się załadować meczów. Spróbuj ponownie później.");
+                setMatches([]); // Wyczyść mecze w przypadku błędu
             } finally {
-                setLoading(false); // Zakończ ładowanie niezależnie od wyniku
+                setLoading(false);
             }
         };
 
-        fetchTeams();
-    }, []); // Pusta tablica zależności, uruchomi się tylko raz
+        fetchMatches();
+    }, [selectedPhase, phaseEndpoints]); // Re-fetch, gdy zmieni się faza
 
     const isFinished = (score) => /\d\s*:\s*\d/.test(score);
+
+    // Uwaga: Funkcje generateGroupMatches, generateQuarterfinals i staticPhases
+    // powinny być przeniesione na backend i dostarczać gotowe dane przez API.
+    // Tutaj zostawiam je jako zaślepkę, aby komponent działał z istniejącymi danymi,
+    // dopóki backend nie będzie gotowy. Docelowo te funkcje należy usunąć.
+
+    // === TO POWINNO BYĆ NA BACKENDZIE ===
+    // Zaślepka dla teams (powinna pochodzić z bazy danych przez API)
+    const [allTeams, setAllTeams] = useState([]);
+    useEffect(() => {
+        fetch("/uploads/teams.json") // Nadal pobieramy teams.json dla logiki zaślepki
+            .then((res) => res.json())
+            .then((data) => setAllTeams(data))
+            .catch((err) => console.error("Błąd ładowania teams.json:", err));
+    }, []);
+
     const placeholderTeam = {
         name: "???",
-        logo: "/images/question-mark.png" // Zakładam, że ten placeholder logo jest statycznym plikiem w frontendzie
+        logo: "/images/question-mark.png"
     };
 
-    // === Generowanie fazy grupowej ===
-    const groupLabels = ["A", "B", "C", "D"];
-    const groups = groupLabels.map((_, idx) => {
-        const group = teams.slice(idx * 4, (idx + 1) * 4);
-        while (group.length < 4) group.push(null); // Upewnij się, że każda grupa ma 4 miejsca
-        return group;
-    });
+    const generateGroupMatchesPlaceholder = (currentTeams) => {
+        const groupLabels = ["A", "B", "C", "D"];
+        const groups = groupLabels.map((_, idx) => {
+            const group = currentTeams.slice(idx * 4, (idx + 1) * 4);
+            while (group.length < 4) group.push(null);
+            return group;
+        });
 
-    const generateGroupMatches = () => {
         const allGroupMatches = [];
-
-        // 3 ustalone kolejki: [0,1]-[2,3], [0,2]-[1,3], [0,3]-[1,2]
         const matchPairs = [
             [[0, 1], [2, 3]],
             [[0, 2], [1, 3]],
@@ -68,18 +100,13 @@ function Schedule() {
 
                     matches.push({
                         round: `Grupa ${label}`,
-                        date: "", // dodamy później
-                        teamA: teamA
-                            ? { name: teamA.name, logo: teamA.logo } // ZMIANA: logo już jest pełnym URL-em
-                            : placeholderTeam,
-                        teamB: teamB
-                            ? { name: teamB.name, logo: teamB.logo } // ZMIANA: logo już jest pełnym URL-em
-                            : placeholderTeam,
+                        date: "",
+                        teamA: teamA ? { name: teamA.name, logo: `/uploads/${teamA.logo}` } : placeholderTeam,
+                        teamB: teamB ? { name: teamB.name, logo: `/uploads/${teamB.logo}` } : placeholderTeam,
                         score: "– : –",
                     });
                 });
             });
-
             return matches;
         });
 
@@ -88,90 +115,86 @@ function Schedule() {
         const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
         let matchIndex = 0;
 
-        // Flatten the groupMatchMap and assign dates
         while (groupMatchMap.some(group => group.length > 0)) {
             for (let g = 0; g < groupMatchMap.length; g++) {
                 const groupMatches = groupMatchMap[g];
-                if (groupMatches.length > 0) { // Tylko jeśli są mecze do dodania w tej grupie
-                    const match = groupMatches.shift(); // Weź pierwszy mecz z grupy
+                if (groupMatches.length === 0) continue; // Skip empty groups
 
-                    const hourOffset = matchHourOffsets[matchIndex % 8];
-                    const matchDate = new Date(startDate);
-                    matchDate.setDate(startDate.getDate() + matchDay);
-                    matchDate.setMinutes(matchDate.getMinutes() + hourOffset * 60);
+                let added = 0;
+                // Add two matches from the current group for the current slot
+                // To avoid modifying array while iterating, pull out matches first
+                const matchesToAdd = groupMatches.splice(0, Math.min(2, groupMatches.length));
 
-                    match.date = `${matchDate.toLocaleDateString("pl-PL")} ${matchDate.getHours().toString().padStart(2, '0')}:${matchDate.getMinutes().toString().padStart(2, '0')}`;
+                matchesToAdd.forEach(match => {
+                    const hourOffset = matchHourOffsets[matchIndex % matchHourOffsets.length];
+                    const currentMatchDate = new Date(startDate);
+                    currentMatchDate.setDate(startDate.getDate() + matchDay);
+                    currentMatchDate.setMinutes(startDate.getMinutes() + hourOffset * 60);
+
+                    match.date = `${currentMatchDate.toLocaleDateString("pl-PL")} ${currentMatchDate.getHours().toString().padStart(2, '0')}:${currentMatchDate.getMinutes().toString().padStart(2, '0')}`;
                     allGroupMatches.push(match);
                     matchIndex++;
+                });
+
+                if (matchIndex % matchHourOffsets.length === 0) { // If all slots for a day are filled
+                    matchDay++;
                 }
-            }
-            // Przechodź do następnego dnia, jeśli wszystkie grupy wyczerpały "obecne" mecze
-            if (matchIndex % 8 === 0 && matchIndex > 0) {
-                matchDay++;
             }
         }
         return allGroupMatches;
     };
 
 
-    // === Generowanie ćwierćfinałów na podstawie grup ===
-    const generateQuarterfinals = () => {
-        const qf = [];
-
-        // Zakładamy, że teams są już załadowane i posortowane lub że masz sensowny sposób na wybór A1, B2 itd.
-        // Jeśli chcesz faktycznie brać "pierwszą drużynę z grupy A", potrzebujesz logiki, która ustali zwycięzców grup.
-        // Na razie użyjemy prostych placeholderów, dopóki nie będzie logiki wyników meczów grupowych.
-
-        // Przykładowe drużyny (tylko do celów wizualnych, do czasu implementacji logiki fazy grupowej)
-        // W przyszłości, A[0] będzie oznaczać zwycięzcę grupy A itp.
-        const A1 = teams[0] || placeholderTeam; // Przykładowo, pierwsza drużyna w liście to A1
-        const B1 = teams[4] || placeholderTeam; // Drużyna z drugiej grupy
-        const C1 = teams[8] || placeholderTeam;
-        const D1 = teams[12] || placeholderTeam;
-
-        const A2 = teams[1] || placeholderTeam;
-        const B2 = teams[5] || placeholderTeam;
-        const C2 = teams[9] || placeholderTeam;
-        const D2 = teams[13] || placeholderTeam;
-
-
-        const matchups = [
-            [A1, B2], // A1 vs B2
-            [C2, D1], // C2 vs D1
-            [B1, A2], // B1 vs A2
-            [C1, D2], // C1 vs D2
-        ];
-
-        matchups.forEach(([teamA, teamB], i) => {
-            qf.push({
+    const generateQuarterfinalsPlaceholder = (currentTeams) => {
+        // Ta logika jest trudna do zaimplementowania bez znajomości wyników grup.
+        // W realnej aplikacji ćwierćfinały byłyby generowane na podstawie wyników fazy grupowej,
+        // które pochodziłyby z backendu. Tutaj zwracam statyczne dane z placeholderami.
+        return [
+            {
                 round: "Ćwierćfinał",
-                date: `17.06.2025, ${14 + i * 2}:00`,
-                teamA: { name: teamA.name, logo: teamA.logo }, // ZMIANA: logo już jest pełnym URL-em
-                teamB: { name: teamB.name, logo: teamB.logo }, // ZMIANA: logo już jest pełnym URL-em
+                date: "17.06.2025, 14:00",
+                teamA: { name: "A1", logo: placeholderTeam.logo },
+                teamB: { name: "B2", logo: placeholderTeam.logo },
                 score: "– : –",
-            });
-        });
-
-        return qf;
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 16:00",
+                teamA: { name: "C2", logo: placeholderTeam.logo },
+                teamB: { name: "D1", logo: placeholderTeam.logo },
+                score: "– : –",
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 18:00",
+                teamA: { name: "B1", logo: placeholderTeam.logo },
+                teamB: { name: "A2", logo: placeholderTeam.logo },
+                score: "– : –",
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 20:00",
+                teamA: { name: "C1", logo: placeholderTeam.logo },
+                teamB: { name: "D2", logo: placeholderTeam.logo },
+                score: "– : –",
+            },
+        ];
     };
 
-    // === Półfinały i Finał statycznie ===
-    // Tutaj logo będą puste, bo nie ma jeszcze zwycięzców z prawdziwymi logo.
-    // To jest OK, bo to są placeholder'y.
-    const staticPhases = {
+    const staticPhasesPlaceholder = {
         "Półfinały": [
             {
                 round: "Półfinał",
                 date: "19.06.2025, 16:00",
-                teamA: { name: "Zwycięzca QF1", logo: "" },
-                teamB: { name: "Zwycięzca QF2", logo: "" },
+                teamA: { name: "Zwycięzca QF1", logo: placeholderTeam.logo },
+                teamB: { name: "Zwycięzca QF2", logo: placeholderTeam.logo },
                 score: "– : –",
             },
             {
                 round: "Półfinał",
                 date: "19.06.2025, 20:00",
-                teamA: { name: "Zwycięzca QF3", logo: "" },
-                teamB: { name: "Zwycięzca QF4", logo: "" },
+                teamA: { name: "Zwycięzca QF3", logo: placeholderTeam.logo },
+                teamB: { name: "Zwycięzca QF4", logo: placeholderTeam.logo },
                 score: "– : –",
             },
         ],
@@ -179,33 +202,29 @@ function Schedule() {
             {
                 round: "Finał",
                 date: "21.06.2025, 20:30",
-                teamA: { name: "??", logo: "" },
-                teamB: { name: "??", logo: "" },
+                teamA: { name: "??", logo: placeholderTeam.logo },
+                teamB: { name: "??", logo: placeholderTeam.logo },
                 score: "– : –",
             },
         ],
     };
 
-    // Używamy funkcji dopiero po załadowaniu teams
-    // Jeśli teams się zmieniają, scheduleByPhase też się przeliczy
-    const scheduleByPhase = {
-        "Faza grupowa": generateGroupMatches(),
-        "Ćwierćfinały": generateQuarterfinals(),
-        ...staticPhases,
+    // To służy tylko do zbudowania listy dostępnych faz dla selectora
+    // Docelowo, lista faz powinna też pochodzić z backendu lub być stała,
+    // jeśli frontend zawsze wie, jakie fazy są dostępne.
+    const allAvailablePhases = {
+        "Faza grupowa": generateGroupMatchesPlaceholder(allTeams), // Używamy danych z teams.json
+        "Ćwierćfinały": generateQuarterfinalsPlaceholder(allTeams),
+        ...staticPhasesPlaceholder,
     };
+    // === KONIEC: TO POWINNO BYĆ NA BACKENDZIE ===
 
-    const matches = scheduleByPhase[selectedPhase] || [];
 
-    // Dodajemy warunki ładowania i błędu
     if (loading) {
         return (
             <section className="schedule-page full-screen">
                 <h2 className="schedule-title">Harmonogram rozgrywek</h2>
-                <p className="schedule-subtitle">Ładowanie harmonogramu...</p>
-                <div className="match-list">
-                    {/* Możesz dodać proste animacje ładowania tutaj */}
-                    <p>Proszę czekać...</p>
-                </div>
+                <div>Ładowanie harmonogramu...</div>
             </section>
         );
     }
@@ -214,8 +233,7 @@ function Schedule() {
         return (
             <section className="schedule-page full-screen">
                 <h2 className="schedule-title">Harmonogram rozgrywek</h2>
-                <p className="schedule-subtitle error-message">{error}</p>
-                <p className="schedule-subtitle">Sprawdź połączenie internetowe lub spróbuj ponownie.</p>
+                <div className="error-message">{error}</div>
             </section>
         );
     }
@@ -231,7 +249,7 @@ function Schedule() {
                     value={selectedPhase}
                     onChange={(e) => setSelectedPhase(e.target.value)}
                 >
-                    {Object.keys(scheduleByPhase).map((phase) => (
+                    {Object.keys(allAvailablePhases).map((phase) => ( // Używamy allAvailablePhases do generowania opcji
                         <option key={phase} value={phase}>
                             {phase}
                         </option>
@@ -241,7 +259,7 @@ function Schedule() {
 
             <div className="match-list">
                 {matches.length === 0 && !loading && !error ? (
-                    <p className="no-matches-message">Brak meczów do wyświetlenia w tej fazie lub brak zarejestrowanych drużyn.</p>
+                    <p>Brak meczów do wyświetlenia dla tej fazy.</p>
                 ) : (
                     matches.map((match, i) => {
                         const finished = isFinished(match.score);
