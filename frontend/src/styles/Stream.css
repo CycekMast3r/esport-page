@@ -1,8 +1,12 @@
+/* src/styles/Stream.css */
+
 .stream-page {
     padding: 40px 20px;
     background-color: #0d1117;
     color: white;
+    /* Domyślny kolor tekstu dla strony streamu */
     min-height: calc(100vh - 80px);
+    /* Zakładając, że header ma ok. 80px */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,178 +19,48 @@
 }
 
 /* === Nagłówki: Stream Title === */
+/* Ujednolicony styl z h1 i h2 z HOME.CSS */
 .stream-title {
     font-size: 3rem;
+    /* Nieco większy niż 2.5rem z section-title, ale w zakresie hero h1 */
     color: #00ffff;
     margin-bottom: 10px;
     text-transform: uppercase;
+    /* Używamy podobnego text-shadow jak w HOME.CSS dla nagłówków */
     text-shadow: 0 0 12px #00ffff80;
+    /* Bardziej intensywny niż 8px, ale spójny z hero h1 */
     font-weight: 700;
+    /* Zakładamy, że nagłówki są pogrubione */
 }
 
 /* === Podtytuły: Stream Subtitle === */
+/* Ujednolicony styl z .hero-subtitle z HOME.CSS */
 .stream-subtitle {
     font-size: 1.3rem;
+    /* Spójne z .hero-subtitle */
     color: #eee;
+    /* Spójne z .hero-subtitle */
     margin-bottom: 40px;
     line-height: 1.6;
+    /* Dodane dla lepszej czytelności, podobnie do .hero-info */
 }
 
 .stream-layout {
     display: flex;
-    gap: 30px;
-    /* Zwiększony odstęp między wideo a bocznym paskiem */
-    width: 100%;
-    /* Wysokość dostosowująca się do zawartości */
-    align-items: flex-start;
-    /* Dopasuj elementy do góry kontenera */
-}
-
-.stream-main-video {
-    flex: 3;
-    /* Główny obszar wideo zajmuje 3/4 szerokości */
-    min-width: 0;
-    /* Pozwól na zmniejszanie się zawartości flex */
-    position: relative;
-    /* Dla pozycjonowania opisu meczu */
-    display: flex;
-    flex-direction: column;
     gap: 20px;
-}
-
-.stream-sidebar {
-    flex: 1;
-    /* Pasek boczny zajmuje 1/4 szerokości */
-    min-width: 300px;
-    /* Minimalna szerokość paska bocznego */
-    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
-    border: 2px solid #00ffffaa;
-    border-radius: 20px;
-    box-shadow: 0 0 25px #00ffff44, 0 0 50px #00ffff22;
-    padding: 20px;
-    text-align: left;
+    width: 100%;
     height: 70vh;
-    /* Ogranicz wysokość paska bocznego */
-    max-height: 800px;
-    /* Maksymalna wysokość */
-    overflow-y: auto;
-    /* Włącz przewijanie, jeśli meczów jest dużo */
-    scrollbar-width: thin;
-    /* Dla Firefox */
-    scrollbar-color: #00ffff #1a1a1a;
-    /* Dla Firefox */
+    max-height: 720px;
 }
 
-/* Style dla scrollbara w Chrome/Edge/Safari */
-.stream-sidebar::-webkit-scrollbar {
-    width: 8px;
+.stream-video {
+    flex: 1;
+    min-width: 300px;
 }
 
-.stream-sidebar::-webkit-scrollbar-track {
-    background: #1a1a1a;
-    border-radius: 10px;
+.stream-chat {
+    width: 340px;
 }
-
-.stream-sidebar::-webkit-scrollbar-thumb {
-    background-color: #00ffff;
-    border-radius: 10px;
-    border: 2px solid #1a1a1a;
-}
-
-
-.stream-sidebar h2 {
-    color: #00ffff;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    text-shadow: 0 0 8px #00ffff80;
-    text-align: center;
-}
-
-.match-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.sidebar-match-item {
-    cursor: pointer;
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    padding: 10px;
-    /* Zapewnia przestrzeń wokół MatchCard */
-}
-
-.sidebar-match-item:hover {
-    background-color: rgba(0, 255, 255, 0.05);
-    border-color: #00ffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-}
-
-.sidebar-match-item.active {
-    background-color: rgba(0, 255, 255, 0.15);
-    border-color: #00ffff;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-}
-
-/* Style dla MatchCard w sidebarze - nadpisują domyślne, aby były mniejsze/inne */
-.sidebar-match-item .match-card {
-    border: none;
-    /* Usuwamy ramkę z MatchCard, bo item ją ma */
-    box-shadow: none;
-    /* Usuwamy cień z MatchCard */
-    background: none;
-    /* Usuwamy tło z MatchCard */
-    padding: 0;
-    margin: 0;
-    flex-direction: column;
-    /* Aby logo i nazwy były na osobnych liniach, jeśli MatchCard to flex row */
-    text-align: center;
-}
-
-.sidebar-match-item .match-card-teams {
-    margin-bottom: 5px;
-    flex-direction: row;
-    /* Zapewnienie, że zespoły są w jednej linii */
-    justify-content: center;
-}
-
-.sidebar-match-item .match-card-team-info {
-    font-size: 0.9rem;
-}
-
-.sidebar-match-item .match-card-score {
-    font-size: 1.2rem;
-    margin: 0 10px;
-}
-
-.sidebar-match-item .match-card-details {
-    font-size: 0.8rem;
-    color: #aaa;
-}
-
-.match-description-live {
-    background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
-    border: 2px solid #00ffffaa;
-    border-radius: 20px;
-    box-shadow: 0 0 25px #00ffff44, 0 0 50px #00ffff22;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    font-size: 1.1rem;
-}
-
-.match-description-live h3 {
-    color: #00ffff;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-}
-
-.match-description-live p {
-    margin-bottom: 5px;
-    color: #ddd;
-}
-
 
 @media (max-width: 992px) {
     .stream-layout {
@@ -194,25 +68,24 @@
         height: auto;
     }
 
-    .stream-main-video {
+    .stream-video {
         width: 100%;
-        height: auto;
-        /* Pozwól CustomVideoPlayer na kontrolę wysokości */
+        height: 50vh;
     }
 
-    .stream-sidebar {
+    .stream-chat {
         width: 100%;
         height: 60vh;
-        /* Dopasuj wysokość sidebara na mobilnych */
-        min-width: unset;
-        max-height: unset;
     }
 
+    /* Dopasowanie rozmiarów czcionek dla mniejszych ekranów, jeśli to konieczne */
     .stream-title {
         font-size: 2.5rem;
+        /* Zmniejsz nagłówek na mniejszych ekranach */
     }
 
     .stream-subtitle {
         font-size: 1.1rem;
+        /* Zmniejsz podtytuł na mniejszych ekranach */
     }
 }
