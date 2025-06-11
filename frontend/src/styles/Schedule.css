@@ -221,7 +221,7 @@
    istniejących stylów i nie zakłócają obecnego układu.
    Na przykład, jeśli masz oddzielny div dla logo i nazw:
 */
-/*
+
 .team-logos {
     display: flex;
     align-items: center;
@@ -248,4 +248,3 @@
     width: 100%;
     gap: 1rem;
 }
-*/
