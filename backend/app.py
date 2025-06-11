@@ -7,14 +7,23 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
+import psycopg2  # Dodaj import psycopg2
 
 app = Flask(__name__)
 CORS(app)
 
+# --- Zmiany tutaj ---
+# Ustawienie URL bazy danych bezpośrednio.
+# W środowisku produkcyjnym na Renderze, zaleca się używanie:
+# DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = "postgresql://esport_db_user:hvJpPw4Np1qsYZNznHfDFS1KahlCBP1N@dpg-d14c1ce3jp1c73b8ubf0-a/esport_db"
+
 # Ścieżki i ustawienia
-FRONTEND_PUBLIC = os.path.join(os.getcwd(), "frontend", "public")
-UPLOAD_FOLDER = os.path.join(FRONTEND_PUBLIC, "uploads")
-DATA_FILE = os.path.join(UPLOAD_FOLDER, "teams.json")
+# Upewnij się, że 'uploads' jest dostępne do zapisu na Renderze dla Twojego serwisu backendowego.
+# Jeśli frontend jest oddzielną usługą statyczną, to ten katalog 'uploads' będzie po stronie backendu.
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True) # Upewnij się, że katalog 'uploads' istnieje
+
 ALLOWED_EXTENSIONS = {".png"}
 MAX_FILE_SIZE_MB = 2
 MAX_TEAMS = 16
@@ -26,8 +35,6 @@ BANNED_EMAIL_DOMAINS = {
     "yopmail.com", "trashmail.com", "dispostable.com"
 }
 
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Pamięć dla rate limiting
 last_submission_time = {}  # IP -> datetime
@@ -44,6 +51,39 @@ def calculate_age(dob_str):
         return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
     except ValueError:
         return -1
+
+
+# Funkcja do połączenia z bazą danych
+def get_db_connection():
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
+
+# --- NOWY ENDPOINT do pobierania drużyn ---
+@app.route("/api/teams", methods=["GET"])
+def get_teams():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        # Wybieramy wszystkie kolumny. date_of_birth jest przechowywane jako DATE, players jako JSONB
+        cur.execute("SELECT id, name, logo, email, date_of_birth, players FROM teams ORDER BY name")
+        teams_from_db = []
+        for row in cur.fetchall():
+            team = {
+                "id": row[0],
+                "name": row[1],
+                "logo": row[2],
+                "email": row[3],
+                "dateOfBirth": row[4].isoformat() if isinstance(row[4], datetime.date) else row[4], # Formatuj datę do stringa
+                "players": row[5] # Jeśli players to JSONB, psycopg2 może już to zwrócić jako Python dict/list
+            }
+            teams_from_db.append(team)
+        cur.close()
+        conn.close()
+        return jsonify(teams_from_db), 200
+    except Exception as e:
+        print(f"[❌] Błąd pobierania drużyn: {str(e)}")
+        traceback.print_exc()
+        return jsonify({"status": "error", "message": "Błąd serwera podczas pobierania drużyn."}), 500
 
 
 @app.route("/api/register", methods=["POST"])
@@ -82,8 +122,8 @@ def register():
             return jsonify({"status": "error", "message": "Użyto tymczasowego adresu e-mail. Wprowadź prawdziwy adres."}), 400
 
         # Wiek kapitana
-        birth = datetime.strptime(captain_dob, "%Y-%m-%d")
-        age = (now - birth).days // 365
+        birth_date_obj = datetime.strptime(captain_dob, "%Y-%m-%d").date() # Konwertuj na obiekt date
+        age = (now.date() - birth_date_obj).days // 365
         if age < 16:
             return jsonify({"status": "error", "message": "Kapitan musi mieć co najmniej 16 lat."}), 400
 
@@ -97,59 +137,98 @@ def register():
             return jsonify({"status": "error", "message": "Logo nie może przekraczać 2 MB."}), 400
         logo_file.seek(0)
 
-        # Wczytaj dane
-        teams = []
-        if os.path.exists(DATA_FILE):
-            with open(DATA_FILE, "r", encoding="utf-8") as f:
-                try:
-                    teams = json.load(f)
-                except json.JSONDecodeError:
-                    pass
+        # --- Wczytaj dane i sprawdź unikalność z BAZY DANYCH ---
+        conn = get_db_connection()
+        cur = conn.cursor()
 
-        if len(teams) >= MAX_TEAMS:
+        # Sprawdź limit drużyn
+        cur.execute("SELECT COUNT(*) FROM teams")
+        current_teams_count = cur.fetchone()[0]
+        if current_teams_count >= MAX_TEAMS:
+            cur.close()
+            conn.close()
             return jsonify({"status": "error", "message": "Limit 16 drużyn został osiągnięty."}), 403
 
-        # Unikalność
-        if any(t["name"].lower() == team_name.lower() for t in teams):
+        # Sprawdź unikalność nazwy drużyny
+        cur.execute("SELECT id FROM teams WHERE LOWER(name) = LOWER(%s)", (team_name,))
+        if cur.fetchone():
+            cur.close()
+            conn.close()
             return jsonify({"status": "error", "message": "Taka nazwa drużyny już istnieje."}), 409
 
-        if any(t["email"].lower() == captain_email for t in teams):
+        # Sprawdź unikalność emaila
+        cur.execute("SELECT id FROM teams WHERE LOWER(email) = LOWER(%s)", (captain_email,))
+        if cur.fetchone():
+            cur.close()
+            conn.close()
             return jsonify({"status": "error", "message": "Ten email już został użyty do rejestracji."}), 409
 
-        # Zapis
+        # --- Zapis LOGO na serwerze (jeśli chcesz) ---
+        # Pamiętaj, że w Renderze ten folder 'uploads' na serwerze webowym nie jest trwały.
+        # Po restarcie/redeployu pliki znikną. Rozważ przechowywanie logo w chmurze (np. S3).
         team_id = str(uuid.uuid4())
         logo_filename = secure_filename(f"logo_{team_id}{ext}")
         logo_path = os.path.join(UPLOAD_FOLDER, logo_filename)
         logo_file.save(logo_path)
 
-        new_team = {
-            "id": team_id,
-            "name": team_name,
-            "logo": logo_filename,
-            "email": captain_email,
-            "dateOfBirth": captain_dob,
-            "players": [
-                { "name": player1, "G": 0, "A": 0, "S": 0, "MVP": 0 },
-                { "name": player2, "G": 0, "A": 0, "S": 0, "MVP": 0 },
-                { "name": player3, "G": 0, "A": 0, "S": 0, "MVP": 0 }
-            ]
-        }
+        # Przygotuj dane graczy jako JSONB do bazy danych
+        players_data = [
+            {"name": player1, "G": 0, "A": 0, "S": 0, "MVP": 0},
+            {"name": player2, "G": 0, "A": 0, "S": 0, "MVP": 0},
+            {"name": player3, "G": 0, "A": 0, "S": 0, "MVP": 0}
+        ]
+        players_jsonb = json.dumps(players_data, ensure_ascii=False) # Upewnij się, że jest to string JSON
 
-        teams.append(new_team)
-
-        with open(DATA_FILE, "w", encoding="utf-8") as f:
-            json.dump(teams, f, indent=2, ensure_ascii=False)
+        # --- Zapis DANYCH do BAZY DANYCH ---
+        cur.execute(
+            """
+            INSERT INTO teams (id, name, logo, email, date_of_birth, players)
+            VALUES (%s, %s, %s, %s, %s, %s::jsonb)
+            """,
+            (team_id, team_name, logo_filename, captain_email, birth_date_obj, players_jsonb)
+        )
+        conn.commit()  # Zatwierdź transakcję w bazie danych
+        cur.close()
+        conn.close()
 
         last_submission_time[client_ip] = now
         print(f"[✅] Zarejestrowano drużynę: {team_name}")
-        return jsonify({ "status": "ok", "message": "Zgłoszenie przyjęte!" })
+        return jsonify({"status": "ok", "message": "Zgłoszenie przyjęte!"})
 
     except Exception as e:
         print("[❌] Błąd:", str(e))
-        return jsonify({ "status": "error", "message": "Błąd serwera." }), 500
-
+        traceback.print_exc()  # Drukuj pełny traceback dla debugowania
+        return jsonify({"status": "error", "message": "Błąd serwera."}), 500
 
 
 if __name__ == "__main__":
+    # Funkcja do tworzenia tabeli, jeśli nie istnieje
+    def create_table_if_not_exists():
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS teams (
+                    id UUID PRIMARY KEY,
+                    name VARCHAR(255) UNIQUE NOT NULL,
+                    logo VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    date_of_birth DATE NOT NULL,
+                    players JSONB NOT NULL
+                );
+            """)
+            conn.commit()
+            cur.close()
+            conn.close()
+            print("[✅] Tabela 'teams' sprawdzona/utworzona.")
+        except Exception as e:
+            print(f"[❌] Błąd tworzenia tabeli: {str(e)}")
+            traceback.print_exc()
+
+    if DATABASE_URL:  # Upewnij się, że masz URL bazy danych przed próbą połączenia
+        create_table_if_not_exists()
+    else:
+        print("[⚠️] OSTRZEŻENIE: Zmienna środowiskowa 'DATABASE_URL' nie jest ustawiona. Nie można połączyć się z bazą danych.")
+
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
