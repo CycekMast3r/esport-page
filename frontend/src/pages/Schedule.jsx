@@ -6,7 +6,7 @@ function Schedule() {
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
 
     useEffect(() => {
-        fetch("/uploads/teams.json")
+        fetch("https://esport-page-frontend1.onrender.com/api/teams")
             .then((res) => res.json())
             .then((data) => setTeams(data))
             .catch((err) => console.error("Błąd ładowania teams.json:", err));
