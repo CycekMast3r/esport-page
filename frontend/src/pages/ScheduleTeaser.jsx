@@ -2,44 +2,38 @@ import { useEffect, useState } from "react";
 import "../styles/ScheduleTeaser.css";
 import { Link } from "react-router-dom";
 import Button from "./Button";
-// Usuwamy importy z matchUtils, bo już nie będziemy generować dynamicznie
-// import { generateGroupMatches, getUpcomingMatches } from "./matchUtils"; // TE LINIE ZOSTANĄ USUNIĘTE
-// Importujemy komponenty animacji
 import { Fade, Slide } from 'react-awesome-reveal';
 
 function ScheduleTeaser() {
     const [matches, setMatches] = useState([]);
 
-    // Definiujemy statyczne dane meczów
-    // Upewnij się, że ścieżki do logo są poprawne i dostępne w folderze public
     const staticMatches = [
         {
             round: "Grupa A",
             date: "14.06.2025, 18:00",
-            teamA: { name: "Ceramika Opoczno Esports", logo: "/teams/team7.png" }, // Zaktualizuj na prawdziwe logo
-            teamB: { name: "FC Drzewce", logo: "/teams/team8.png" }, // Zaktualizuj na prawdziwe logo
+            teamA: { name: "Ceramika Opoczno Esports", logo: "/teams/team7.png" },
+            teamB: { name: "FC Drzewce", logo: "/teams/team8.png" },
             score: "– : –",
         },
         {
             round: "Grupa B",
             date: "14.06.2025, 18:30",
-            teamA: { name: "Vamos", logo: "/teams/team3.png" }, // Zaktualizuj na prawdziwe logo
-            teamB: { name: "Virtus Pro", logo: "/teams/team9.png" }, // Zaktualizuj na prawdziwe logo
+            teamA: { name: "Vamos", logo: "/teams/team3.png" },
+            teamB: { name: "Virtus Pro", logo: "/teams/team9.png" },
             score: "– : –",
         },
         {
             round: "Grupa C",
             date: "14.06.2025, 19:00",
-            teamA: { name: "???", logo: "/images/question-mark.png" }, // Logo dla nieznanej drużyny
-            teamB: { name: "???", logo: "/images/question-mark.png" }, // Logo dla nieznanej drużyny
+            teamA: { name: "???", logo: "/images/question-mark.png" },
+            teamB: { name: "???", logo: "/images/question-mark.png" },
             score: "– : –",
         },
     ];
 
     useEffect(() => {
-        // Po prostu ustawiamy statyczne mecze po załadowaniu komponentu
         setMatches(staticMatches);
-    }, []); // Pusta tablica zależności, aby uruchomić tylko raz
+    }, []);
 
     return (
         <section className="schedule-section">
