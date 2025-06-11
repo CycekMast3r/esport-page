@@ -66,6 +66,7 @@
     gap: 1.5rem;
     width: 100%;
     max-width: 1200px;
+    /* Ogranicza szerokość, aby nie było zbyt wiele kafelków */
 }
 
 /* === MATCH CARD === */
@@ -77,6 +78,12 @@
     box-shadow: 0 0 10px #00000055;
     transition: transform 0.3s ease, background 0.3s ease;
     cursor: default;
+    display: flex;
+    /* Dodaj flex, aby ułożyć elementy wewnątrz karty */
+    flex-direction: column;
+    /* Ułożenie elementów wewnątrz karty pionowo */
+    align-items: center;
+    /* Wyśrodkowanie elementów wewnątrz karty */
 }
 
 .match-card:hover {
@@ -94,19 +101,7 @@
     border-left: 4px solid #007bff;
 }
 
-/* === MATCH ELEMENTS === */
-.match-date {
-    color: #ccc;
-    font-size: 0.9rem;
-    margin-bottom: 0.6rem;
-}
-
-.match-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
+/* === MATCH ELEMENTS (TE SEKCJE SĄ OK) === */
 .match-round {
     font-size: 0.85rem;
     font-weight: bold;
@@ -121,11 +116,36 @@
     box-shadow: 0 0 6px #00ffff33;
 }
 
+.match-date {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+}
+
+/* === MATCH ROW - TO JEST KLUCZOWE DLA UKŁADU DRUŻYN I WYNIKU W KAŻDYM MECZU === */
+.match-row {
+    display: flex;
+    /* Ustawienie na flexbox dla układu poziomego */
+    justify-content: space-between;
+    /* Rozłożenie na boki */
+    align-items: center;
+    /* Wyśrodkowanie pionowe */
+    width: 100%;
+    /* Zajmuje całą szerokość karty */
+    gap: 1rem;
+    /* Odstęp między elementami */
+}
+
 /* === TEAMS === */
 .team {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    flex: 1;
+    /* Pozwala na elastyczne rozciąganie, ale nie kurczenie w nieskończoność */
+    min-width: 0;
+    /* Zapewnia prawidłowe działanie flex-wrap/overflow */
+    /* Upewnij się, że te style są spójne dla .team */
 }
 
 .team img {
@@ -149,58 +169,59 @@
     font-size: 1.4rem;
     font-weight: bold;
     color: #00ffff;
-}
-
-
-.match-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    /* pozwala na łamanie linii w małych kafelkach */
-}
-
-.match-score {
+    /* Zmienione na #00ffff dla spójności */
     white-space: nowrap;
-    /* zapobiega łamaniu wyniku */
+    /* Zapobiega łamaniu wyniku */
     flex-shrink: 0;
+    /* Nie pozwala na kurczenie się wyniku */
     margin: 0 1rem;
+    /* Odstęp z boków */
+    text-align: center;
+    /* Wyśrodkowanie tekstu wyniku */
+    min-width: 40px;
+    /* Minimalna szerokość dla wyniku */
 }
 
-.team {
-    flex: 1 1 40%;
-    /* pozwala zespołom zajmować miejsce elastycznie */
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    min-width: 0;
-    /* umożliwia zawijanie tekstu, jeśli to konieczne */
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+
+    /* Zmień breakpoint, jeśli 480px jest za mały */
+    .match-list {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        /* Mniej kafelków w rzędzie na tabletach */
+    }
 }
 
 @media (max-width: 480px) {
+    .match-card {
+        padding: 0.8rem;
+    }
+
     .match-row {
         flex-direction: column;
-        align-items: flex-start;
+        /* Na małych ekranach: pionowy układ drużyn i wyniku */
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .team {
+        width: 100%;
+        justify-content: center;
+        /* Wyśrodkowanie drużyn */
     }
 
     .match-score {
         margin: 0.5rem 0;
         font-size: 1.2rem;
     }
-
-    .team {
-        width: 100%;
-    }
 }
 
-.match-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-}
-
+/* Jeśli masz jakieś klasy jak .team-logos, .team-logo, .team-names
+   i używasz ich w HTML, dodaj je tutaj, ale upewnij się, że nie duplikują
+   istniejących stylów i nie zakłócają obecnego układu.
+   Na przykład, jeśli masz oddzielny div dla logo i nazw:
+*/
+/*
 .team-logos {
     display: flex;
     align-items: center;
@@ -221,23 +242,10 @@
     box-shadow: 0 0 6px 2px #00ffae;
 }
 
-.match-score {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #00eaff;
-    white-space: nowrap;
-    min-width: 40px;
-    text-align: center;
-}
-
 .team-names {
     display: flex;
     justify-content: space-between;
     width: 100%;
     gap: 1rem;
 }
-
-.team {
-    flex: 1;
-    text-align: center;
-}
+*/
