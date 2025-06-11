@@ -3,23 +3,20 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import "../styles/TeamTeaser.css";
 import Button from "./Button";
-// Importujemy komponenty animacji
 import { Fade, Slide } from 'react-awesome-reveal';
 
-function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się TeamTeaser lub być w pliku o takiej nazwie
+function TeamSlider() {
     const [teams, setTeams] = useState([]);
-    const [loading, setLoading] = useState(true); // Dodajemy stan ładowania, podobnie jak w TeamsPage
-    const [error, setError] = useState(null);    // Dodajemy stan błędu
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Uzyskaj URL backendu z zmiennych środowiskowych Vite
     const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchTeams = async () => {
-            setLoading(true); // Rozpocznij ładowanie
-            setError(null);   // Resetuj błędy
+            setLoading(true);
+            setError(null);
             try {
-                // ZMIANA 1: Pobieramy dane z endpointu API backendu
                 const response = await fetch(`${API_BASE_URL}/api/teams`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,7 +27,7 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                 console.error("Błąd ładowania drużyn dla TeamTeaser:", err);
                 setError("Nie udało się załadować drużyn w sekcji teaser. Spróbuj odświeżyć stronę.");
             } finally {
-                setLoading(false); // Zakończ ładowanie
+                setLoading(false);
             }
         };
 
@@ -40,9 +37,8 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
     const MIN_SLIDES = 6;
     const totalSlots = Math.max(teams.length, MIN_SLIDES);
 
-    // Wypełniamy puste sloty tylko, jeśli nie ma błędu ładowania i dane są dostępne
     const filledTeams = loading || error ?
-        Array.from({ length: totalSlots }, (_, idx) => ({ id: `loading-${idx}`, empty: true })) // Puste sloty podczas ładowania/błędu
+        Array.from({ length: totalSlots }, (_, idx) => ({ id: `loading-${idx}`, empty: true }))
         : [
             ...teams,
             ...Array.from({ length: totalSlots - teams.length }, (_, idx) => ({
@@ -75,7 +71,6 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
         ]
     };
 
-    // Dodajemy obsługę stanów ładowania i błędów, podobnie jak w TeamsPage
     if (loading) {
         return (
             <section className="team-slider-section">
@@ -87,7 +82,7 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                             <div className="team-card-glow">
                                 <h3 className="team-name">Ładowanie...</h3>
                                 <div className="team-content">
-                                    <img src="/images/placeholder-logo.png" alt="Loading" className="team-logo" /> {/* Przykładowy placeholder */}
+                                    <img src="/images/placeholder-logo.png" alt="Loading" className="team-logo" />
                                     <p className="empty-label">...</p>
                                 </div>
                             </div>
@@ -127,7 +122,6 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                                     <>
                                         <h3 className="team-name">Wolne miejsce</h3>
                                         <div className="team-content">
-                                            {/* Ścieżka do wolnego miejsca może być lokalna, jeśli to statyczny obrazek */}
                                             <img src="/images/question-mark.png" alt="wolne" className="team-logo" />
                                             <p className="empty-label">Zgłoś swoją drużynę!</p>
                                         </div>
@@ -136,7 +130,6 @@ function TeamSlider() { // Prawdopodobnie ten komponent powinien nazywać się T
                                     <>
                                         <h3 className="team-name">{team.name}</h3>
                                         <div className="team-content">
-                                            {/* ZMIANA 2: Używamy team.logo bezpośrednio, ponieważ jest już pełnym URL-em Cloudinary */}
                                             {team.logo && <img src={team.logo} alt={team.name} className="team-logo" />}
                                             <ul className="player-list">
                                                 {team.players.map((player, idx) => (

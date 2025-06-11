@@ -6,22 +6,18 @@ import { Link } from "react-router-dom";
 function TeamsPage() {
     const [teams, setTeams] = useState([]);
     const [flippedIndex, setFlippedIndex] = useState(null);
-    const [loading, setLoading] = useState(true); // Dodajemy stan ładowania
-    const [error, setError] = useState(null);    // Dodajemy stan błędu
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const totalSlots = 16;
 
-    // Uzyskaj URL backendu z zmiennych środowiskowych Vite
-    // Pamiętaj, aby dodać np. VITE_API_URL=https://your-backend-service.onrender.com
-    // w pliku .env w katalogu głównym Twojego frontendu.
     const API_BASE_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchTeams = async () => {
-            setLoading(true); // Rozpocznij ładowanie
-            setError(null);   // Resetuj błędy
+            setLoading(true);
+            setError(null);
             try {
-                // Zmieniamy ścieżkę z pliku JSON na endpoint API
                 const response = await fetch(`${API_BASE_URL}/api/teams`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,14 +26,14 @@ function TeamsPage() {
                 setTeams(data);
             } catch (err) {
                 console.error("Nie udało się pobrać drużyn:", err);
-                setError("Nie udało się załadować drużyn. Spróbuj odświeżyć stronę."); // Ustaw komunikat błędu
+                setError("Nie udało się załadować drużyn. Spróbuj odświeżyć stronę.");
             } finally {
-                setLoading(false); // Zakończ ładowanie niezależnie od wyniku
+                setLoading(false);
             }
         };
 
         fetchTeams();
-    }, []); // Pusta tablica zależności oznacza, że useEffect uruchomi się tylko raz po zamontowaniu komponentu
+    }, []);
 
     const emptySlots = Array.from({ length: totalSlots - teams.length }, () => null);
     const allCards = [...teams, ...emptySlots];
@@ -52,7 +48,6 @@ function TeamsPage() {
                 <h2 className="teams-title">Drużyny turniejowe</h2>
                 <p className="teams-subtitle">Ładowanie drużyn...</p>
                 <div className="teams-grid">
-                    {/* Możesz dodać proste animacje ładowania tutaj */}
                     {Array.from({ length: totalSlots }, (_, i) => (
                         <div key={i} className="flip-card loading">
                             <div className="flip-inner">
@@ -72,7 +67,6 @@ function TeamsPage() {
                 <h2 className="teams-title">Drużyny turniejowe</h2>
                 <p className="teams-subtitle error-message">{error}</p>
                 <p className="teams-subtitle">Sprawdź połączenie internetowe lub spróbuj ponownie.</p>
-                {/* Możesz dodać przycisk do ponownego ładowania, jeśli chcesz */}
                 <Link to="/rejestracja">
                     <Button variant="primary">Zgłoś drużynę</Button>
                 </Link>
@@ -96,12 +90,10 @@ function TeamsPage() {
                             {team ? (
                                 <>
                                     <div className="flip-front">
-                                        {/* ZMIANA TUTAJ: Używamy team.logo bezpośrednio, ponieważ jest już pełnym URL-em Cloudinary */}
                                         {team.logo && <img src={team.logo} alt={team.name} className="team-logo" />}
                                         <h3 className="team-name">{team.name}</h3>
                                     </div>
                                     <div className="flip-back">
-                                        {/* ZMIANA TUTAJ: Używamy team.logo bezpośrednio */}
                                         {team.logo && <img src={team.logo} alt={team.name} className="team-logo small" />}
                                         <table className="player-stats">
                                             <thead>
