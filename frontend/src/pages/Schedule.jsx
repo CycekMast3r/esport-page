@@ -5,36 +5,26 @@ function Schedule() {
     const [teams, setTeams] = useState([]);
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
 
-    const API_BASE_URL = import.meta.env.VITE_API_URL;
+    useEffect(() => {
+        fetch("/uploads/teams.json")
+            .then((res) => res.json())
+            .then((data) => setTeams(data))
+            .catch((err) => console.error("Błąd ładowania teams.json:", err));
+    }, []);
+
+    const isFinished = (score) => /\d\s*:\s*\d/.test(score);
 
     const placeholderTeam = {
         name: "???",
-        logo: "/images/question-mark.png"
+        logo: "/images/question-mark.png",
     };
 
-    useEffect(() => {
-        const fetchTeams = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/teams`);
-                const data = await response.json();
-                setTeams(data);
-            } catch (err) {
-                console.error("Błąd ładowania drużyn:", err);
-            }
-        };
-
-        fetchTeams();
-    }, []);
-
-    const groupNames = ["A", "B", "C", "D"];
-    const createGroups = () => {
-        return groupNames.map((_, i) => {
-            const start = i * 4;
-            const group = teams.slice(start, start + 4);
-            while (group.length < 4) group.push(null);
-            return group;
-        });
-    };
+    const groupLabels = ["A", "B", "C", "D"];
+    const groups = groupLabels.map((_, idx) => {
+        const group = teams.slice(idx * 4, (idx + 1) * 4);
+        while (group.length < 4) group.push(null);
+        return group;
+    });
 
     const generateGroupMatches = () => {
         const allGroupMatches = [];
@@ -56,7 +46,7 @@ function Schedule() {
 
                     matches.push({
                         round: `Grupa ${label}`,
-                        date: "", // zostanie ustawiona niżej
+                        date: "",
                         teamA: teamA
                             ? { name: teamA.name, logo: `/uploads/${teamA.logo}` }
                             : placeholderTeam,
@@ -76,7 +66,6 @@ function Schedule() {
         const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
         let matchIndex = 0;
 
-        // Dopóki są mecze w którejkolwiek grupie
         while (groupMatchMap.some(group => group.length > 0)) {
             for (let g = 0; g < groupMatchMap.length; g++) {
                 const groupMatches = groupMatchMap[g];
@@ -110,30 +99,74 @@ function Schedule() {
         return allGroupMatches;
     };
 
+    const generateQuarterfinals = () => {
+        return [
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 14:00",
+                teamA: { name: "A1", logo: "" },
+                teamB: { name: "B2", logo: "" },
+                score: "– : –",
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 16:00",
+                teamA: { name: "C2", logo: "" },
+                teamB: { name: "D1", logo: "" },
+                score: "– : –",
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 18:00",
+                teamA: { name: "B1", logo: "" },
+                teamB: { name: "A2", logo: "" },
+                score: "– : –",
+            },
+            {
+                round: "Ćwierćfinał",
+                date: "17.06.2025, 20:00",
+                teamA: { name: "C1", logo: "" },
+                teamB: { name: "D2", logo: "" },
+                score: "– : –",
+            },
+        ];
+    };
+
     const staticPhases = {
-        "Ćwierćfinały": [
-            { round: "Ćwierćfinał", date: "17.06.2025, 14:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-            { round: "Ćwierćfinał", date: "17.06.2025, 16:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-            { round: "Ćwierćfinał", date: "17.06.2025, 18:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-            { round: "Ćwierćfinał", date: "17.06.2025, 20:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-        ],
         "Półfinały": [
-            { round: "Półfinał", date: "19.06.2025, 16:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-            { round: "Półfinał", date: "19.06.2025, 20:00", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
+            {
+                round: "Półfinał",
+                date: "19.06.2025, 16:00",
+                teamA: { name: "Zwycięzca QF1", logo: "" },
+                teamB: { name: "Zwycięzca QF2", logo: "" },
+                score: "– : –",
+            },
+            {
+                round: "Półfinał",
+                date: "19.06.2025, 20:00",
+                teamA: { name: "Zwycięzca QF3", logo: "" },
+                teamB: { name: "Zwycięzca QF4", logo: "" },
+                score: "– : –",
+            },
         ],
         "Finał": [
-            { round: "Finał", date: "21.06.2025, 20:30", teamA: placeholderTeam, teamB: placeholderTeam, score: "– : –" },
-        ]
+            {
+                round: "Finał",
+                date: "21.06.2025, 20:30",
+                teamA: { name: "??", logo: "" },
+                teamB: { name: "??", logo: "" },
+                score: "– : –",
+            },
+        ],
     };
 
     const scheduleByPhase = {
         "Faza grupowa": generateGroupMatches(),
+        "Ćwierćfinały": generateQuarterfinals(),
         ...staticPhases,
     };
 
     const matches = scheduleByPhase[selectedPhase] || [];
-
-    const isFinished = (score) => /\d\s*:\s*\d/.test(score);
 
     return (
         <section className="schedule-page full-screen">
@@ -157,22 +190,34 @@ function Schedule() {
             <div className="match-list">
                 {matches.map((match, i) => {
                     const finished = isFinished(match.score);
-                    const [scoreA, scoreB] = match.score.split(":").map(s => parseInt(s.trim()) || 0);
-                    const teamAClass = finished && scoreA > scoreB ? "team winner" : "team";
-                    const teamBClass = finished && scoreB > scoreA ? "team winner" : "team";
+                    let teamAClass = "team";
+                    let teamBClass = "team";
+
+                    if (finished) {
+                        const [a, b] = match.score.split(":").map((s) => parseInt(s.trim()));
+                        if (a > b) teamAClass += " winner";
+                        else if (b > a) teamBClass += " winner";
+                    }
 
                     return (
-                        <div className={`match-card ${finished ? "finished" : "upcoming"}`} key={i}>
+                        <div
+                            className={`match-card ${finished ? "finished" : "upcoming"}`}
+                            key={i}
+                        >
                             <div className="match-round">{match.round}</div>
                             <div className="match-date">{match.date}</div>
                             <div className="match-row">
                                 <div className={teamAClass}>
-                                    {match.teamA.logo && <img src={match.teamA.logo} alt={match.teamA.name} />}
+                                    {match.teamA.logo && (
+                                        <img src={match.teamA.logo} alt={match.teamA.name} />
+                                    )}
                                     <span>{match.teamA.name}</span>
                                 </div>
                                 <div className="match-score">{match.score}</div>
                                 <div className={teamBClass}>
-                                    {match.teamB.logo && <img src={match.teamB.logo} alt={match.teamB.name} />}
+                                    {match.teamB.logo && (
+                                        <img src={match.teamB.logo} alt={match.teamB.name} />
+                                    )}
                                     <span>{match.teamB.name}</span>
                                 </div>
                             </div>
