@@ -88,7 +88,6 @@ def create_table_if_not_exists():
                 players JSONB NOT NULL
             );
         """))
-        # Zmieniamy nazwy kolumn w definicji tabeli 'matches'
         cur.execute(sql.SQL("""
             CREATE TABLE IF NOT EXISTS matches (
                 id UUID PRIMARY KEY,
@@ -263,14 +262,7 @@ def register():
         return jsonify({"status": "error", "message": "Błąd serwera."}), 500
 
 
-# --- ZMIANA: Endpoint API do pobierania 3 najbliższych meczów z bazy danych ---
-# --- ZMIANA: Endpoint API do pobierania 3 najbliższych meczów z bazy danych ---
 
-    
-# --- NOWY: Endpoint API do pobierania pełnego harmonogramu z bazy danych ---
-
-    
-# --- NOWY: Endpoint administracyjny do generowania i zapisywania harmonogramu ---
 
 
     except Exception as e:
