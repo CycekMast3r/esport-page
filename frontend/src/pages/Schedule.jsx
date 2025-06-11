@@ -6,9 +6,24 @@ function Schedule() {
     const [selectedPhase, setSelectedPhase] = useState("Faza grupowa");
 
     useEffect(() => {
+        // Pobieramy drużyny z backendu. Zakładamy, że /api/teams zwróci 16 drużyn,
+        // posortowanych w kolejności, w jakiej mają być przydzielone do grup.
         fetch("/api/teams")
-            .then((res) => res.json())
-            .then((data) => setTeams(data))
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                // Jeśli teams jest puste lub ma mniej niż 16 elementów,
+                // uzupełniamy je placeholderami, aby uniknąć błędów indeksowania.
+                const filledTeams = [...data];
+                while (filledTeams.length < 16) {
+                    filledTeams.push(null); // Używamy null, aby oznaczyć brak drużyny
+                }
+                setTeams(filledTeams);
+            })
             .catch((err) => console.error("Błąd ładowania danych drużyn z backendu:", err));
     }, []);
 
@@ -20,18 +35,27 @@ function Schedule() {
     };
 
     const groupLabels = ["A", "B", "C", "D"];
+    // Podziel zarejestrowane drużyny na grupy po 4
     const groups = groupLabels.map((_, idx) => {
         const group = teams.slice(idx * 4, (idx + 1) * 4);
+        // Uzupełniamy grupy nullami, jeśli brakuje drużyn, aby utrzymać strukturę
         while (group.length < 4) group.push(null);
         return group;
     });
 
+    // Funkcja pomocnicza do pobierania danych drużyny lub placeholdera
+    const getTeamDisplayInfo = (team) => {
+        return team
+            ? { name: team.name, logo: team.logo }
+            : placeholderTeam;
+    };
+
     const generateGroupMatches = () => {
         const allGroupMatches = [];
         const matchPairs = [
-            [[0, 1], [2, 3]],
-            [[0, 2], [1, 3]],
-            [[0, 3], [1, 2]]
+            [[0, 1], [2, 3]], // Mecz 1, Mecz 2
+            [[0, 2], [1, 3]], // Mecz 3, Mecz 4
+            [[0, 3], [1, 2]]  // Mecz 5, Mecz 6
         ];
 
         const groupMatchMap = groups.map((group, groupIdx) => {
@@ -45,26 +69,22 @@ function Schedule() {
 
                     matches.push({
                         round: `Grupa ${label}`,
-                        date: "",
-                        teamA: teamA
-                            ? { name: teamA.name, logo: teamA.logo }
-                            : placeholderTeam,
-                        teamB: teamB
-                            ? { name: teamB.name, logo: teamB.logo }
-                            : placeholderTeam,
+                        date: "", // Data zostanie przypisana później
+                        teamA: getTeamDisplayInfo(teamA),
+                        teamB: getTeamDisplayInfo(teamB),
                         score: "– : –",
                     });
                 });
             });
-
             return matches;
         });
 
         const startDate = new Date("2025-06-14T18:00:00");
         let matchDay = 0;
-        const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
+        const matchHourOffsets = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5]; // Co 30 minut
         let matchIndex = 0;
 
+        // Logika rozłożenia meczów grupowych w czasie (tak jak w Twojej wersji)
         while (groupMatchMap.some(group => group.length > 0)) {
             for (let g = 0; g < groupMatchMap.length; g++) {
                 const groupMatches = groupMatchMap[g];
@@ -80,88 +100,103 @@ function Schedule() {
                     match.date = `${matchDate.toLocaleDateString("pl-PL")} ${matchDate.getHours().toString().padStart(2, '0')}:${matchDate.getMinutes().toString().padStart(2, '0')}`;
                     allGroupMatches.push(match);
 
-                    groupMatches.splice(i, 1);
+                    groupMatches.splice(i, 1); // Usuń dodany mecz
                     added++;
                     matchIndex++;
 
-                    if (added === 2) break;
-                    i--;
+                    if (added === 2) break; // Dodano 2 mecze z tej grupy, przejdź do następnej
+                    i--; // Dostosuj indeks po usunięciu elementu
                 }
             }
-
-            if (matchIndex % 8 === 0) {
+            if (matchIndex % 8 === 0) { // Przejdź do następnego dnia, jeśli zapełniono 8 slotów
                 matchDay++;
             }
         }
-
         return allGroupMatches;
     };
 
     const generateQuarterfinals = () => {
-        return [
-            {
-                round: "Ćwierćfinał",
-                date: "17.06.2025, 14:00",
-                teamA: { name: "A1", logo: "" },
-                teamB: { name: "B2", logo: "" },
-                score: "– : –",
-            },
-            {
-                round: "Ćwierćfinał",
-                date: "17.06.2025, 16:00",
-                teamA: { name: "C2", logo: "" },
-                teamB: { name: "D1", logo: "" },
-                score: "– : –",
-            },
-            {
-                round: "Ćwierćfinał",
-                date: "17.06.2025, 18:00",
-                teamA: { name: "B1", logo: "" },
-                teamB: { name: "A2", logo: "" },
-                score: "– : –",
-            },
-            {
-                round: "Ćwierćfinał",
-                date: "17.06.2025, 20:00",
-                teamA: { name: "C1", logo: "" },
-                teamB: { name: "D2", logo: "" },
-                score: "– : –",
-            },
+        // Logika przydzielania drużyn do ćwierćfinałów
+        // Zakładamy, że teams[0] to A1, teams[1] to A2, teams[4] to B1 itd.
+        // To wymaga, aby teams było posortowane w konkretnej kolejności (np. alfabetycznie według nazwy)
+        // i aby A1, A2, B1, B2 itd. były pierwszymi dwoma drużynami z każdej grupy.
+        // W prawdziwym turnieju potrzebny byłby ranking grup.
+
+        const A = groups[0];
+        const B = groups[1];
+        const C = groups[2];
+        const D = groups[3];
+
+        const matchups = [
+            // A1 vs B2
+            { teamA: getTeamDisplayInfo(A[0]), teamB: getTeamDisplayInfo(B[1]) },
+            // C2 vs D1
+            { teamA: getTeamDisplayInfo(C[1]), teamB: getTeamDisplayInfo(D[0]) },
+            // B1 vs A2
+            { teamA: getTeamDisplayInfo(B[0]), teamB: getTeamDisplayInfo(A[1]) },
+            // C1 vs D2
+            { teamA: getTeamDisplayInfo(C[0]), teamB: getTeamDisplayInfo(D[1]) },
         ];
+
+        const qf = [];
+        const qfStartDate = new Date("2025-06-17T14:00:00");
+
+        matchups.forEach((pair, i) => {
+            const matchDate = new Date(qfStartDate);
+            matchDate.setHours(qfStartDate.getHours() + i * 2); // Co 2 godziny
+            qf.push({
+                round: "Ćwierćfinał",
+                date: `${matchDate.toLocaleDateString("pl-PL")} ${matchDate.getHours().toString().padStart(2, '0')}:${matchDate.getMinutes().toString().padStart(2, '0')}`,
+                teamA: pair.teamA,
+                teamB: pair.teamB,
+                score: "– : –",
+            });
+        });
+        return qf;
     };
 
-    const staticPhases = {
-        "Półfinały": [
+    const generateSemifinals = () => {
+        return [
             {
                 round: "Półfinał",
                 date: "19.06.2025, 16:00",
-                teamA: { name: "Zwycięzca QF1", logo: "" },
-                teamB: { name: "Zwycięzca QF2", logo: "" },
+                teamA: placeholderTeam, // Zwycięzcy są nieznani na początku
+                teamB: placeholderTeam,
                 score: "– : –",
             },
             {
                 round: "Półfinał",
                 date: "19.06.2025, 20:00",
-                teamA: { name: "Zwycięzca QF3", logo: "" },
-                teamB: { name: "Zwycięzca QF4", logo: "" },
+                teamA: placeholderTeam,
+                teamB: placeholderTeam,
                 score: "– : –",
             },
-        ],
-        "Finał": [
+        ];
+    };
+
+    const generateFinal = () => {
+        return [
             {
                 round: "Finał",
                 date: "21.06.2025, 20:30",
-                teamA: { name: "??", logo: "" },
-                teamB: { name: "??", logo: "" },
+                teamA: placeholderTeam,
+                teamB: placeholderTeam,
                 score: "– : –",
             },
-        ],
+        ];
     };
 
-    const scheduleByPhase = {
+    // Oblicz harmonogram tylko wtedy, gdy teams są załadowane
+    const scheduleByPhase = teams.length === 16 ? {
         "Faza grupowa": generateGroupMatches(),
         "Ćwierćfinały": generateQuarterfinals(),
-        ...staticPhases,
+        "Półfinały": generateSemifinals(), // Używamy nowej funkcji
+        "Finał": generateFinal(),           // Używamy nowej funkcji
+    } : {
+        "Faza grupowa": [],
+        "Ćwierćfinały": [],
+        "Półfinały": [],
+        "Finał": [],
     };
 
     const matches = scheduleByPhase[selectedPhase] || [];
@@ -186,42 +221,46 @@ function Schedule() {
             </div>
 
             <div className="match-list">
-                {matches.map((match, i) => {
-                    const finished = isFinished(match.score);
-                    let teamAClass = "team";
-                    let teamBClass = "team";
+                {teams.length < 16 ? (
+                    <p className="no-matches-message">Oczekiwanie na pełną rejestrację 16 drużyn, aby wygenerować harmonogram.</p>
+                ) : (
+                    matches.map((match, i) => {
+                        const finished = isFinished(match.score);
+                        let teamAClass = "team";
+                        let teamBClass = "team";
 
-                    if (finished) {
-                        const [a, b] = match.score.split(":").map((s) => parseInt(s.trim()));
-                        if (a > b) teamAClass += " winner";
-                        else if (b > a) teamBClass += " winner";
-                    }
+                        if (finished) {
+                            const [a, b] = match.score.split(":").map((s) => parseInt(s.trim()));
+                            if (a > b) teamAClass += " winner";
+                            else if (b > a) teamBClass += " winner";
+                        }
 
-                    return (
-                        <div
-                            className={`match-card ${finished ? "finished" : "upcoming"}`}
-                            key={i}
-                        >
-                            <div className="match-round">{match.round}</div>
-                            <div className="match-date">{match.date}</div>
-                            <div className="match-row">
-                                <div className={teamAClass}>
-                                    {match.teamA.logo && (
-                                        <img src={match.teamA.logo} alt={match.teamA.name} />
-                                    )}
-                                    <span>{match.teamA.name}</span>
-                                </div>
-                                <div className="match-score">{match.score}</div>
-                                <div className={teamBClass}>
-                                    {match.teamB.logo && (
-                                        <img src={match.teamB.logo} alt={match.teamB.name} />
-                                    )}
-                                    <span>{match.teamB.name}</span>
+                        return (
+                            <div
+                                className={`match-card ${finished ? "finished" : "upcoming"}`}
+                                key={i}
+                            >
+                                <div className="match-round">{match.round}</div>
+                                <div className="match-date">{match.date}</div>
+                                <div className="match-row">
+                                    <div className={teamAClass}>
+                                        {match.teamA.logo && (
+                                            <img src={match.teamA.logo} alt={match.teamA.name} />
+                                        )}
+                                        <span>{match.teamA.name}</span>
+                                    </div>
+                                    <div className="match-score">{match.score}</div>
+                                    <div className={teamBClass}>
+                                        {match.teamB.logo && (
+                                            <img src={match.teamB.logo} alt={match.teamB.name} />
+                                        )}
+                                        <span>{match.teamB.name}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })
+                )}
             </div>
         </section>
     );
